@@ -137,14 +137,14 @@
         /* Row 2 */
         .apts-box { background-color: #ffff00; color: #000000; font-size: 24px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-align: center; height: 60px; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
         .ticker-main { background-color: #1313e8; height: 60px; display: flex; align-items: center; width: 100%; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; }
-        .marquee { color: #ffffff; font-size: 36px; font-weight: 900; }
+        .marquee { color: #ffffff; font-size: 32px; font-weight: 900; }
 
         /* Row 3 */
         .advt-box { background-color: #cc0000; color: #ffffff; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 40px; border-bottom: 5px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
         .ticker-sub { background-color: #e6e6e6; height: 40px; display: flex; align-items: center; width: 100%; border-bottom: 5px solid #cc0000; }
         
         /* CHANGED TO PURE DARK BLACK FOR ADVT SCROLL */
-        .marquee-sub { color: #000000; font-size: 24px; font-weight: 900; }
+        .marquee-sub { color: #000000; font-size: 22px; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -240,7 +240,7 @@
 
             let chunks = [];
             // INCREASED LENGTH LIMIT: Displays much more text before splitting
-            const MAX_LEN = 140; 
+            const MAX_LEN = 120; 
             if (currentText.length > MAX_LEN) {
                 let splitIndex = currentText.lastIndexOf(' ', MAX_LEN); 
                 if (splitIndex === -1) splitIndex = MAX_LEN; 
