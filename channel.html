@@ -51,13 +51,12 @@
             z-index: 10;
         }
 
-        /* --- INCREASED TOP SLIDER HEIGHT --- */
         #top-image-slider {
             position: absolute; 
             top: 0; 
             left: 0; 
             width: 100%; 
-            height: 160px; /* Increased from 108px */
+            height: 160px; 
             z-index: 50; 
             border-bottom: 4px solid var(--accent-color);
             background-color: #000;
@@ -74,28 +73,9 @@
 
         @keyframes fadeInOut { 0%, 5% { opacity: 0; } 15%, 85% { opacity: 1; } 95%, 100% { opacity: 0; } }
 
-        /* --- INCREASED LOGOS SIZE AND ADJUSTED DEFAULT POSITION --- */
-        #logo { 
-            position: absolute; 
-            top: 190px; /* Moved down to accommodate larger top slider */
-            right: 40px; 
-            z-index: 10; 
-            width: 250px; /* Increased width */
-            height: auto; 
-            max-height: 180px; /* Increased max-height */
-            object-fit: contain; 
-        }
-        #logo1 { 
-            position: absolute; 
-            top: 190px; /* Moved down to accommodate larger top slider */
-            left: 40px; 
-            width: auto; 
-            height: 160px; /* Increased height */
-            object-fit: contain; 
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); 
-            z-index: 10; 
-            display: none; 
-        }
+        /* --- Logos --- */
+        #logo { position: absolute; top: 190px; right: 40px; z-index: 10; width: 250px; height: auto; max-height: 180px; object-fit: contain; }
+        #logo1 { position: absolute; top: 190px; left: 40px; width: auto; height: 160px; object-fit: contain; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); z-index: 10; display: none; }
 
         /* --- ROW CONTAINERS --- */
         .news-broadcaster-container {
@@ -120,15 +100,17 @@
             overflow: hidden; background-color: #ffffff; 
         }
 
-        /* --- ROW 1 (BREAKING + CLOCK) --- */
+        /* --- REDESIGNED ROW 1 (BREAKING + CLOCK) --- */
         .ticker-slider-container {
             display: flex; flex-direction: row; width: 100%; height: 110px; 
             background-color: #cc0000; border-top: 4px solid #ffffff;
         }
 
         .ticker-slider { 
-            flex-grow: 1; display: flex; align-items: center; padding: 0 30px; font-size: 38px; font-weight: 900; 
-            color: #ffffff; white-space: nowrap; overflow: hidden; justify-content: center; text-align: center;
+            flex-grow: 1; display: flex; align-items: center; padding: 0 30px; 
+            color: #ffffff; white-space: nowrap; overflow: hidden; 
+            justify-content: center; 
+            text-align: center;
         }
 
         #clock-container {
@@ -140,7 +122,8 @@
         #display { font-size: 38px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
 
         .breaking-box { 
-            text-align: center; height: 110px; display: flex; flex-direction: column; justify-content: center;
+            text-align: center; height: 110px; 
+            display: flex; flex-direction: column; justify-content: center;
             border-top: 4px solid #ffffff; border-left: 4px solid #ffffff; border-right: 4px solid #ffffff;
         }
         
@@ -149,8 +132,9 @@
         
         @keyframes boxFlash { 0% { background-color: #cc0000; color: #ffffff; } 100% { background-color: #ffffff; color: #cc0000; } }
 
-        .breaking-intro { display: none; width: 100%; text-align: center; font-size: 60px; font-weight: 900; color: #ffffff; letter-spacing: 2px; animation: introFlash 1s infinite alternate; }
-        .slider-text { display: none; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 54px; font-weight: 900; }
+        /* DECREASED FONT SIZES FOR BREAKING TEXT TO FIT TELUGU CHARACTERS */
+        .breaking-intro { display: none; width: 100%; text-align: center; font-size: 44px; font-weight: 900; color: #ffffff; letter-spacing: 2px; animation: introFlash 1s infinite alternate; }
+        .slider-text { display: none; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 40px; font-weight: 900; }
 
         @keyframes introFlash { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 1; transform: scale(1.02); } }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -158,12 +142,14 @@
         /* Row 2 */
         .apts-box { background-color: #ffff00; color: #000000; font-size: 32px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-align: center; height: 80px; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
         .ticker-main { background-color: #1313e8; height: 80px; display: flex; align-items: center; width: 100%; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; }
-        .marquee { color: #ffffff; font-size: 48px; font-weight: 900; }
+        /* DECREASED FONT SIZE FOR MAIN NEWS SCROLL */
+        .marquee { color: #ffffff; font-size: 34px; font-weight: 900; }
 
         /* Row 3 */
         .advt-box { background-color: #cc0000; color: #ffffff; font-size: 26px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 60px; border-bottom: 5px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
         .ticker-sub { background-color: #e6e6e6; height: 60px; display: flex; align-items: center; width: 100%; border-bottom: 5px solid #cc0000; }
-        .marquee-sub { color: #000000; font-size: 34px; font-weight: 900; }
+        /* DECREASED FONT SIZE FOR ADVT SCROLL */
+        .marquee-sub { color: #000000; font-size: 24px; font-weight: 900; }
     </style>
 </head>
 <body>
