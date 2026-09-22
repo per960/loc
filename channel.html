@@ -117,6 +117,7 @@
             background-color: #9400D3; 
             color: #ffffff; display: flex; justify-content: center; align-items: center;
             padding: 0 25px; border-left: 1px solid #ffffff; white-space: nowrap; overflow: hidden; flex-shrink: 0;
+            width: 200px; /* ADDED: Fixed width strictly prevents shrinking/jittering when date swaps */
         }
         
         #display { font-size: 27px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
@@ -132,7 +133,6 @@
         
         @keyframes boxFlash { 0% { background-color: #cc0000; color: #ffffff; } 100% { background-color: #ffffff; color: #cc0000; } }
 
-        /* DECREASED FONT SIZES FOR BREAKING TEXT TO FIT TELUGU CHARACTERS */
         .breaking-intro { display: none; width: 100%; text-align: center; font-size: 60px; font-weight: 900; color: #ffffff; letter-spacing: 2px; animation: introFlash 1s infinite alternate; }
         .slider-text { display: none; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 36px; font-weight: 900; }
 
@@ -142,13 +142,11 @@
         /* Row 2 */
         .apts-box { background-color: #ffff00; color: #000000; font-size: 32px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-align: center; height: 80px; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
         .ticker-main { background-color: #1313e8; height: 80px; display: flex; align-items: center; width: 100%; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; }
-        /* DECREASED FONT SIZE FOR MAIN NEWS SCROLL */
         .marquee { color: #ffffff; font-size: 34px; font-weight: 900; }
 
         /* Row 3 */
         .advt-box { background-color: #cc0000; color: #ffffff; font-size: 26px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 60px; border-bottom: 5px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
         .ticker-sub { background-color: #e6e6e6; height: 60px; display: flex; align-items: center; width: 100%; border-bottom: 5px solid #cc0000; }
-        /* DECREASED FONT SIZE FOR ADVT SCROLL */
         .marquee-sub { color: #000000; font-size: 24px; font-weight: 900; }
     </style>
 </head>
@@ -224,9 +222,15 @@
         let currentVideoIndex = -1; let syncIndex = 0; let syncInterval = null; let imageSlideIndex = 0; let imageSliderInterval = null;
         let breakTimeout1, breakTimeout2; 
 
+        // ==============================================================
+        // NEW DYNAMIC SCRIPT: Automatically handles any length text
+        // and plays chunks one-after-the-other until finished.
+        // ==============================================================
         function startSynchronizedSliders() {
-            if (syncInterval) clearInterval(syncInterval);
-            updateSyncedText(); syncInterval = setInterval(updateSyncedText, 10000); 
+            clearTimeout(syncInterval);
+            clearTimeout(breakTimeout1);
+            clearTimeout(breakTimeout2);
+            updateSyncedText(); 
         }
 
         function updateSyncedText() {
@@ -237,40 +241,49 @@
             const introEl = document.getElementById('breaking-intro');
             const textEl = document.getElementById('slider-text-display');
 
-            clearTimeout(breakTimeout1);
-            clearTimeout(breakTimeout2);
-
             introEl.style.display = 'block';
             textEl.style.display = 'none';
 
             let chunks = [];
-            const MAX_LEN = 140; 
-            if (currentText.length > MAX_LEN) {
-                let splitIndex = currentText.lastIndexOf(' ', MAX_LEN); 
-                if (splitIndex === -1) splitIndex = MAX_LEN; 
-                chunks.push(currentText.substring(0, splitIndex) + "...");
-                chunks.push("..." + currentText.substring(splitIndex).trim());
+            const MAX_LEN = 85; // Safely fits inside a single line without wrapping/cutting off
+            let remainingStr = currentText;
+
+            // Loops dynamically to cut ANY length of text into neat single line chunks
+            if (remainingStr.length > MAX_LEN) {
+                while(remainingStr.length > MAX_LEN) {
+                    let splitIndex = remainingStr.lastIndexOf(' ', MAX_LEN);
+                    if (splitIndex === -1) splitIndex = MAX_LEN;
+                    chunks.push(remainingStr.substring(0, splitIndex) + "...");
+                    remainingStr = "..." + remainingStr.substring(splitIndex).trim();
+                }
+                chunks.push(remainingStr);
             } else {
-                chunks.push(currentText);
+                chunks.push(remainingStr);
             }
 
             breakTimeout1 = setTimeout(() => {
                 introEl.style.display = 'none';
                 textEl.style.display = 'block';
                 
-                textEl.textContent = chunks[0];
-                textEl.style.animation = 'none';
-                textEl.offsetHeight; 
-                textEl.style.animation = 'slideUp 0.5s ease-out forwards';
-
-                if (chunks.length > 1) {
-                    breakTimeout2 = setTimeout(() => {
-                        textEl.style.animation = 'none';
-                        textEl.offsetHeight; 
-                        textEl.textContent = chunks[1];
-                        textEl.style.animation = 'slideUp 0.5s ease-out forwards';
-                    }, 4000);
+                let chunkIdx = 0;
+                
+                function showNextChunk() {
+                    textEl.textContent = chunks[chunkIdx];
+                    textEl.style.animation = 'none';
+                    textEl.offsetHeight; // trigger reflow
+                    textEl.style.animation = 'slideUp 0.5s ease-out forwards';
+                    
+                    chunkIdx++;
+                    if(chunkIdx < chunks.length) {
+                        // Play the next chunk after 4 seconds
+                        breakTimeout2 = setTimeout(showNextChunk, 4000); 
+                    } else {
+                        // All chunks finished, start the next News item after 4 seconds
+                        syncInterval = setTimeout(updateSyncedText, 4000);
+                    }
                 }
+                showNextChunk();
+
             }, 2000); 
         }
 
