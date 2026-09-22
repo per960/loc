@@ -56,9 +56,9 @@
             top: 0; 
             left: 0; 
             width: 100%; 
-            height: 130px; 
+            height: 160px; 
             z-index: 50; 
-            border-bottom: 1px solid var(--accent-color);
+            border-bottom: 4px solid var(--accent-color);
             background-color: #000;
             overflow: hidden;
         }
@@ -74,8 +74,8 @@
         @keyframes fadeInOut { 0%, 5% { opacity: 0; } 15%, 85% { opacity: 1; } 95%, 100% { opacity: 0; } }
 
         /* --- Logos --- */
-        #logo { position: absolute; top: 160px; right: 40px; z-index: 10; width: 250px; height: auto; max-height: 180px; object-fit: contain; }
-        #logo1 { position: absolute; top: 160px; left: 40px; width: auto; height: 160px; object-fit: contain; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); z-index: 10; display: none; }
+        #logo { position: absolute; top: 190px; right: 40px; z-index: 10; width: 250px; height: auto; max-height: 180px; object-fit: contain; }
+        #logo1 { position: absolute; top: 190px; left: 40px; width: auto; height: 160px; object-fit: contain; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); z-index: 10; display: none; }
 
         /* --- ROW CONTAINERS --- */
         .news-broadcaster-container {
@@ -116,11 +116,12 @@
         #clock-container {
             background-color: #9400D3; 
             color: #ffffff; display: flex; justify-content: center; align-items: center;
-            padding: 0 25px; border-left: 1px solid #ffffff; white-space: nowrap; overflow: hidden; flex-shrink: 0;
-            width: 200px; /* ADDED: Fixed width strictly prevents shrinking/jittering when date swaps */
+            padding: 0 20px; /* Reduced padding to leave more space for text */
+            border-left: 4px solid #ffffff; white-space: nowrap; overflow: hidden; flex-shrink: 0;
+            width: 260px; /* INCREASED width so the full date fits without shrinking */
         }
         
-        #display { font-size: 27px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
+        #display { font-size: 38px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
 
         .breaking-box { 
             text-align: center; height: 110px; 
@@ -133,8 +134,8 @@
         
         @keyframes boxFlash { 0% { background-color: #cc0000; color: #ffffff; } 100% { background-color: #ffffff; color: #cc0000; } }
 
-        .breaking-intro { display: none; width: 100%; text-align: center; font-size: 60px; font-weight: 900; color: #ffffff; letter-spacing: 2px; animation: introFlash 1s infinite alternate; }
-        .slider-text { display: none; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 36px; font-weight: 900; }
+        .breaking-intro { display: none; width: 100%; text-align: center; font-size: 44px; font-weight: 900; color: #ffffff; letter-spacing: 2px; animation: introFlash 1s infinite alternate; }
+        .slider-text { display: none; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 40px; font-weight: 900; }
 
         @keyframes introFlash { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 1; transform: scale(1.02); } }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -222,10 +223,6 @@
         let currentVideoIndex = -1; let syncIndex = 0; let syncInterval = null; let imageSlideIndex = 0; let imageSliderInterval = null;
         let breakTimeout1, breakTimeout2; 
 
-        // ==============================================================
-        // NEW DYNAMIC SCRIPT: Automatically handles any length text
-        // and plays chunks one-after-the-other until finished.
-        // ==============================================================
         function startSynchronizedSliders() {
             clearTimeout(syncInterval);
             clearTimeout(breakTimeout1);
@@ -245,10 +242,11 @@
             textEl.style.display = 'none';
 
             let chunks = [];
-            const MAX_LEN = 85; // Safely fits inside a single line without wrapping/cutting off
+            // REDUCED CHUNK LENGTH: 45 guarantees wide Telugu characters will perfectly fit 
+            // inside the visible CSS container without getting cut off at the edges.
+            const MAX_LEN = 45; 
             let remainingStr = currentText;
 
-            // Loops dynamically to cut ANY length of text into neat single line chunks
             if (remainingStr.length > MAX_LEN) {
                 while(remainingStr.length > MAX_LEN) {
                     let splitIndex = remainingStr.lastIndexOf(' ', MAX_LEN);
@@ -275,10 +273,8 @@
                     
                     chunkIdx++;
                     if(chunkIdx < chunks.length) {
-                        // Play the next chunk after 4 seconds
                         breakTimeout2 = setTimeout(showNextChunk, 4000); 
                     } else {
-                        // All chunks finished, start the next News item after 4 seconds
                         syncInterval = setTimeout(updateSyncedText, 4000);
                     }
                 }
