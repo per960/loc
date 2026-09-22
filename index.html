@@ -50,6 +50,11 @@
         .stepper-input:focus { background: #222; }
         .stepper-input::-webkit-outer-spin-button, .stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .stepper-input[type=number] { -moz-appearance: textfield; }
+
+
+        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border: 2px solid #555; border-radius: 8px; margin-bottom: 20px; }
+        #preview-canvas { width: 1920px; height: 1080px; position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
+        .prev-item { position: absolute; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 32px; color: #fff; border-radius: 8px; transition: transform 0.1s ease; }
     </style>
 </head>
 <body>
@@ -83,7 +88,7 @@
         </div>
 
         <div class="admin-card">
-            <!-- VIDEO TAB -->
+
             <div id="form-video" class="form-group active">
                 <div id="test-player-container" style="display:none;">
                     <iframe id="test-player" width="100%" height="300" src="" frameborder="0" allowfullscreen></iframe>
@@ -100,11 +105,11 @@
                 </div>
             </div>
 
-            <!-- TEXT & IMAGE TABS -->
+
             <div id="form-text" class="form-group"><label>Headline Text</label><input type="text" id="input-text" placeholder="Type news update here..."></div>
             <div id="form-image" class="form-group"><label>Promotion Image URL</label><input type="text" id="input-image" placeholder="https://image-link.jpg"></div>
             
-            <!-- OVERLAYS TAB -->
+
             <div id="form-settings" class="form-group">
                 <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 10px;">Graphics Toggles</h3>
                 <div class="checkbox-group"><input type="checkbox" id="chk-logo-news"> <span>Top Left Logo (Ads)</span></div>
@@ -120,9 +125,25 @@
                 <label>Top Right Logo (Channel) URL</label><input type="text" id="input-logo-channel" placeholder="e.g., https://.../logo.png">
             </div>
 
-            <!-- CONTROLS TAB -->
+
             <div id="form-controls" class="form-group">
-                <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 10px;">Position Adjustments</h3>
+                
+
+                <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 10px;">Channel Layout (16:9 Preview)</h3>
+                <div class="preview-wrapper" id="preview-wrapper">
+                    <div id="preview-canvas">
+                        <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:100%; height:160px; background:rgba(204,0,0,0.6); border-bottom:4px solid #cc0000; border-radius:0; font-size:48px;">TOP BANNER</div>
+                        <div id="prev-logo1" class="prev-item" style="top:190px; left:40px; width:200px; height:160px; background:rgba(255,255,255,0.8); color:#000; border:2px dashed #000;">ADS LOGO</div>
+                        <div id="prev-logo" class="prev-item" style="top:190px; right:40px; width:250px; height:180px; background:rgba(255,255,255,0.8); color:#000; border:2px dashed #000;">CH LOGO</div>
+                        
+
+                        <div id="prev-row-breaking" class="prev-item" style="bottom:140px; left:0; width:100%; height:110px; background:#cc0000; border-top:4px solid #fff; border-radius:0; font-size:48px;">BREAKING NEWS STRIP</div>
+                        <div id="prev-row-apts" class="prev-item" style="bottom:60px; left:0; width:100%; height:80px; background:#ffff00; color:#000; border-top:5px solid #cc0000; border-bottom:3px solid #cc0000; border-radius:0; font-size:40px;">NEWS STRIP</div>
+                        <div id="prev-row-advt" class="prev-item" style="bottom:0; left:0; width:100%; height:60px; background:#e6e6e6; color:#000; border-bottom:5px solid #cc0000; border-radius:0; font-size:30px;">ADVT STRIP</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Position Adjustments</h3>
                 
                 <div class="input-row">
                     <div>
@@ -217,11 +238,40 @@
         let currentTable = 'url_playlist'; 
         let editId = null;
 
+        // Automatically updates the visual preview canvas
+        function updatePreview() {
+            const getVal = id => parseInt(document.getElementById(id).value) || 0;
+            document.getElementById('prev-logo1').style.transform = `translate(${getVal('pos_logo1_x')}px, ${getVal('pos_logo1_y')}px)`;
+            document.getElementById('prev-logo').style.transform = `translate(${getVal('pos_logo_x')}px, ${getVal('pos_logo_y')}px)`;
+            document.getElementById('prev-top-banner').style.transform = `translateY(${getVal('pos_slider_y')}px)`;
+            document.getElementById('prev-row-breaking').style.transform = `translateY(${getVal('pos_ticker1_y')}px)`;
+            document.getElementById('prev-row-apts').style.transform = `translateY(${getVal('pos_ticker2_y')}px)`;
+            document.getElementById('prev-row-advt').style.transform = `translateY(${getVal('pos_ticker3_y')}px)`;
+        }
+
+
+        document.querySelectorAll('.stepper-input').forEach(input => {
+            input.addEventListener('input', updatePreview);
+        });
+
+
         window.adj = function(id, delta) {
             const el = document.getElementById(id);
             let val = parseInt(el.value) || 0;
             el.value = val + delta;
+            updatePreview();
         }
+
+
+        function resizePreview() {
+            const wrapper = document.getElementById('preview-wrapper');
+            const canvas = document.getElementById('preview-canvas');
+            if (wrapper && canvas) {
+                const scale = wrapper.clientWidth / 1920;
+                canvas.style.transform = `scale(${scale})`;
+            }
+        }
+        window.addEventListener('resize', resizePreview);
 
         async function loginOperator() {
             const code = document.getElementById('op-code-input').value.trim().toUpperCase();
@@ -260,7 +310,7 @@
             const container = document.createElement('div'); container.id = 'temp-yt-player'; container.style.display = 'none'; document.body.appendChild(container);
 
             let player = new YT.Player('temp-yt-player', {
-                height: '1', width: '1', videoId: videoId, playerVars: { 'autoplay': 1, 'mute': 1 },
+                height: '1', width: '1', videoId: videoId, playerVars: { 'autoplay': 1},
                 events: {
                     'onReady': function(event) { setTimeout(() => { let d = event.target.getDuration(); if(d > 0) applyDuration(d, player, container); }, 500); },
                     'onStateChange': function(event) { let d = event.target.getDuration(); if(d > 0) applyDuration(d, player, container); }
@@ -278,7 +328,7 @@
             currentTable = tbl; resetForm();
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
             document.querySelectorAll('.form-group').forEach(f => f.classList.remove('active'));
-            if(type==='video') document.getElementById('form-video').classList.add('active'); else if(type==='image') document.getElementById('form-image').classList.add('active'); else if(type==='settings') document.getElementById('form-settings').classList.add('active'); else if(type==='controls') document.getElementById('form-controls').classList.add('active'); else document.getElementById('form-text').classList.add('active');
+            if(type==='video') document.getElementById('form-video').classList.add('active'); else if(type==='image') document.getElementById('form-image').classList.add('active'); else if(type==='settings') document.getElementById('form-settings').classList.add('active'); else if(type==='controls') { document.getElementById('form-controls').classList.add('active'); setTimeout(resizePreview, 50); } else document.getElementById('form-text').classList.add('active');
             document.getElementById('table-wrapper').style.display = (type === 'settings' || type === 'controls') ? 'none' : 'block';
             loadData();
         }
@@ -301,6 +351,8 @@
                     document.getElementById('pos_ticker1_y').value = data.ticker1_y || 0;
                     document.getElementById('pos_ticker2_y').value = data.ticker2_y || 0;
                     document.getElementById('pos_ticker3_y').value = data.ticker3_y || 0;
+                    
+                    updatePreview(); // Sync the preview to fetched database values
                 }
                 return;
             }
@@ -362,8 +414,8 @@
             const container = document.getElementById('test-player-container'); const player = document.getElementById('test-player');
             let fullUrl = url;
             const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
-            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fullUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&mute=1`; } 
-            else { const sep = url.includes('?') ? '&' : '?'; fullUrl += `${sep}autoplay=1&mute=1`; }
+            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fullUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`; } 
+            else { const sep = url.includes('?') ? '&' : '?'; fullUrl += `${sep}autoplay=1`; }
             
             player.src = fullUrl; container.style.display = 'block';
         }
