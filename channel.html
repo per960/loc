@@ -73,9 +73,9 @@
 
         @keyframes fadeInOut { 0%, 5% { opacity: 0; } 15%, 85% { opacity: 1; } 95%, 100% { opacity: 0; } }
 
-        /* --- Logos --- */
-        #logo { position: absolute; top: 190px; right: 40px; z-index: 10; width: 250px; height: auto; max-height: 180px; object-fit: contain; }
-        #logo1 { position: absolute; top: 190px; left: 40px; width: auto; height: 160px; object-fit: contain; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); z-index: 10; display: none; }
+
+        #logo { position: absolute; top: 190px; right: 40px; z-index: 10; width: 250px; height: 180px; object-fit: contain; }
+        #logo1 { position: absolute; top: 190px; left: 40px; width: 250px; height: 160px; object-fit: contain; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5)); z-index: 10; display: none; }
 
 
         .news-broadcaster-container {
@@ -101,7 +101,7 @@
         }
 
 
-        .ticker-slider-container {
+        #ticker1-container {
             display: flex; flex-direction: row; width: 100%; height: 110px; 
             background-color: #cc0000; border-top: 4px solid #ffffff;
         }
@@ -116,12 +116,11 @@
         #clock-container {
             background-color: #9400D3; 
             color: #ffffff; display: flex; justify-content: center; align-items: center;
-            padding: 0 20px; 
-            border-left: 4px solid #ffffff; white-space: nowrap; overflow: hidden; flex-shrink: 0;
+            padding: 0 20px; border-left: 4px solid #ffffff; white-space: nowrap; overflow: hidden; flex-shrink: 0;
             width: 260px; 
         }
         
-        #display { font-size: 30px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
+        #display { font-size: 38px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
 
         .breaking-box { 
             text-align: center; height: 110px; 
@@ -129,10 +128,10 @@
             border-top: 4px solid #ffffff; border-left: 4px solid #ffffff; border-right: 4px solid #ffffff;
         }
         
-        .breaking-text { background-color: #cc0000; color: #ffffff; font-weight: 900; font-size: 28px; padding: 8px 0; letter-spacing: 1px; animation: boxFlash 1s infinite alternate; }
-        .news-text { background-color: #ffffff; color: #000000; font-weight: 900; font-size: 36px; padding: 8px 0; letter-spacing: 2px; }
+        #breaking-text-box { background-color: #cc0000; color: #ffffff; font-weight: 900; font-size: 28px; padding: 8px 0; letter-spacing: 1px; animation: boxFlash 1s infinite alternate; }
+        #news-text-box { background-color: #ffffff; color: #000000; font-weight: 900; font-size: 36px; padding: 8px 0; letter-spacing: 2px; }
         
-        @keyframes boxFlash { 0% { background-color: #cc0000; color: #ffffff; } 100% { background-color: #ffffff; color: #cc0000; } }
+        @keyframes boxFlash { 0% { background-color: inherit; color: #ffffff; } 100% { background-color: #ffffff; color: inherit; } }
 
         .breaking-intro { display: none; width: 100%; text-align: center; font-size: 44px; font-weight: 900; color: #ffffff; letter-spacing: 2px; animation: introFlash 1s infinite alternate; }
         .slider-text { display: none; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 40px; font-weight: 900; }
@@ -140,14 +139,14 @@
         @keyframes introFlash { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 1; transform: scale(1.02); } }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        
-        .apts-box { background-color: #ffff00; color: #000000; font-size: 32px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-align: center; height: 80px; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
-        .ticker-main { background-color: #1313e8; height: 80px; display: flex; align-items: center; width: 100%; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; }
+
+        #apts-box { background-color: #ffff00; color: #000000; font-size: 32px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-align: center; height: 80px; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
+        #ticker2-container { background-color: #1313e8; height: 80px; display: flex; align-items: center; width: 100%; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; }
         .marquee { color: #ffffff; font-size: 34px; font-weight: 900; }
 
-        
-        .advt-box { background-color: #cc0000; color: #ffffff; font-size: 26px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 60px; border-bottom: 5px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
-        .ticker-sub { background-color: #e6e6e6; height: 60px; display: flex; align-items: center; width: 100%; border-bottom: 5px solid #cc0000; }
+        /* Row 3 */
+        #advt-box { background-color: #cc0000; color: #ffffff; font-size: 26px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 60px; border-bottom: 5px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
+        #ticker3-container { background-color: #e6e6e6; height: 60px; display: flex; align-items: center; width: 100%; border-bottom: 5px solid #cc0000; }
         .marquee-sub { color: #000000; font-size: 24px; font-weight: 900; }
     </style>
 </head>
@@ -168,10 +167,10 @@
 
                     <div class="news-row" id="row-breaking">
                         <div class="row-left">
-                            <div class="breaking-box"><div id="banner-text" class="breaking-text">BREAKING</div><div class="news-text">NEWS</div></div>
+                            <div class="breaking-box"><div id="breaking-text-box" class="breaking-text">BREAKING</div><div id="news-text-box" class="news-text">NEWS</div></div>
                         </div>
                         <div class="row-right">
-                            <div class="ticker-slider-container">
+                            <div id="ticker1-container" class="ticker-slider-container">
                                 <div class="ticker-slider">
                                     <div id="breaking-intro" class="breaking-intro">&#128680; BREAKING NEWS &#128680;</div>
                                     <div id="slider-text-display" class="slider-text"></div>
@@ -184,20 +183,20 @@
 
                     <div class="news-row" id="row-apts">
                         <div class="row-left">
-                            <div class="apts-box">NEWS</div>
+                            <div id="apts-box">NEWS</div>
                         </div>
                         <div class="row-right">
-                            <div class="ticker-main"><marquee class="marquee" scrollamount="10" loop="true"></marquee></div>
+                            <div id="ticker2-container"><marquee class="marquee" scrollamount="10" loop="true"></marquee></div>
                         </div>
                     </div>
 
 
                     <div class="news-row" id="row-advt">
                         <div class="row-left">
-                            <div class="advt-box">ADVT</div>
+                            <div id="advt-box">ADVT</div>
                         </div>
                         <div class="row-right">
-                            <div class="ticker-sub"><marquee class="marquee-sub" scrollamount="5" loop="true"></marquee></div>
+                            <div id="ticker3-container"><marquee class="marquee-sub" scrollamount="5" loop="true"></marquee></div>
                         </div>
                     </div>
                     
@@ -223,6 +222,8 @@
         let currentVideoIndex = -1; let syncIndex = 0; let syncInterval = null; let imageSlideIndex = 0; let imageSliderInterval = null;
         let breakTimeout1, breakTimeout2; 
 
+        function getBg(c1, c2) { return c1 === c2 ? c1 : `linear-gradient(90deg, ${c1}, ${c2})`; }
+
         function startSynchronizedSliders() {
             clearTimeout(syncInterval);
             clearTimeout(breakTimeout1);
@@ -242,7 +243,6 @@
             textEl.style.display = 'none';
 
             let chunks = [];
-
             const MAX_LEN = 45; 
             let remainingStr = currentText;
 
@@ -267,7 +267,7 @@
                 function showNextChunk() {
                     textEl.textContent = chunks[chunkIdx];
                     textEl.style.animation = 'none';
-                    textEl.offsetHeight; // trigger reflow
+                    textEl.offsetHeight; 
                     textEl.style.animation = 'slideUp 0.5s ease-out forwards';
                     
                     chunkIdx++;
@@ -311,11 +311,14 @@
             if (!data.settings) return;
             const s = data.settings;
 
+            // Logos: Position & Size
             const logoNews = document.getElementById('logo1'); 
             if(logoNews) { 
                 if(s.logo_news_url) logoNews.src = s.logo_news_url; 
                 logoNews.style.display = s.show_logo_news ? 'block' : 'none'; 
                 logoNews.style.transform = `translate(${s.logo1_x || 0}px, ${s.logo1_y || 0}px)`;
+                if(s.logo1_w) logoNews.style.width = s.logo1_w + 'px';
+                if(s.logo1_h) logoNews.style.height = s.logo1_h + 'px';
             }
             
             const logoChannel = document.getElementById('logo'); 
@@ -323,35 +326,84 @@
                 if(s.logo_channel_url) logoChannel.src = s.logo_channel_url; 
                 logoChannel.style.display = s.show_logo_channel ? 'block' : 'none'; 
                 logoChannel.style.transform = `translate(${s.logo_x || 0}px, ${s.logo_y || 0}px)`;
+                if(s.logo_w) logoChannel.style.width = s.logo_w + 'px';
+                if(s.logo_h) logoChannel.style.height = s.logo_h + 'px';
             }
             
+
             const promoSlider = document.getElementById('top-image-slider'); 
             if(promoSlider && data.sliderPlaylist.length > 0) {
                 promoSlider.style.display = s.show_promo ? 'block' : 'none';
                 promoSlider.style.transform = `translateY(${s.slider_y || 0}px)`; 
+                if(s.banner_h) promoSlider.style.height = s.banner_h + 'px';
             }
 
+
             const clock = document.getElementById('clock-container'); 
+            const clockDisplay = document.getElementById('display');
             if(clock) {
                 clock.style.display = s.show_clock ? 'flex' : 'none';
+                if(s.bg_clock1 && s.bg_clock2) clock.style.background = getBg(s.bg_clock1, s.bg_clock2);
+                if(s.clock_color) clockDisplay.style.color = s.clock_color;
+                if(s.clock_size) clockDisplay.style.fontSize = s.clock_size + 'px';
             }
             
+
             const rowBreaking = document.getElementById('row-breaking');
+            const breakingText = document.getElementById('slider-text-display');
+            const breakingIntro = document.getElementById('breaking-intro');
+            const ticker1Container = document.getElementById('ticker1-container');
+            const brkTextBox = document.getElementById('breaking-text-box');
+            const nwsTextBox = document.getElementById('news-text-box');
             if(rowBreaking) {
                 rowBreaking.style.display = s.show_breaking ? 'flex' : 'none';
                 rowBreaking.style.transform = `translateY(${s.ticker1_y || 0}px)`;
+                if(s.row1_h) { rowBreaking.style.height = s.row1_h + 'px'; ticker1Container.style.height = s.row1_h + 'px'; document.querySelector('.breaking-box').style.height = s.row1_h + 'px'; }
+                if(s.bg_tick1_1 && s.bg_tick1_2) ticker1Container.style.background = getBg(s.bg_tick1_1, s.bg_tick1_2);
+                if(s.bg_brk_1 && s.bg_brk_2) brkTextBox.style.background = getBg(s.bg_brk_1, s.bg_brk_2);
+                if(s.bg_nws_1 && s.bg_nws_2) nwsTextBox.style.background = getBg(s.bg_nws_1, s.bg_nws_2);
+                if(s.lbl_break) brkTextBox.innerText = s.lbl_break;
+                if(s.lbl_news1) nwsTextBox.innerText = s.lbl_news1;
+                if(s.ticker1_color) { if(breakingText) breakingText.style.color = s.ticker1_color; if(breakingIntro) breakingIntro.style.color = s.ticker1_color; }
+                if(s.ticker1_size) { if(breakingText) breakingText.style.fontSize = s.ticker1_size + 'px'; }
             }
 
+
             const rowApts = document.getElementById('row-apts');
+            const newsMarquee = document.querySelector('.marquee');
+            const ticker2Container = document.getElementById('ticker2-container');
+            const aptsBox = document.getElementById('apts-box');
             if(rowApts) {
                 rowApts.style.display = s.show_apts ? 'flex' : 'none';
                 rowApts.style.transform = `translateY(${s.ticker2_y || 0}px)`;
+                if(s.row2_h) { rowApts.style.height = s.row2_h + 'px'; ticker2Container.style.height = s.row2_h + 'px'; aptsBox.style.height = s.row2_h + 'px'; }
+                if(s.bg_tick2_1 && s.bg_tick2_2) ticker2Container.style.background = getBg(s.bg_tick2_1, s.bg_tick2_2);
+                if(s.bg_apts_1 && s.bg_apts_2) aptsBox.style.background = getBg(s.bg_apts_1, s.bg_apts_2);
+                if(s.lbl_news2) aptsBox.innerText = s.lbl_news2;
+                if(newsMarquee) {
+                    if(s.scroll_main) newsMarquee.setAttribute('scrollamount', s.scroll_main);
+                    if(s.ticker2_color) newsMarquee.style.color = s.ticker2_color;
+                    if(s.ticker2_size) newsMarquee.style.fontSize = s.ticker2_size + 'px';
+                }
             }
 
+
             const rowAdvt = document.getElementById('row-advt');
+            const advtMarquee = document.querySelector('.marquee-sub');
+            const ticker3Container = document.getElementById('ticker3-container');
+            const advtBox = document.getElementById('advt-box');
             if(rowAdvt) {
                 rowAdvt.style.display = s.show_advt ? 'flex' : 'none';
                 rowAdvt.style.transform = `translateY(${s.ticker3_y || 0}px)`;
+                if(s.row3_h) { rowAdvt.style.height = s.row3_h + 'px'; ticker3Container.style.height = s.row3_h + 'px'; advtBox.style.height = s.row3_h + 'px'; }
+                if(s.bg_tick3_1 && s.bg_tick3_2) ticker3Container.style.background = getBg(s.bg_tick3_1, s.bg_tick3_2);
+                if(s.bg_advt_box_1 && s.bg_advt_box_2) advtBox.style.background = getBg(s.bg_advt_box_1, s.bg_advt_box_2);
+                if(s.lbl_advt) advtBox.innerText = s.lbl_advt;
+                if(advtMarquee) {
+                    if(s.scroll_sub) advtMarquee.setAttribute('scrollamount', s.scroll_sub);
+                    if(s.ticker3_color) advtMarquee.style.color = s.ticker3_color;
+                    if(s.ticker3_size) advtMarquee.style.fontSize = s.ticker3_size + 'px';
+                }
             }
             
             resizeOverlay();
