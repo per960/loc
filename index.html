@@ -231,7 +231,7 @@
                 </div>
                 <div class="input-row">
                     <div><label>Advt Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker3_size" class="stepper-input" value="24"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Advt Text Color</label><input type="color" id="ticker3_color" value="#000000"></div>
+                    <div><label>Advt Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
                 </div>
 
                 <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Background Colors (Gradients)</h3>
@@ -303,7 +303,7 @@
             tBan.style.transform = `translateY(${getVal('pos_slider_y')}px)`;
             tBan.style.height = getVal('banner_h') + 'px';
 
-            
+
             const r1 = document.getElementById('prev-row-breaking');
             r1.style.transform = `translateY(${getVal('pos_ticker1_y')}px)`;
             r1.style.height = getVal('row1_h') + 'px';
@@ -323,7 +323,7 @@
             clk.style.color = getCol('clock_color');
             clk.style.fontSize = getVal('clock_size') + 'px';
 
-            
+
             const r2 = document.getElementById('prev-row-apts');
             r2.style.transform = `translateY(${getVal('pos_ticker2_y')}px)`;
             r2.style.height = getVal('row2_h') + 'px';
@@ -337,7 +337,7 @@
             aptsBox.style.background = getBg('bg_apts_1', 'bg_apts_2');
             aptsBox.innerText = getTxt('lbl_news2');
 
-            
+
             const r3 = document.getElementById('prev-row-advt');
             r3.style.transform = `translateY(${getVal('pos_ticker3_y')}px)`;
             r3.style.height = getVal('row3_h') + 'px';
@@ -385,7 +385,7 @@
 
         inputUrl.addEventListener('input', () => {
             const url = inputUrl.value;
-            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
             if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fetchYoutubeDuration(ytMatch[1]); }
         });
 
@@ -412,7 +412,7 @@
             const url = inputUrl.value; if(!url) return;
             const container = document.getElementById('test-player-container'); const player = document.getElementById('test-player');
             let fullUrl = url;
-            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
             if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fullUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`; } 
             else { const sep = url.includes('?') ? '&' : '?'; fullUrl += `${sep}autoplay=1`; }
             
@@ -476,7 +476,7 @@
                     document.getElementById('clock_size').value = data.clock_size || 38; document.getElementById('clock_color').value = data.clock_color || '#ffffff';
                     document.getElementById('ticker1_size').value = data.ticker1_size || 40; document.getElementById('ticker1_color').value = data.ticker1_color || '#ffffff';
                     document.getElementById('ticker2_size').value = data.ticker2_size || 34; document.getElementById('ticker2_color').value = data.ticker2_color || '#ffffff';
-                    document.getElementById('ticker3_size').value = data.ticker3_size || 24; document.getElementById('ticker3_color').value = data.ticker3_color || '#000000';
+                    document.getElementById('ticker3_size').value = data.ticker3_size || 24; document.getElementById('ticker3_color').value = data.ticker3_color || '#ffffff';
 
                     document.getElementById('bg_clock1').value = data.bg_clock1 || '#9400D3'; document.getElementById('bg_clock2').value = data.bg_clock2 || '#9400D3';
                     document.getElementById('bg_tick1_1').value = data.bg_tick1_1 || '#cc0000'; document.getElementById('bg_tick1_2').value = data.bg_tick1_2 || '#cc0000';
