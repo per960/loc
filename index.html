@@ -231,7 +231,7 @@
                 </div>
                 <div class="input-row">
                     <div><label>Advt Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker3_size" class="stepper-input" value="24"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Advt Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
+                    <div><label>Advt Text Color</label><input type="color" id="ticker3_color" value="#000000"></div>
                 </div>
 
                 <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Background Colors (Gradients)</h3>
@@ -370,6 +370,56 @@
             const el = document.getElementById(id); let val = parseInt(el.value) || 0; el.value = val + delta; updatePreview(); 
         }
 
+
+        const inputUrl = document.getElementById('input-url'); 
+        const inputStart = document.getElementById('input-start'); 
+        const inputDuration = document.getElementById('input-duration'); 
+        const inputEnd = document.getElementById('input-end'); 
+        const autoSetNext = document.getElementById('auto-start-checkbox');
+        
+        function timeToSec(t) { const [h, m, s] = t.split(':').map(Number); return (h * 3600) + (m * 60) + s; }
+        function secToTime(s) { let h = Math.floor(s / 3600); let m = Math.floor((s % 3600) / 60); let sec = Math.floor(s % 60); return [h, m, sec].map(v => String(v).padStart(2, '0')).join(':'); }
+        
+        inputStart.addEventListener('input', () => { try { inputEnd.value = secToTime((timeToSec(inputStart.value) + timeToSec(inputDuration.value)) % 86400); } catch(e){} });
+        inputDuration.addEventListener('input', () => { try { inputEnd.value = secToTime((timeToSec(inputStart.value) + timeToSec(inputDuration.value)) % 86400); } catch(e){} });
+
+        inputUrl.addEventListener('input', () => {
+            const url = inputUrl.value;
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
+            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fetchYoutubeDuration(ytMatch[1]); }
+        });
+
+        function fetchYoutubeDuration(videoId) {
+            inputDuration.value = "Fetching...";
+            const container = document.createElement('div'); container.id = 'temp-yt-player'; container.style.display = 'none'; document.body.appendChild(container);
+
+            let player = new YT.Player('temp-yt-player', {
+                height: '1', width: '1', videoId: videoId, playerVars: { 'autoplay': 1},
+                events: {
+                    'onReady': function(event) { setTimeout(() => { let d = event.target.getDuration(); if(d > 0) applyDuration(d, player, container); }, 500); },
+                    'onStateChange': function(event) { let d = event.target.getDuration(); if(d > 0) applyDuration(d, player, container); }
+                }
+            });
+        }
+
+        function applyDuration(d, player, container) {
+            if (inputDuration.value !== "Fetching...") return; 
+            inputDuration.value = secToTime(d); inputDuration.dispatchEvent(new Event('input')); 
+            try { player.destroy(); container.remove(); } catch(e){}
+        }
+
+        window.testCurrentURL = () => {
+            const url = inputUrl.value; if(!url) return;
+            const container = document.getElementById('test-player-container'); const player = document.getElementById('test-player');
+            let fullUrl = url;
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
+            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fullUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`; } 
+            else { const sep = url.includes('?') ? '&' : '?'; fullUrl += `${sep}autoplay=1`; }
+            
+            player.src = fullUrl; container.style.display = 'block';
+        }
+
+
         async function loginOperator() {
             const code = document.getElementById('op-code-input').value.trim().toUpperCase();
             document.getElementById('login-error').style.display = 'none';
@@ -380,14 +430,7 @@
         }
 
         const dataList = document.getElementById('data-list'); const addBtn = document.getElementById('add-btn'); const cancelEditBtn = document.getElementById('cancel-edit-btn'); const statusBadge = document.getElementById('status-badge');
-        const inputUrl = document.getElementById('input-url'); const inputStart = document.getElementById('input-start'); const inputDuration = document.getElementById('input-duration'); const inputEnd = document.getElementById('input-end'); const autoSetNext = document.getElementById('auto-start-checkbox');
         const chkLogoNews = document.getElementById('chk-logo-news'); const chkLogoChannel = document.getElementById('chk-logo-channel'); const chkClock = document.getElementById('chk-clock'); const chkPromo = document.getElementById('chk-promo'); const chkBreaking = document.getElementById('chk-breaking'); const chkApts = document.getElementById('chk-apts'); const chkAdvt = document.getElementById('chk-advt'); const inputLogoNews = document.getElementById('input-logo-news'); const inputLogoChannel = document.getElementById('input-logo-channel');
-
-        function timeToSec(t) { const [h, m, s] = t.split(':').map(Number); return (h * 3600) + (m * 60) + s; }
-        function secToTime(s) { let h = Math.floor(s / 3600); let m = Math.floor((s % 3600) / 60); let sec = Math.floor(s % 60); return [h, m, sec].map(v => String(v).padStart(2, '0')).join(':'); }
-        
-        inputStart.addEventListener('input', () => { try { inputEnd.value = secToTime((timeToSec(inputStart.value) + timeToSec(inputDuration.value)) % 86400); } catch(e){} });
-        inputDuration.addEventListener('input', () => { try { inputEnd.value = secToTime((timeToSec(inputStart.value) + timeToSec(inputDuration.value)) % 86400); } catch(e){} });
 
         window.switchTab = function(tbl, btn, type) {
             currentTable = tbl; resetForm();
@@ -433,7 +476,7 @@
                     document.getElementById('clock_size').value = data.clock_size || 38; document.getElementById('clock_color').value = data.clock_color || '#ffffff';
                     document.getElementById('ticker1_size').value = data.ticker1_size || 40; document.getElementById('ticker1_color').value = data.ticker1_color || '#ffffff';
                     document.getElementById('ticker2_size').value = data.ticker2_size || 34; document.getElementById('ticker2_color').value = data.ticker2_color || '#ffffff';
-                    document.getElementById('ticker3_size').value = data.ticker3_size || 24; document.getElementById('ticker3_color').value = data.ticker3_color || '#ffffff';
+                    document.getElementById('ticker3_size').value = data.ticker3_size || 24; document.getElementById('ticker3_color').value = data.ticker3_color || '#000000';
 
                     document.getElementById('bg_clock1').value = data.bg_clock1 || '#9400D3'; document.getElementById('bg_clock2').value = data.bg_clock2 || '#9400D3';
                     document.getElementById('bg_tick1_1').value = data.bg_tick1_1 || '#cc0000'; document.getElementById('bg_tick1_2').value = data.bg_tick1_2 || '#cc0000';
