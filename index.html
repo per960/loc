@@ -64,7 +64,7 @@
 
         .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border: 2px solid #555; border-radius: 8px; margin-bottom: 15px; }
         #preview-canvas { width: 1920px; height: 1080px; position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
-        .prev-item { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; }
+        .prev-item { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease, color 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; }
 
 
         .sub-tabs-container { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 12px; margin-bottom: 15px; border-bottom: 1px solid #333; scrollbar-width: none; }
@@ -128,8 +128,8 @@
                 
                 <div class="input-row">
                     <div><label>Start Time (HH:MM:SS)</label><input type="text" id="input-start" value="00:00:00"></div>
-                    <div><label>Duration (HH:MM:SS)</label><input type="text" id="input-duration" value="00:30:00"></div>
-                    <div><label>End (Result)</label><input type="text" id="input-end" value="00:30:00" readonly style="opacity:0.6; background-color:#1a1a1a;"></div>
+                    <div><label>Duration (HH:MM:SS)</label><input type="text" id="input-duration" value="00:00:00"></div>
+                    <div><label>End (Result)</label><input type="text" id="input-end" value="00:00:00" readonly style="opacity:0.6; background-color:#1a1a1a;"></div>
                 </div>
             </div>
 
@@ -150,7 +150,6 @@
                 <label>Top Left Logo (News) URL</label><input type="text" id="input-logo-news" placeholder="e.g., https://.../news.png">
                 <label>Top Right Logo (Channel) URL</label><input type="text" id="input-logo-channel" placeholder="e.g., https://.../logo.png">
             </div>
-
 
             <div id="form-controls" class="form-group">
                 
@@ -282,9 +281,11 @@
                     </div>
                 </div>
 
-
+                
                 <div id="sub-labels" class="sub-form-group">
-                    <p style="font-size:12px; color:#aaa; margin-top:0px; margin-bottom:15px;">Press "Enter" in the box to split words onto a new line.</p>
+                    <div class="input-row">
+                        <div><label>Animated Intro Text</label><input type="text" id="lbl_intro" value="&#128680; FLASH NEWS &#128680;"></div>
+                    </div>
                     <div class="input-row">
                         <div><label>Row 1 Box Label</label><textarea id="lbl_break" rows="2">BREAKING
 NEWS</textarea></div>
@@ -316,15 +317,23 @@ NEWS</textarea></div>
                     <div id="font-boxes" class="nested-form-group active">
                         <div class="input-row">
                             <div><label>Animated Intro Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('intro_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="intro_size" class="stepper-input" value="44"><button type="button" class="stepper-btn" onclick="adj('intro_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Intro Text Color</label><input type="color" id="intro_color" value="#ffffff"></div>
+                        </div>
+                        <div class="input-row">
                             <div><label>Row 1 Box Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="brk_box_size" class="stepper-input" value="32"><button type="button" class="stepper-btn" onclick="adj('brk_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Row 1 Box Text Color</label><input type="color" id="brk_box_color" value="#ffffff"></div>
                         </div>
                         <div class="input-row">
                             <div><label>Row 2 Box Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('apts_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="apts_box_size" class="stepper-input" value="32"><button type="button" class="stepper-btn" onclick="adj('apts_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Row 2 Box Text Color</label><input type="color" id="apts_box_color" value="#000000"></div>
+                        </div>
+                        <div class="input-row">
                             <div><label>Row 3 Box Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="advt_box_size" class="stepper-input" value="26"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Row 3 Box Text Color</label><input type="color" id="advt_box_color" value="#ffffff"></div>
                         </div>
                     </div>
 
-    
+
                     <div id="font-marquees" class="nested-form-group">
                         <div class="input-row">
                             <div><label>Clock Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_size" class="stepper-input" value="38"><button type="button" class="stepper-btn" onclick="adj('clock_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
@@ -450,8 +459,9 @@ NEWS</textarea></div>
             const brkBox = document.getElementById('prev-breaking-box');
             brkBox.style.width = getVal('brk_box_w') + 'px';
             brkBox.style.fontSize = getVal('brk_box_size') + 'px';
+            brkBox.style.color = getCol('brk_box_color');
             brkBox.style.background = getBg('bg_brk_1', 'bg_brk_2');
-            brkBox.innerText = getTxt('lbl_break'); 
+            brkBox.innerHTML = getTxt('lbl_break'); 
 
             const clk = document.getElementById('prev-clock-container');
             clk.style.width = getVal('clock_w') + 'px';
@@ -473,8 +483,9 @@ NEWS</textarea></div>
             const aptsBox = document.getElementById('prev-apts-box');
             aptsBox.style.width = getVal('apts_box_w') + 'px';
             aptsBox.style.fontSize = getVal('apts_box_size') + 'px';
+            aptsBox.style.color = getCol('apts_box_color');
             aptsBox.style.background = getBg('bg_apts_1', 'bg_apts_2');
-            aptsBox.innerText = getTxt('lbl_news2');
+            aptsBox.innerHTML = getTxt('lbl_news2');
 
             // ROW 3
             const r3 = document.getElementById('prev-row-advt');
@@ -490,8 +501,9 @@ NEWS</textarea></div>
             const advtBox = document.getElementById('prev-advt-box');
             advtBox.style.width = getVal('advt_box_w') + 'px';
             advtBox.style.fontSize = getVal('advt_box_size') + 'px';
+            advtBox.style.color = getCol('advt_box_color');
             advtBox.style.background = getBg('bg_advt_box_1', 'bg_advt_box_2');
-            advtBox.innerText = getTxt('lbl_advt');
+            advtBox.innerHTML = getTxt('lbl_advt');
         }
 
         document.querySelectorAll('.stepper-input, input[type="color"], textarea, input[type="text"]').forEach(input => {
@@ -633,6 +645,7 @@ NEWS</textarea></div>
                     document.getElementById('intro_size').value = data.intro_size || 44; document.getElementById('brk_box_size').value = data.brk_box_size || 32;
                     document.getElementById('apts_box_size').value = data.apts_box_size || 32; document.getElementById('advt_box_size').value = data.advt_box_size || 26;
 
+                    document.getElementById('lbl_intro').value = data.lbl_intro || '&#128680; FLASH NEWS &#128680;';
                     document.getElementById('lbl_break').value = data.lbl_break || 'BREAKING\nNEWS'; 
                     document.getElementById('lbl_news2').value = data.lbl_news2 || 'NEWS'; document.getElementById('lbl_advt').value = data.lbl_advt || 'ADVT';
 
@@ -645,6 +658,11 @@ NEWS</textarea></div>
                     document.getElementById('ticker1_size').value = data.ticker1_size || 40; document.getElementById('ticker1_color').value = data.ticker1_color || '#ffffff';
                     document.getElementById('ticker2_size').value = data.ticker2_size || 34; document.getElementById('ticker2_color').value = data.ticker2_color || '#ffffff';
                     document.getElementById('ticker3_size').value = data.ticker3_size || 36; document.getElementById('ticker3_color').value = data.ticker3_color || '#ffffff';
+
+                    document.getElementById('intro_color').value = data.intro_color || '#ffffff';
+                    document.getElementById('brk_box_color').value = data.brk_box_color || '#ffffff';
+                    document.getElementById('apts_box_color').value = data.apts_box_color || '#000000';
+                    document.getElementById('advt_box_color').value = data.advt_box_color || '#ffffff';
 
                     document.getElementById('bg_clock1').value = data.bg_clock1 || '#9400D3'; document.getElementById('bg_clock2').value = data.bg_clock2 || '#9400D3';
                     document.getElementById('bg_tick1_1').value = data.bg_tick1_1 || '#cc0000'; document.getElementById('bg_tick1_2').value = data.bg_tick1_2 || '#cc0000';
@@ -702,6 +720,7 @@ NEWS</textarea></div>
                     apts_box_w: parseInt(document.getElementById('apts_box_w').value) || 280, advt_box_w: parseInt(document.getElementById('advt_box_w').value) || 280,
                     intro_size: parseInt(document.getElementById('intro_size').value) || 44, brk_box_size: parseInt(document.getElementById('brk_box_size').value) || 32,
                     apts_box_size: parseInt(document.getElementById('apts_box_size').value) || 32, advt_box_size: parseInt(document.getElementById('advt_box_size').value) || 26,
+                    lbl_intro: document.getElementById('lbl_intro').value,
                     lbl_break: document.getElementById('lbl_break').value, 
                     lbl_news2: document.getElementById('lbl_news2').value, lbl_advt: document.getElementById('lbl_advt').value,
                     scroll_main: parseInt(document.getElementById('scroll_main').value) || 10, scroll_sub: parseInt(document.getElementById('scroll_sub').value) || 5,
@@ -713,6 +732,8 @@ NEWS</textarea></div>
                     ticker1_size: parseInt(document.getElementById('ticker1_size').value) || 40, ticker1_color: document.getElementById('ticker1_color').value,
                     ticker2_size: parseInt(document.getElementById('ticker2_size').value) || 34, ticker2_color: document.getElementById('ticker2_color').value,
                     ticker3_size: parseInt(document.getElementById('ticker3_size').value) || 36, ticker3_color: document.getElementById('ticker3_color').value,
+                    intro_color: document.getElementById('intro_color').value, brk_box_color: document.getElementById('brk_box_color').value,
+                    apts_box_color: document.getElementById('apts_box_color').value, advt_box_color: document.getElementById('advt_box_color').value,
                     bg_clock1: document.getElementById('bg_clock1').value, bg_clock2: document.getElementById('bg_clock2').value,
                     bg_tick1_1: document.getElementById('bg_tick1_1').value, bg_tick1_2: document.getElementById('bg_tick1_2').value,
                     bg_brk_1: document.getElementById('bg_brk_1').value, bg_brk_2: document.getElementById('bg_brk_2').value,
