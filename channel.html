@@ -58,7 +58,6 @@
             width: 100%; 
             height: 160px; 
             z-index: 50; 
-            border-bottom: 4px solid var(--accent-color);
             background-color: #000;
             overflow: hidden;
         }
@@ -103,7 +102,7 @@
 
         #ticker1-container {
             display: flex; flex-direction: row; width: 100%; height: 110px; 
-            background-color: #cc0000; border-top: 4px solid #ffffff;
+            background-color: #cc0000;
         }
 
         .ticker-slider { 
@@ -116,22 +115,19 @@
         #clock-container {
             background-color: #9400D3; 
             color: #ffffff; display: flex; justify-content: center; align-items: center;
-            padding: 0 20px; border-left: 4px solid #ffffff; white-space: nowrap; overflow: hidden; flex-shrink: 0;
+            padding: 0 20px; white-space: nowrap; overflow: hidden; flex-shrink: 0;
             width: 260px; 
         }
         
         #display { font-size: 38px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
 
+
         .breaking-box { 
             text-align: center; height: 110px; 
-            display: flex; flex-direction: column; justify-content: center;
-            border-top: 4px solid #ffffff; border-left: 4px solid #ffffff; border-right: 4px solid #ffffff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: #cc0000; color: #ffffff; font-weight: 900; font-size: 32px; letter-spacing: 1px;
+            white-space: pre-wrap; line-height: 1.1;
         }
-        
-        #breaking-text-box { background-color: #cc0000; color: #ffffff; font-weight: 900; font-size: 28px; padding: 8px 0; letter-spacing: 1px; animation: boxFlash 1s infinite alternate; }
-        #news-text-box { background-color: #ffffff; color: #000000; font-weight: 900; font-size: 36px; padding: 8px 0; letter-spacing: 2px; }
-        
-        @keyframes boxFlash { 0% { background-color: inherit; color: #ffffff; } 100% { background-color: #ffffff; color: inherit; } }
 
         .breaking-intro { display: none; width: 100%; text-align: center; font-size: 44px; font-weight: 900; color: #ffffff; letter-spacing: 2px; animation: introFlash 1s infinite alternate; }
         .slider-text { display: none; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; font-size: 40px; font-weight: 900; }
@@ -140,12 +136,12 @@
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
 
-        #apts-box { background-color: #ffff00; color: #000000; font-size: 32px; font-weight: 900; display: flex; align-items: center; justify-content: center; text-align: center; height: 80px; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
-        #ticker2-container { background-color: #1313e8; height: 80px; display: flex; align-items: center; width: 100%; border-top: 5px solid #cc0000; border-bottom: 3px solid #cc0000; }
+        #apts-box { background-color: #ffff00; color: #000000; font-size: 32px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 80px; white-space: pre-wrap; line-height: 1.1; }
+        #ticker2-container { background-color: #1313e8; height: 80px; display: flex; align-items: center; width: 100%; }
         .marquee { color: #ffffff; font-size: 34px; font-weight: 900; }
 
-        #advt-box { background-color: #cc0000; color: #ffffff; font-size: 26px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 60px; border-bottom: 5px solid #cc0000; border-left: 3px solid #ffffff; border-right: 3px solid #ffffff; }
-        #ticker3-container { background-color: #e6e6e6; height: 60px; display: flex; align-items: center; width: 100%; border-bottom: 5px solid #cc0000; }
+        #advt-box { background-color: #cc0000; color: #ffffff; font-size: 26px; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px; text-align: center; white-space: pre-wrap; line-height: 1.1;}
+        #ticker3-container { background-color: #e6e6e6; height: 60px; display: flex; align-items: center; width: 100%; }
         .marquee-sub { color: #000000; font-size: 24px; font-weight: 900; }
     </style>
 </head>
@@ -166,7 +162,7 @@
 
                     <div class="news-row" id="row-breaking">
                         <div class="row-left">
-                            <div class="breaking-box"><div id="breaking-text-box" class="breaking-text">BREAKING</div><div id="news-text-box" class="news-text">NEWS</div></div>
+                            <div id="breaking-box" class="breaking-box">BREAKING NEWS</div>
                         </div>
                         <div class="row-right">
                             <div id="ticker1-container" class="ticker-slider-container">
@@ -334,8 +330,9 @@
             const promoSlider = document.getElementById('top-image-slider'); 
             if(promoSlider && data.sliderPlaylist.length > 0) {
                 promoSlider.style.display = s.show_promo ? 'block' : 'none';
-                promoSlider.style.transform = `translateY(${s.slider_y || 0}px)`; 
+                promoSlider.style.transform = `translate(${s.slider_x || 0}px, ${s.slider_y || 0}px)`; 
                 if(s.banner_h) promoSlider.style.height = s.banner_h + 'px';
+                if(s.banner_w) promoSlider.style.width = s.banner_w + 'px';
             }
 
 
@@ -353,22 +350,20 @@
             const breakingText = document.getElementById('slider-text-display');
             const breakingIntro = document.getElementById('breaking-intro');
             const ticker1Container = document.getElementById('ticker1-container');
-            const brkTextBox = document.getElementById('breaking-text-box');
-            const nwsTextBox = document.getElementById('news-text-box');
+            const brkBox = document.getElementById('breaking-box');
             
             if(rowBreaking) {
                 rowBreaking.style.display = s.show_breaking ? 'flex' : 'none';
-                rowBreaking.style.transform = `translateY(${s.ticker1_y || 0}px)`;
+                rowBreaking.style.transform = `translate(${s.ticker1_x || 0}px, ${s.ticker1_y || 0}px)`;
+                if(s.row1_w) rowBreaking.style.width = s.row1_w + 'px';
                 if(s.row1_h) { 
                     rowBreaking.style.height = s.row1_h + 'px'; 
                     ticker1Container.style.height = s.row1_h + 'px'; 
-                    document.querySelector('.breaking-box').style.height = s.row1_h + 'px'; 
+                    brkBox.style.height = s.row1_h + 'px'; 
                 }
                 if(s.bg_tick1_1 && s.bg_tick1_2) ticker1Container.style.background = getBg(s.bg_tick1_1, s.bg_tick1_2);
-                if(s.bg_brk_1 && s.bg_brk_2) brkTextBox.style.background = getBg(s.bg_brk_1, s.bg_brk_2);
-                if(s.bg_nws_1 && s.bg_nws_2) nwsTextBox.style.background = getBg(s.bg_nws_1, s.bg_nws_2);
-                if(s.lbl_break) brkTextBox.innerText = s.lbl_break;
-                if(s.lbl_news1) nwsTextBox.innerText = s.lbl_news1;
+                if(s.bg_brk_1 && s.bg_brk_2) brkBox.style.background = getBg(s.bg_brk_1, s.bg_brk_2);
+                if(s.lbl_break) brkBox.innerText = s.lbl_break;
                 
                 if(s.ticker1_color) { 
                     if(breakingText) breakingText.style.color = s.ticker1_color; 
@@ -387,7 +382,8 @@
             
             if(rowApts) {
                 rowApts.style.display = s.show_apts ? 'flex' : 'none';
-                rowApts.style.transform = `translateY(${s.ticker2_y || 0}px)`;
+                rowApts.style.transform = `translate(${s.ticker2_x || 0}px, ${s.ticker2_y || 0}px)`;
+                if(s.row2_w) rowApts.style.width = s.row2_w + 'px';
                 if(s.row2_h) { 
                     rowApts.style.height = s.row2_h + 'px'; 
                     ticker2Container.style.height = s.row2_h + 'px'; 
@@ -412,7 +408,8 @@
             
             if(rowAdvt) {
                 rowAdvt.style.display = s.show_advt ? 'flex' : 'none';
-                rowAdvt.style.transform = `translateY(${s.ticker3_y || 0}px)`;
+                rowAdvt.style.transform = `translate(${s.ticker3_x || 0}px, ${s.ticker3_y || 0}px)`;
+                if(s.row3_w) rowAdvt.style.width = s.row3_w + 'px';
                 if(s.row3_h) { 
                     rowAdvt.style.height = s.row3_h + 'px'; 
                     ticker3Container.style.height = s.row3_h + 'px'; 
@@ -526,13 +523,23 @@
                 const videoUrl = data.urlPlaylist[matchedIndex].url; 
                 let fullUrl = videoUrl;
                 
+                let videoId = null; let playlistId = null;
+                try {
+                    let ytMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/))([^&#?]+)/);
+                    if (ytMatch && ytMatch[1]) videoId = ytMatch[1];
+                    let parsed = new URL(videoUrl);
+                    if (parsed.searchParams.has('v')) videoId = parsed.searchParams.get('v');
+                    if (parsed.searchParams.has('list')) playlistId = parsed.searchParams.get('list');
+                } catch(e){}
 
-                const ytMatch = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
-                if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) {
-                    fullUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&start=${Math.floor(offsetSeconds)}`;
+                if (playlistId && !videoId) {
+                    fullUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&start=${Math.floor(offsetSeconds)}`;
+                } else if (videoId) {
+                    fullUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1&start=${Math.floor(offsetSeconds)}`;
+                    if(playlistId) fullUrl += `&list=${playlistId}`;
                 } else {
                     const sep = videoUrl.includes('?') ? '&' : '?';
-                    fullUrl += `${sep}autoplay=1#t=${Math.floor(offsetSeconds)}`;
+                    fullUrl += `${sep}autoplay=1&controls=0&modestbranding=1&rel=0&playsinline=1#t=${Math.floor(offsetSeconds)}`;
                 }
                 
                 const player = document.getElementById('video-player'); 
