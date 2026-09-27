@@ -21,16 +21,19 @@
         .login-btn { background: #28a745; color: #fff; border: none; border-radius: 6px; width: 100%; padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; }
         .container { width: 100%; max-width: 1000px; background-color: var(--bg-dark-gray); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); display: none; }
         h1 { font-weight: 800; font-size: 24px; margin-bottom: 20px; } h1 span { color: var(--accent-red); }
-        .tabs-container { display: flex; overflow-x: auto; gap: 4px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-        .tab-btn { padding: 10px 18px; background-color: transparent; border: none; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 13px; border-radius: 8px 8px 0 0; white-space: nowrap;}
+        
+        .tabs-container { display: flex; overflow-x: auto; gap: 4px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; scrollbar-width: none; }
+        .tabs-container::-webkit-scrollbar { display: none; }
+        .tab-btn { padding: 10px 18px; background-color: transparent; border: none; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 13px; border-radius: 8px 8px 0 0; white-space: nowrap; transition: 0.2s;}
         .tab-btn.active { background-color: var(--accent-red); color: #ffffff; }
+        
         .admin-card { background-color: var(--bg-card); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-color); }
         label { display: block; font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; margin-left: 2px; }
         
         input[type="text"], textarea { width: 100%; padding: 10px 14px; margin-bottom: 15px; background-color: var(--bg-black); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 14px; outline: none; box-sizing: border-box; font-family: 'Inter', sans-serif;}
         textarea { resize: vertical; }
         
-        .action-btn { width: 100%; padding: 12px; background-color: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size:14px; cursor: pointer; margin-bottom: 10px; }
+        .action-btn { width: 100%; padding: 14px; background-color: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size:15px; cursor: pointer; margin-bottom: 10px; transition: background-color 0.3s ease; }
         .test-btn { background-color: #2c2c2e; margin-bottom: 15px; } .test-btn:hover { background-color: #3a3a3c; }
         .table-wrapper { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); } th { color: var(--text-muted); font-weight: 600; font-size: 11px; }
@@ -43,7 +46,7 @@
         .checkbox-group input { width: 16px; height: 16px; accent-color: var(--accent-red); cursor: pointer; }
         #test-player-container { border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 2px solid var(--border-color); }
 
-        h3 { font-size: 15px; margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px; }
+        h3 { font-size: 15px; margin-top: 0px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px; color: #fff;}
         .input-row { display: flex; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; } 
         .input-row > div { flex: 1; min-width: 110px; }
         .stepper-control { display: flex; align-items: center; background: #111; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
@@ -59,11 +62,30 @@
         .dual-color { display: flex; gap: 5px; }
 
 
-        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border: 2px solid #555; border-radius: 8px; margin-bottom: 20px; }
+        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border: 2px solid #555; border-radius: 8px; margin-bottom: 15px; }
         #preview-canvas { width: 1920px; height: 1080px; position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
+        .prev-item { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; }
+
+
+        .sub-tabs-container { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 12px; margin-bottom: 15px; border-bottom: 1px solid #333; scrollbar-width: none; }
+        .sub-tabs-container::-webkit-scrollbar { display: none; }
+        .sub-tab-btn { background: #2c2c2e; color: var(--text-muted); border: 1px solid transparent; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .sub-tab-btn.active { background: rgba(255,0,0,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        
+        .sub-form-group { display: none; animation: fadeIn 0.2s ease-in-out; }
+        .sub-form-group.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+
+        .nested-tabs-container { display: flex; overflow-x: auto; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; scrollbar-width: none; }
+        .nested-tabs-container::-webkit-scrollbar { display: none; }
         
 
-        .prev-item { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; }
+        .nested-tab-btn { background: #1c1c1e; color: var(--text-muted); border: 1px solid #444; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+        .nested-tab-btn.active { background: rgba(255,0,0,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        
+        .nested-form-group { display: none; animation: fadeIn 0.2s; }
+        .nested-form-group.active { display: block; }
     </style>
 </head>
 <body>
@@ -97,7 +119,6 @@
         </div>
 
         <div class="admin-card">
-
             <div id="form-video" class="form-group active">
                 <div id="test-player-container" style="display:none;">
                     <iframe id="test-player" width="100%" height="250" src="" frameborder="0" allowfullscreen></iframe>
@@ -110,16 +131,14 @@
                 
                 <div class="input-row">
                     <div><label>Start Time (HH:MM:SS)</label><input type="text" id="input-start" value="00:00:00"></div>
-                    <div><label>Duration (HH:MM:SS)</label><input type="text" id="input-duration" value="00:00:00"></div>
-                    <div><label>End (Result)</label><input type="text" id="input-end" value="00:00:00" readonly style="opacity:0.6; background-color:#1a1a1a;"></div>
+                    <div><label>Duration (HH:MM:SS)</label><input type="text" id="input-duration" value="00:30:00"></div>
+                    <div><label>End (Result)</label><input type="text" id="input-end" value="00:30:00" readonly style="opacity:0.6; background-color:#1a1a1a;"></div>
                 </div>
             </div>
-
 
             <div id="form-text" class="form-group"><label>Headline Text</label><input type="text" id="input-text" placeholder="Type news update here..."></div>
             <div id="form-image" class="form-group"><label>Promotion Image URL</label><input type="text" id="input-image" placeholder="https://image-link.jpg"></div>
             
-
             <div id="form-settings" class="form-group">
                 <h3>Graphics Toggles</h3>
                 <div class="checkbox-group"><input type="checkbox" id="chk-logo-news"> <span>Top Left Logo (Ads)</span></div>
@@ -130,22 +149,22 @@
                 <div class="checkbox-group"><input type="checkbox" id="chk-apts"> <span>Row 2: NEWS</span></div>
                 <div class="checkbox-group"><input type="checkbox" id="chk-advt"> <span>Row 3: ADVT</span></div>
                 
-                <h3>Custom Logo URLs</h3>
+                <h3 style="margin-top:20px;">Custom Logo URLs</h3>
                 <label>Top Left Logo (News) URL</label><input type="text" id="input-logo-news" placeholder="e.g., https://.../news.png">
                 <label>Top Right Logo (Channel) URL</label><input type="text" id="input-logo-channel" placeholder="e.g., https://.../logo.png">
             </div>
 
-
             <div id="form-controls" class="form-group">
                 
-                <h3 style="margin-top:0;">Channel Layout (16:9 Preview)</h3>
+                <h3>Channel Layout (16:9 Preview)</h3>
                 <div class="preview-wrapper" id="preview-wrapper">
                     <div id="preview-canvas">
-                        <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:100%; background:rgba(255,255,255,0.9); font-size:48px; color:#000;">
-                            <span style="font-size:24px;">TOP PROMO</span>
+
+                        <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:100%; background:rgba(255,255,255,0.9); font-size:60px; font-weight:900; color:#000;">
+                            TOP PROMO
                         </div>
-                        <div id="prev-logo1" class="prev-item" style="top:190px; left:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000;">ADS LOGO</div>
-                        <div id="prev-logo" class="prev-item" style="top:190px; right:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000;">CH LOGO</div>
+                        <div id="prev-logo1" class="prev-item" style="top:190px; left:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px;">ADS LOGO</div>
+                        <div id="prev-logo" class="prev-item" style="top:190px; right:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px;">CH LOGO</div>
                         
                         <div id="prev-row-breaking" style="position:absolute; bottom:140px; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease, width 0.1s ease;">
                             <div id="prev-breaking-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#cc0000; color:#fff; font-size:32px;">BREAKING</div>
@@ -159,115 +178,181 @@
                         </div>
 
                         <div id="prev-row-advt" style="position:absolute; bottom:0; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease, width 0.1s ease;">
-                            <div id="prev-advt-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#cc0000; color:#fff; font-size:26px;">ADVT</div>
-                            <div id="prev-ticker3-container" class="prev-item" style="position:relative; flex-grow:1; background:#e6e6e6; color:#ffffff; font-size:24px; overflow:hidden; white-space:nowrap;">ADVT STRIP</div>
+                            <div id="prev-advt-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#cc0000; color:#fff; font-size:36px;">ADVT</div>
+
+                            <div id="prev-ticker3-container" class="prev-item" style="position:relative; flex-grow:1; background:#ffffff; color:#000; font-size:36px; overflow:hidden; white-space:nowrap;">ADVT STRIP</div>
                         </div>
                     </div>
                 </div>
 
-                <h3>Logo Positions & Sizes</h3>
-                <div class="input-row">
-                    <div><label>Ads Logo (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                    <div><label>Ads Logo (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Ads Logo (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Ads Logo (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('logo1_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                </div>
-
-                <div class="input-row" style="margin-top:15px;">
-                    <div><label>Channel Logo (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                    <div><label>Channel Logo (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Channel Logo (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Channel Logo (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_h" class="stepper-input" value="180"><button type="button" class="stepper-btn" onclick="adj('logo_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div class="sub-tabs-container">
+                    <button type="button" class="sub-tab-btn active" onclick="switchSubTab('sub-logos', this)">Logo Controls</button>
+                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-strips', this)">Strip Controls</button>
+                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-labels', this)">Labels Text</button>
+                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-scroll', this)">Scroll Speeds</button>
+                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-text', this)">Fonts & Colours</button>
+                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-bg', this)">Backgrounds</button>
                 </div>
 
 
-                <h3>Strip Controls (X / Y / Height / Width)</h3>
-                <div class="input-row">
-                    <div><label>Top Banner (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_slider_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                    <div><label>Top Banner (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_slider_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                    <div><label>Top Banner (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('banner_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Top Banner (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('banner_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Row 1: BREAKING (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                    <div><label>Row 1: BREAKING (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                    <div><label>Row 1: BREAKING (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('row1_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Row 1: BREAKING (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Row 2: NEWS (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker2_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                    <div><label>Row 2: NEWS (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker2_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                    <div><label>Row 2: NEWS (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_h" class="stepper-input" value="80"><button type="button" class="stepper-btn" onclick="adj('row2_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Row 2: NEWS (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row2_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Row 3: ADVT (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker3_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                    <div><label>Row 3: ADVT (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker3_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                    <div><label>Row 3: ADVT (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_h" class="stepper-input" value="60"><button type="button" class="stepper-btn" onclick="adj('row3_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Row 3: ADVT (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row3_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div id="sub-logos" class="sub-form-group active">
+                    <div class="nested-tabs-container">
+                        <button type="button" class="nested-tab-btn active" onclick="switchNestedTab('logo-ch', this, 'sub-logos')">Channel Logo</button>
+                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('logo-ad', this, 'sub-logos')">Ads Logo</button>
+                    </div>
+
+                    <div id="logo-ch" class="nested-form-group active">
+                        <div class="input-row">
+                            <div><label>Channel Logo (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Channel Logo (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Channel Logo (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Channel Logo (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_h" class="stepper-input" value="180"><button type="button" class="stepper-btn" onclick="adj('logo_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                    </div>
+
+                    <div id="logo-ad" class="nested-form-group">
+                        <div class="input-row">
+                            <div><label>Ads Logo (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Ads Logo (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Ads Logo (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Ads Logo (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('logo1_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                    </div>
                 </div>
 
-                <h3>Labels & Scroll Speeds</h3>
-                <div class="input-row">
+        
+                <div id="sub-strips" class="sub-form-group">
+                    <div class="nested-tabs-container">
+                        <button type="button" class="nested-tab-btn active" onclick="switchNestedTab('strip-top', this, 'sub-strips')">Top Banner</button>
+                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-r1', this, 'sub-strips')">Breaking (Row 1)</button>
+                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-r2', this, 'sub-strips')">News (Row 2)</button>
+                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-r3', this, 'sub-strips')">ADVT (Row 3)</button>
+                    </div>
+                    
+                    <div id="strip-top" class="nested-form-group active">
+                        <div class="input-row">
+                            <div><label>Top Banner (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_slider_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Top Banner (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_slider_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Top Banner (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('banner_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Top Banner (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('banner_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                    </div>
+                    
+                    <div id="strip-r1" class="nested-form-group">
+                        <div class="input-row">
+                            <div><label>Row 1 (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Row 1 (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Row 1 (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Row 1 (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('row1_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                    </div>
+                    
+                    <div id="strip-r2" class="nested-form-group">
+                        <div class="input-row">
+                            <div><label>Row 2 (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker2_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Row 2 (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker2_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Row 2 (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row2_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Row 2 (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_h" class="stepper-input" value="80"><button type="button" class="stepper-btn" onclick="adj('row2_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                    </div>
+                    
+                    <div id="strip-r3" class="nested-form-group">
+                        <div class="input-row">
+                            <div><label>Row 3 (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker3_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Row 3 (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker3_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Row 3 (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row3_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Row 3 (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_h" class="stepper-input" value="60"><button type="button" class="stepper-btn" onclick="adj('row3_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                    </div>
+                </div>
 
-                    <div><label>Row 1 Left Box Label (Press Enter for new line)</label><textarea id="lbl_break" rows="2">BREAKING
+
+                <div id="sub-labels" class="sub-form-group">
+                    <p style="font-size:12px; color:#aaa; margin-top:0px; margin-bottom:15px;">Press "Enter" in the box to split words onto a new line.</p>
+                    <div class="input-row">
+                        <div><label>Row 1 Box Label</label><textarea id="lbl_break" rows="2">BREAKING
 NEWS</textarea></div>
-                    <div><label>Row 2 Box Label</label><textarea id="lbl_news2" rows="2">NEWS</textarea></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Row 3 Box Label</label><textarea id="lbl_advt" rows="2">ADVT</textarea></div>
-                    <div style="flex:1; min-width:0;"></div>
-                </div>
-                <div class="input-row">
-                    <div><label>News Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_main', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_main" class="stepper-input" value="10"><button type="button" class="stepper-btn" onclick="adj('scroll_main', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Advt Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_sub" class="stepper-input" value="5"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        <div><label>Row 2 Box Label</label><textarea id="lbl_news2" rows="2">NEWS</textarea></div>
+                    </div>
+                    <div class="input-row">
+                        <div><label>Row 3 Box Label</label><textarea id="lbl_advt" rows="2">ADVT</textarea></div>
+                        <div style="flex:1; min-width:0;"></div>
+                    </div>
                 </div>
 
-                <h3>Text Styles & Text Colors</h3>
-                <div class="input-row">
-                    <div><label>Clock Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_size" class="stepper-input" value="38"><button type="button" class="stepper-btn" onclick="adj('clock_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Clock Text Color</label><input type="color" id="clock_color" value="#ffffff"></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Breaking Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker1_size" class="stepper-input" value="40"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Breaking Text Color</label><input type="color" id="ticker1_color" value="#ffffff"></div>
-                </div>
-                <div class="input-row">
-                    <div><label>News Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker2_size" class="stepper-input" value="34"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>News Text Color</label><input type="color" id="ticker2_color" value="#ffffff"></div>
-                </div>
-                <div class="input-row">
-                    <div><label>Advt Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker3_size" class="stepper-input" value="24"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    <div><label>Advt Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
+        
+                <div id="sub-scroll" class="sub-form-group">
+                    <div class="input-row">
+                        <div><label>News Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_main', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_main" class="stepper-input" value="10"><button type="button" class="stepper-btn" onclick="adj('scroll_main', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        <div><label>Advt Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_sub" class="stepper-input" value="5"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    </div>
                 </div>
 
-                <h3>Background Colors (Gradients)</h3>
-                <p style="font-size:11px; color:#aaa; margin-top:-5px; margin-bottom:10px;">Set both colors the same for a solid background.</p>
-                
-                <label>Clock Box (Left / Right Color)</label>
-                <div class="dual-color"><input type="color" id="bg_clock1" value="#9400D3"><input type="color" id="bg_clock2" value="#9400D3"></div>
-                
-                <label>Row 1: Breaking Marquee</label>
-                <div class="dual-color"><input type="color" id="bg_tick1_1" value="#cc0000"><input type="color" id="bg_tick1_2" value="#cc0000"></div>
-                
-                <label>Row 1: Left Box Background</label>
-                <div class="dual-color"><input type="color" id="bg_brk_1" value="#cc0000"><input type="color" id="bg_brk_2" value="#cc0000"></div>
+    
+                <div id="sub-text" class="sub-form-group">
+                    <div class="input-row">
+                        <div><label>Clock Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_size" class="stepper-input" value="38"><button type="button" class="stepper-btn" onclick="adj('clock_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        <div><label>Clock Text Color</label><input type="color" id="clock_color" value="#ffffff"></div>
+                    </div>
+                    <div class="input-row">
+                        <div><label>Breaking Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker1_size" class="stepper-input" value="40"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        <div><label>Breaking Text Color</label><input type="color" id="ticker1_color" value="#ffffff"></div>
+                    </div>
+                    <div class="input-row">
+                        <div><label>News Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker2_size" class="stepper-input" value="34"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        <div><label>News Text Color</label><input type="color" id="ticker2_color" value="#ffffff"></div>
+                    </div>
+                    <div class="input-row">
+                        <div><label>Advt Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker3_size" class="stepper-input" value="36"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        <div><label>Advt Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
+                    </div>
+                </div>
 
-                <label>Row 2: News Marquee</label>
-                <div class="dual-color"><input type="color" id="bg_tick2_1" value="#1313e8"><input type="color" id="bg_tick2_2" value="#1313e8"></div>
-                
-                <label>Row 2: Left Box Background</label>
-                <div class="dual-color"><input type="color" id="bg_apts_1" value="#ffff00"><input type="color" id="bg_apts_2" value="#ffff00"></div>
-
-                <label>Row 3: Advt Marquee</label>
-                <div class="dual-color"><input type="color" id="bg_tick3_1" value="#e6e6e6"><input type="color" id="bg_tick3_2" value="#e6e6e6"></div>
-                
-                <label>Row 3: Left Box Background</label>
-                <div class="dual-color"><input type="color" id="bg_advt_box_1" value="#cc0000"><input type="color" id="bg_advt_box_2" value="#cc0000"></div>
+    
+                <div id="sub-bg" class="sub-form-group">
+                    <p style="font-size:11px; color:#aaa; margin-top:0px; margin-bottom:15px;">Set both colors the same for a solid background.</p>
+                    <div class="nested-tabs-container">
+                        <button type="button" class="nested-tab-btn active" onclick="switchNestedTab('bg-clk', this, 'sub-bg')">Clock Box</button>
+                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('bg-r1', this, 'sub-bg')">Row 1 Background</button>
+                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('bg-r2', this, 'sub-bg')">Row 2 Background</button>
+                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('bg-r3', this, 'sub-bg')">Row 3 Background</button>
+                    </div>
+                    
+                    <div id="bg-clk" class="nested-form-group active">
+                        <label>Clock Box (Left / Right Color)</label>
+                        <div class="dual-color"><input type="color" id="bg_clock1" value="#9400D3"><input type="color" id="bg_clock2" value="#9400D3"></div>
+                    </div>
+                    <div id="bg-r1" class="nested-form-group">
+                        <label>Row 1: Breaking Marquee</label>
+                        <div class="dual-color"><input type="color" id="bg_tick1_1" value="#cc0000"><input type="color" id="bg_tick1_2" value="#cc0000"></div>
+                        <label>Row 1: Left Box Background</label>
+                        <div class="dual-color"><input type="color" id="bg_brk_1" value="#cc0000"><input type="color" id="bg_brk_2" value="#cc0000"></div>
+                    </div>
+                    <div id="bg-r2" class="nested-form-group">
+                        <label>Row 2: News Marquee</label>
+                        <div class="dual-color"><input type="color" id="bg_tick2_1" value="#1313e8"><input type="color" id="bg_tick2_2" value="#1313e8"></div>
+                        <label>Row 2: Left Box Background</label>
+                        <div class="dual-color"><input type="color" id="bg_apts_1" value="#ffff00"><input type="color" id="bg_apts_2" value="#ffff00"></div>
+                    </div>
+                    <div id="bg-r3" class="nested-form-group">
+                        <label>Row 3: Advt Marquee</label>
+                        <div class="dual-color"><input type="color" id="bg_tick3_1" value="#e6e6e6"><input type="color" id="bg_tick3_2" value="#e6e6e6"></div>
+                        <label>Row 3: Left Box Background</label>
+                        <div class="dual-color"><input type="color" id="bg_advt_box_1" value="#cc0000"><input type="color" id="bg_advt_box_2" value="#cc0000"></div>
+                    </div>
+                </div>
 
             </div>
 
@@ -290,6 +375,22 @@ NEWS</textarea></div>
         function getBg(id1, id2) {
             const c1 = document.getElementById(id1).value; const c2 = document.getElementById(id2).value;
             return c1 === c2 ? c1 : `linear-gradient(90deg, ${c1}, ${c2})`;
+        }
+
+
+        window.switchSubTab = function(subId, btn) {
+            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.sub-form-group').forEach(f => f.classList.remove('active'));
+            document.getElementById(subId).classList.add('active');
+        }
+
+        window.switchNestedTab = function(targetId, btn, parentId) {
+            const parent = document.getElementById(parentId);
+            parent.querySelectorAll('.nested-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            parent.querySelectorAll('.nested-form-group').forEach(f => f.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
         }
 
 
@@ -323,7 +424,7 @@ NEWS</textarea></div>
 
             const brkBox = document.getElementById('prev-breaking-box');
             brkBox.style.background = getBg('bg_brk_1', 'bg_brk_2');
-            brkBox.innerText = getTxt('lbl_break'); // Renders multi-line text perfectly
+            brkBox.innerText = getTxt('lbl_break'); 
 
             const clk = document.getElementById('prev-clock-container');
             clk.style.background = getBg('bg_clock1', 'bg_clock2');
@@ -376,7 +477,6 @@ NEWS</textarea></div>
         window.adj = function(id, delta) {
             const el = document.getElementById(id); let val = parseInt(el.value) || 0; el.value = val + delta; updatePreview(); 
         }
-
 
         const inputUrl = document.getElementById('input-url'); 
         const inputStart = document.getElementById('input-start'); 
@@ -439,7 +539,6 @@ NEWS</textarea></div>
             
             player.src = fullUrl; container.style.display = 'block';
         }
-
 
         async function loginOperator() {
             const code = document.getElementById('op-code-input').value.trim().toUpperCase();
@@ -505,7 +604,7 @@ NEWS</textarea></div>
                     document.getElementById('clock_size').value = data.clock_size || 38; document.getElementById('clock_color').value = data.clock_color || '#ffffff';
                     document.getElementById('ticker1_size').value = data.ticker1_size || 40; document.getElementById('ticker1_color').value = data.ticker1_color || '#ffffff';
                     document.getElementById('ticker2_size').value = data.ticker2_size || 34; document.getElementById('ticker2_color').value = data.ticker2_color || '#ffffff';
-                    document.getElementById('ticker3_size').value = data.ticker3_size || 24; document.getElementById('ticker3_color').value = data.ticker3_color || '#ffffff';
+                    document.getElementById('ticker3_size').value = data.ticker3_size || 36; document.getElementById('ticker3_color').value = data.ticker3_color || '#ffffff';
 
                     document.getElementById('bg_clock1').value = data.bg_clock1 || '#9400D3'; document.getElementById('bg_clock2').value = data.bg_clock2 || '#9400D3';
                     document.getElementById('bg_tick1_1').value = data.bg_tick1_1 || '#cc0000'; document.getElementById('bg_tick1_2').value = data.bg_tick1_2 || '#cc0000';
@@ -537,6 +636,16 @@ NEWS</textarea></div>
             }
         }
 
+        function triggerSaveSuccess() {
+            const originalText = editId ? '<i class="fa-solid fa-check"></i> Update' : '<i class="fa-solid fa-save"></i> Save Changes';
+            addBtn.style.backgroundColor = '#28a745'; 
+            addBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saved Successfully!';
+            setTimeout(() => {
+                addBtn.style.backgroundColor = ''; 
+                addBtn.innerHTML = originalText;
+            }, 2000);
+        }
+
         addBtn.addEventListener('click', async () => {
             if (currentTable === 'overlay_settings') {
                 const payload = { 
@@ -559,7 +668,7 @@ NEWS</textarea></div>
                     clock_size: parseInt(document.getElementById('clock_size').value) || 38, clock_color: document.getElementById('clock_color').value,
                     ticker1_size: parseInt(document.getElementById('ticker1_size').value) || 40, ticker1_color: document.getElementById('ticker1_color').value,
                     ticker2_size: parseInt(document.getElementById('ticker2_size').value) || 34, ticker2_color: document.getElementById('ticker2_color').value,
-                    ticker3_size: parseInt(document.getElementById('ticker3_size').value) || 24, ticker3_color: document.getElementById('ticker3_color').value,
+                    ticker3_size: parseInt(document.getElementById('ticker3_size').value) || 36, ticker3_color: document.getElementById('ticker3_color').value,
                     bg_clock1: document.getElementById('bg_clock1').value, bg_clock2: document.getElementById('bg_clock2').value,
                     bg_tick1_1: document.getElementById('bg_tick1_1').value, bg_tick1_2: document.getElementById('bg_tick1_2').value,
                     bg_brk_1: document.getElementById('bg_brk_1').value, bg_brk_2: document.getElementById('bg_brk_2').value,
@@ -570,7 +679,7 @@ NEWS</textarea></div>
                 };
                 const { data } = await db.from('overlay_settings').select('id').eq('operator_code', activeOperator).maybeSingle();
                 if(data) await db.from('overlay_settings').update(payload).eq('operator_code', activeOperator); else await db.from('overlay_settings').insert([payload]);
-                showStatus('Settings Saved!'); return;
+                triggerSaveSuccess(); return;
             }
 
             let payload = { operator_code: activeOperator };
@@ -579,7 +688,7 @@ NEWS</textarea></div>
             else { payload.text = document.getElementById('input-text').value; }
 
             const { error } = editId ? await db.from(currentTable).update(payload).eq('id', editId) : await db.from(currentTable).insert([payload]);
-            if (!error) { showStatus('Database Updated!'); const nextStart = inputEnd.value; resetForm(); if(autoSetNext.checked && currentTable === 'url_playlist') inputStart.value = nextStart; loadData(); }
+            if (!error) { triggerSaveSuccess(); const nextStart = inputEnd.value; resetForm(); if(autoSetNext.checked && currentTable === 'url_playlist') inputStart.value = nextStart; loadData(); }
         });
 
         window.editVideo = (id, url, start, dur, end) => { editId = id; inputUrl.value = url; inputStart.value = start; inputDuration.value = dur; inputEnd.value = end; addBtn.innerHTML = '<i class="fa-solid fa-check"></i> Update'; cancelEditBtn.style.display = 'block'; window.scrollTo(0,0); }
