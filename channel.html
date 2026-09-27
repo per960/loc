@@ -121,7 +121,6 @@
         
         #display { font-size: 38px; font-weight: 900; letter-spacing: 1px; transition: opacity 0.5s ease-in-out; }
 
-
         .breaking-box { 
             text-align: center; height: 110px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -142,7 +141,7 @@
 
         #advt-box { background-color: #cc0000; color: #ffffff; font-size: 26px; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px; text-align: center; white-space: pre-wrap; line-height: 1.1;}
         #ticker3-container { background-color: #e6e6e6; height: 60px; display: flex; align-items: center; width: 100%; }
-        .marquee-sub { color: #000000; font-size: 24px; font-weight: 900; }
+        .marquee-sub { color: #000000; font-size: 36px; font-weight: 900; }
     </style>
 </head>
 <body>
@@ -216,7 +215,6 @@
         let data = { urlPlaylist: [], aptsText: [], advtText: [], sliderText: [], sliderPlaylist: [], settings: null };
         let currentVideoIndex = -1; let syncIndex = 0; let syncInterval = null; let imageSlideIndex = 0; let imageSliderInterval = null;
         let breakTimeout1, breakTimeout2; 
-
 
         function getBg(c1, c2) { return c1 === c2 ? c1 : `linear-gradient(90deg, ${c1}, ${c2})`; }
 
@@ -340,6 +338,7 @@
             const clockDisplay = document.getElementById('display');
             if(clock) {
                 clock.style.display = s.show_clock ? 'flex' : 'none';
+                if(s.clock_w) clock.style.width = s.clock_w + 'px';
                 if(s.bg_clock1 && s.bg_clock2) clock.style.background = getBg(s.bg_clock1, s.bg_clock2);
                 if(s.clock_color) clockDisplay.style.color = s.clock_color;
                 if(s.clock_size) clockDisplay.style.fontSize = s.clock_size + 'px';
@@ -351,11 +350,14 @@
             const breakingIntro = document.getElementById('breaking-intro');
             const ticker1Container = document.getElementById('ticker1-container');
             const brkBox = document.getElementById('breaking-box');
+            const r1Left = rowBreaking ? rowBreaking.querySelector('.row-left') : null;
             
             if(rowBreaking) {
                 rowBreaking.style.display = s.show_breaking ? 'flex' : 'none';
                 rowBreaking.style.transform = `translate(${s.ticker1_x || 0}px, ${s.ticker1_y || 0}px)`;
                 if(s.row1_w) rowBreaking.style.width = s.row1_w + 'px';
+                if(r1Left && s.brk_box_w) r1Left.style.width = s.brk_box_w + 'px';
+
                 if(s.row1_h) { 
                     rowBreaking.style.height = s.row1_h + 'px'; 
                     ticker1Container.style.height = s.row1_h + 'px'; 
@@ -364,6 +366,7 @@
                 if(s.bg_tick1_1 && s.bg_tick1_2) ticker1Container.style.background = getBg(s.bg_tick1_1, s.bg_tick1_2);
                 if(s.bg_brk_1 && s.bg_brk_2) brkBox.style.background = getBg(s.bg_brk_1, s.bg_brk_2);
                 if(s.lbl_break) brkBox.innerText = s.lbl_break;
+                if(s.brk_box_size) brkBox.style.fontSize = s.brk_box_size + 'px';
                 
                 if(s.ticker1_color) { 
                     if(breakingText) breakingText.style.color = s.ticker1_color; 
@@ -372,6 +375,11 @@
                 if(s.ticker1_size) { 
                     if(breakingText) breakingText.style.fontSize = s.ticker1_size + 'px'; 
                 }
+
+
+                if(s.intro_size) {
+                    if(breakingIntro) breakingIntro.style.fontSize = s.intro_size + 'px';
+                }
             }
 
 
@@ -379,11 +387,14 @@
             const newsMarquee = document.querySelector('.marquee');
             const ticker2Container = document.getElementById('ticker2-container');
             const aptsBox = document.getElementById('apts-box');
+            const r2Left = rowApts ? rowApts.querySelector('.row-left') : null;
             
             if(rowApts) {
                 rowApts.style.display = s.show_apts ? 'flex' : 'none';
                 rowApts.style.transform = `translate(${s.ticker2_x || 0}px, ${s.ticker2_y || 0}px)`;
                 if(s.row2_w) rowApts.style.width = s.row2_w + 'px';
+                if(r2Left && s.apts_box_w) r2Left.style.width = s.apts_box_w + 'px';
+
                 if(s.row2_h) { 
                     rowApts.style.height = s.row2_h + 'px'; 
                     ticker2Container.style.height = s.row2_h + 'px'; 
@@ -392,6 +403,7 @@
                 if(s.bg_tick2_1 && s.bg_tick2_2) ticker2Container.style.background = getBg(s.bg_tick2_1, s.bg_tick2_2);
                 if(s.bg_apts_1 && s.bg_apts_2) aptsBox.style.background = getBg(s.bg_apts_1, s.bg_apts_2);
                 if(s.lbl_news2) aptsBox.innerText = s.lbl_news2;
+                if(s.apts_box_size) aptsBox.style.fontSize = s.apts_box_size + 'px';
                 
                 if(newsMarquee) {
                     if(s.scroll_main) newsMarquee.setAttribute('scrollamount', s.scroll_main);
@@ -405,11 +417,14 @@
             const advtMarquee = document.querySelector('.marquee-sub');
             const ticker3Container = document.getElementById('ticker3-container');
             const advtBox = document.getElementById('advt-box');
+            const r3Left = rowAdvt ? rowAdvt.querySelector('.row-left') : null;
             
             if(rowAdvt) {
                 rowAdvt.style.display = s.show_advt ? 'flex' : 'none';
                 rowAdvt.style.transform = `translate(${s.ticker3_x || 0}px, ${s.ticker3_y || 0}px)`;
                 if(s.row3_w) rowAdvt.style.width = s.row3_w + 'px';
+                if(r3Left && s.advt_box_w) r3Left.style.width = s.advt_box_w + 'px';
+
                 if(s.row3_h) { 
                     rowAdvt.style.height = s.row3_h + 'px'; 
                     ticker3Container.style.height = s.row3_h + 'px'; 
@@ -418,6 +433,7 @@
                 if(s.bg_tick3_1 && s.bg_tick3_2) ticker3Container.style.background = getBg(s.bg_tick3_1, s.bg_tick3_2);
                 if(s.bg_advt_box_1 && s.bg_advt_box_2) advtBox.style.background = getBg(s.bg_advt_box_1, s.bg_advt_box_2);
                 if(s.lbl_advt) advtBox.innerText = s.lbl_advt;
+                if(s.advt_box_size) advtBox.style.fontSize = s.advt_box_size + 'px';
                 
                 if(advtMarquee) {
                     if(s.scroll_sub) advtMarquee.setAttribute('scrollamount', s.scroll_sub);
