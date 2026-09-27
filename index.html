@@ -12,52 +12,58 @@
 
     <style>
         :root { --bg-black: #000000; --bg-dark-gray: #121212; --bg-card: #1c1c1e; --accent-red: #ff0000; --text-main: #ffffff; --text-muted: #a1a1a6; --border-color: #2c2c2e; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-black); color: var(--text-main); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-black); color: var(--text-main); margin: 0; padding: 15px; display: flex; justify-content: center; }
         .login-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f0f0f; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { background-color: #1a1b1c; border-radius: 12px; padding: 40px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .login-title { color: #28a745; font-size: 22px; font-weight: 600; margin-bottom: 5px; }
         .login-subtitle { color: #aaa; font-size: 14px; margin-bottom: 20px; }
         .login-input { background: #111; border: 1px solid #333; border-radius: 6px; color: #fff; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 16px; text-align: center; letter-spacing: 2px; box-sizing: border-box; outline: none; text-transform: uppercase; }
         .login-btn { background: #28a745; color: #fff; border: none; border-radius: 6px; width: 100%; padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; }
-        .container { width: 100%; max-width: 1000px; background-color: var(--bg-dark-gray); border-radius: 16px; padding: 30px; border: 1px solid var(--border-color); display: none; }
-        h1 { font-weight: 800; font-size: 28px; margin-bottom: 30px; } h1 span { color: var(--accent-red); }
-        .tabs-container { display: flex; overflow-x: auto; gap: 4px; border-bottom: 1px solid var(--border-color); margin-bottom: 25px; }
-        .tab-btn { padding: 12px 24px; background-color: transparent; border: none; color: var(--text-muted); cursor: pointer; font-weight: 600; border-radius: 12px 12px 0 0; white-space: nowrap;}
+        .container { width: 100%; max-width: 1000px; background-color: var(--bg-dark-gray); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); display: none; }
+        h1 { font-weight: 800; font-size: 24px; margin-bottom: 20px; } h1 span { color: var(--accent-red); }
+        .tabs-container { display: flex; overflow-x: auto; gap: 4px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .tab-btn { padding: 10px 18px; background-color: transparent; border: none; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 13px; border-radius: 8px 8px 0 0; white-space: nowrap;}
         .tab-btn.active { background-color: var(--accent-red); color: #ffffff; }
-        .admin-card { background-color: var(--bg-card); border-radius: 12px; padding: 25px; margin-bottom: 30px; border: 1px solid var(--border-color); }
-        label { display: block; font-size: 12px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; margin-left: 4px; }
-        input[type="text"] { width: 100%; padding: 12px 16px; margin-bottom: 20px; background-color: var(--bg-black); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 15px; outline: none; box-sizing: border-box;}
-        .action-btn { width: 100%; padding: 14px; background-color: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
-        .test-btn { background-color: #2c2c2e; margin-bottom: 20px; } .test-btn:hover { background-color: #3a3a3c; }
-        .table-wrapper { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
-        th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border-color); } th { color: var(--text-muted); font-weight: 600; font-size: 11px; }
-        .url-text { color: var(--accent-red); font-family: monospace; font-size: 12px; }
+        .admin-card { background-color: var(--bg-card); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        label { display: block; font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; margin-left: 2px; }
+        
+        input[type="text"], textarea { width: 100%; padding: 10px 14px; margin-bottom: 15px; background-color: var(--bg-black); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 14px; outline: none; box-sizing: border-box; font-family: 'Inter', sans-serif;}
+        textarea { resize: vertical; }
+        
+        .action-btn { width: 100%; padding: 12px; background-color: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size:14px; cursor: pointer; margin-bottom: 10px; }
+        .test-btn { background-color: #2c2c2e; margin-bottom: 15px; } .test-btn:hover { background-color: #3a3a3c; }
+        .table-wrapper { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); } th { color: var(--text-muted); font-weight: 600; font-size: 11px; }
+        .url-text { color: var(--accent-red); font-family: monospace; font-size: 11px; }
         .btn-sm { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; }
         .edit-btn { background-color: #0a84ff; color: white; margin-right: 5px; } .delete-btn { background-color: #ff453a; color: white; }
         .form-group { display: none; } .form-group.active { display: block; }
         .status-badge { text-align: center; font-weight: 600; font-size: 13px; padding: 10px; border-radius: 8px; margin-bottom: 20px; display: none; }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 15px; }
-        .checkbox-group input { width: 18px; height: 18px; accent-color: var(--accent-red); cursor: pointer; }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; font-size: 13px; font-weight: 600; }
+        .checkbox-group input { width: 16px; height: 16px; accent-color: var(--accent-red); cursor: pointer; }
         #test-player-container { border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 2px solid var(--border-color); }
 
-        .input-row { display: flex; gap: 15px; margin-bottom: 5px; } 
-        .input-row > div { flex: 1; }
-        .stepper-control { display: flex; align-items: center; background: #111; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
-        .stepper-btn { flex: 1; background: #2c2c2e; color: #fff; border: none; padding: 12px 0; cursor: pointer; font-size: 18px; transition: 0.2s;}
+        h3 { font-size: 15px; margin-top: 25px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px; }
+        .input-row { display: flex; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; } 
+        .input-row > div { flex: 1; min-width: 110px; }
+        .stepper-control { display: flex; align-items: center; background: #111; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+        .stepper-btn { flex: 1; background: #2c2c2e; color: #fff; border: none; padding: 8px 0; cursor: pointer; font-size: 14px; transition: 0.2s;}
         .stepper-btn:hover { background: var(--accent-red); }
         .stepper-btn:active { background: #aa0000; }
-        .stepper-input { flex: 1; background: #000; border: none; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); color: #fff; text-align: center; font-size: 16px; font-weight: bold; outline: none; margin: 0 !important; padding: 12px 0 !important; width: 40px; }
+        .stepper-input { flex: 1; background: #000; border: none; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); color: #fff; text-align: center; font-size: 14px; font-weight: bold; outline: none; margin: 0 !important; padding: 8px 0 !important; width: 40px; }
         .stepper-input:focus { background: #222; }
         .stepper-input::-webkit-outer-spin-button, .stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .stepper-input[type=number] { -moz-appearance: textfield; }
 
-        input[type="color"] { width: 100%; height: 44px; border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; background: #111; padding: 2px; margin-bottom:10px; }
+        input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: #111; padding: 2px; margin-bottom: 10px; }
         .dual-color { display: flex; gap: 5px; }
 
 
-        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border: 2px solid #555; border-radius: 8px; margin-bottom: 25px; }
+        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border: 2px solid #555; border-radius: 8px; margin-bottom: 20px; }
         #preview-canvas { width: 1920px; height: 1080px; position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
-        .prev-item { position: absolute; display: flex; align-items: center; justify-content: center; font-weight: 900; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.5); transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease; }
+        
+
+        .prev-item { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; }
     </style>
 </head>
 <body>
@@ -75,7 +81,7 @@
     <div id="dashboard" class="container">
         <h1 style="display:flex; justify-content:space-between; align-items:center;">
             <div>CHANNEL <span>MANAGER</span></div>
-            <div style="font-size:12px; color:#aaa; border:1px solid #333; padding:5px 10px; border-radius:20px;">Code: <span id="display-code" style="color:#fff;"></span></div>
+            <div style="font-size:11px; color:#aaa; border:1px solid #333; padding:4px 8px; border-radius:20px;">Code: <span id="display-code" style="color:#fff;"></span></div>
         </h1>
 
         <div id="status-badge" class="status-badge"></div>
@@ -91,20 +97,21 @@
         </div>
 
         <div class="admin-card">
-
+            <!-- VIDEO TAB -->
             <div id="form-video" class="form-group active">
                 <div id="test-player-container" style="display:none;">
-                    <iframe id="test-player" width="100%" height="300" src="" frameborder="0" allowfullscreen></iframe>
+                    <iframe id="test-player" width="100%" height="250" src="" frameborder="0" allowfullscreen></iframe>
                 </div>
                 <button class="action-btn test-btn" onclick="testCurrentURL()"><i class="fa-solid fa-magnifying-glass"></i> Test Player</button>
                 <label>Source URL (YouTube or MP4)</label>
                 <input type="text" id="input-url" placeholder="Paste link here...">
                 
                 <div class="checkbox-group" style="display:none;"><input type="checkbox" id="auto-start-checkbox" checked><span>Auto-chain end time to next start time</span></div>
-                <div style="display: flex; gap: 15px;">
-                    <div style="flex:1;"><label>Start Time (HH:MM:SS)</label><input type="text" id="input-start" value="00:00:00"></div>
-                    <div style="display:none;"><label>Duration (HH:MM:SS)</label><input type="text" id="input-duration" value="00:30:00"></div>
-                    <div style="display:none;"><label>End (Result)</label><input type="text" id="input-end" value="00:30:00" readonly style="opacity:0.6;"></div>
+                
+                <div class="input-row">
+                    <div><label>Start Time (HH:MM:SS)</label><input type="text" id="input-start" value="00:00:00"></div>
+                    <div><label>Duration (HH:MM:SS)</label><input type="text" id="input-duration" value="00:30:00"></div>
+                    <div><label>End (Result)</label><input type="text" id="input-end" value="00:30:00" readonly style="opacity:0.6; background-color:#1a1a1a;"></div>
                 </div>
             </div>
 
@@ -114,16 +121,16 @@
             
 
             <div id="form-settings" class="form-group">
-                <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 10px;">Graphics Toggles</h3>
+                <h3>Graphics Toggles</h3>
                 <div class="checkbox-group"><input type="checkbox" id="chk-logo-news"> <span>Top Left Logo (Ads)</span></div>
                 <div class="checkbox-group"><input type="checkbox" id="chk-logo-channel"> <span>Top Right Logo (Channel)</span></div>
                 <div class="checkbox-group"><input type="checkbox" id="chk-clock"> <span>Time Box (Inside Breaking Strip)</span></div>
                 <div class="checkbox-group"><input type="checkbox" id="chk-promo"> <span>Promo Slider</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-breaking"> <span>Row 1: BREAKING (Red)</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-apts"> <span>Row 2: NEWS (White)</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-advt"> <span>Row 3: ADVT (Black)</span></div>
+                <div class="checkbox-group"><input type="checkbox" id="chk-breaking"> <span>Row 1: BREAKING</span></div>
+                <div class="checkbox-group"><input type="checkbox" id="chk-apts"> <span>Row 2: NEWS</span></div>
+                <div class="checkbox-group"><input type="checkbox" id="chk-advt"> <span>Row 3: ADVT</span></div>
                 
-                <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Custom Logo URLs</h3>
+                <h3>Custom Logo URLs</h3>
                 <label>Top Left Logo (News) URL</label><input type="text" id="input-logo-news" placeholder="e.g., https://.../news.png">
                 <label>Top Right Logo (Channel) URL</label><input type="text" id="input-logo-channel" placeholder="e.g., https://.../logo.png">
             </div>
@@ -131,41 +138,34 @@
 
             <div id="form-controls" class="form-group">
                 
-                <h3 style="margin-top:0; border-bottom: 1px solid #333; padding-bottom: 10px;">Channel Layout (16:9 Preview)</h3>
+                <h3 style="margin-top:0;">Channel Layout (16:9 Preview)</h3>
                 <div class="preview-wrapper" id="preview-wrapper">
                     <div id="preview-canvas">
-                        
-                        <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:100%; border-bottom:4px solid #cc0000; font-size:48px; flex-direction:column; justify-content:center; align-items:center; color:#ffffff;">
+                        <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:100%; background:rgba(255,255,255,0.9); font-size:48px; color:#000;">
                             <span style="font-size:24px;">TOP PROMO</span>
                         </div>
                         <div id="prev-logo1" class="prev-item" style="top:190px; left:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000;">ADS LOGO</div>
                         <div id="prev-logo" class="prev-item" style="top:190px; right:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000;">CH LOGO</div>
                         
-
-                        <div id="prev-row-breaking" style="position:absolute; bottom:140px; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease;">
-                            <div style="width:280px; flex-shrink:0; display:flex; flex-direction:column; border-top:4px solid #fff; border-left:4px solid #fff; border-right:4px solid #fff; text-align:center; font-weight:900;">
-                                <div id="prev-breaking-lbl1" style="background:#cc0000; color:#fff; font-size:28px; padding:8px 0; flex:1; display:flex; align-items:center; justify-content:center;">BREAKING</div>
-                                <div id="prev-breaking-lbl2" style="background:#fff; color:#000; font-size:36px; padding:8px 0; flex:1; display:flex; align-items:center; justify-content:center;">NEWS</div>
-                            </div>
-                            <div id="prev-ticker1-container" style="flex-grow:1; background:#cc0000; border-top:4px solid #fff; display:flex; align-items:center; justify-content:center; color:#ffffff; font-weight:900; font-size:40px; overflow:hidden;">BREAKING STRIP</div>
-                            <div id="prev-clock-container" style="width:260px; flex-shrink:0; background:#9400D3; color:#ffffff; display:flex; align-items:center; justify-content:center; border-top:4px solid #fff; border-left:4px solid #fff; font-weight:900; font-size:38px;">12:00 PM</div>
+                        <div id="prev-row-breaking" style="position:absolute; bottom:140px; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease, width 0.1s ease;">
+                            <div id="prev-breaking-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#cc0000; color:#fff; font-size:32px;">BREAKING</div>
+                            <div id="prev-ticker1-container" class="prev-item" style="position:relative; flex-grow:1; background:#cc0000; color:#ffffff; font-size:40px; overflow:hidden; white-space:nowrap;">BREAKING STRIP</div>
+                            <div id="prev-clock-container" class="prev-item" style="position:relative; width:260px; flex-shrink:0; background:#9400D3; color:#ffffff; font-size:38px;">12:00 PM</div>
                         </div>
 
-
-                        <div id="prev-row-apts" style="position:absolute; bottom:60px; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease;">
-                            <div id="prev-apts-box" style="width:280px; flex-shrink:0; background:#ffff00; color:#000; font-weight:900; font-size:32px; display:flex; align-items:center; justify-content:center; border-top:5px solid #cc0000; border-bottom:3px solid #cc0000; border-left:3px solid #fff; border-right:3px solid #fff;">NEWS</div>
-                            <div id="prev-ticker2-container" style="flex-grow:1; background:#1313e8; color:#ffffff; font-weight:900; font-size:34px; display:flex; align-items:center; justify-content:center; border-top:5px solid #cc0000; border-bottom:3px solid #cc0000; overflow:hidden;">NEWS STRIP</div>
+                        <div id="prev-row-apts" style="position:absolute; bottom:60px; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease, width 0.1s ease;">
+                            <div id="prev-apts-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#ffff00; color:#000; font-size:32px;">NEWS</div>
+                            <div id="prev-ticker2-container" class="prev-item" style="position:relative; flex-grow:1; background:#1313e8; color:#ffffff; font-size:34px; overflow:hidden; white-space:nowrap;">NEWS STRIP</div>
                         </div>
 
-
-                        <div id="prev-row-advt" style="position:absolute; bottom:0; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease;">
-                            <div id="prev-advt-box" style="width:280px; flex-shrink:0; background:#cc0000; color:#fff; font-weight:bold; font-size:26px; display:flex; align-items:center; justify-content:center; border-bottom:5px solid #cc0000; border-left:3px solid #fff; border-right:3px solid #fff;">ADVT</div>
-                            <div id="prev-ticker3-container" style="flex-grow:1; background:#e6e6e6; color:#ffffff; font-weight:900; font-size:24px; display:flex; align-items:center; justify-content:center; border-bottom:5px solid #cc0000; overflow:hidden;">ADVT STRIP</div>
+                        <div id="prev-row-advt" style="position:absolute; bottom:0; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease, width 0.1s ease;">
+                            <div id="prev-advt-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#cc0000; color:#fff; font-size:26px;">ADVT</div>
+                            <div id="prev-ticker3-container" class="prev-item" style="position:relative; flex-grow:1; background:#e6e6e6; color:#ffffff; font-size:24px; overflow:hidden; white-space:nowrap;">ADVT STRIP</div>
                         </div>
                     </div>
                 </div>
 
-                <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Logo Positions & Sizes</h3>
+                <h3>Logo Positions & Sizes</h3>
                 <div class="input-row">
                     <div><label>Ads Logo (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
                     <div><label>Ads Logo (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
@@ -184,39 +184,50 @@
                     <div><label>Channel Logo (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_h" class="stepper-input" value="180"><button type="button" class="stepper-btn" onclick="adj('logo_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
                 </div>
 
-                <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Strip Positions & Heights</h3>
+
+                <h3>Strip Controls (X / Y / Height / Width)</h3>
                 <div class="input-row">
+                    <div><label>Top Banner (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_slider_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
                     <div><label>Top Banner (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_slider_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
                     <div><label>Top Banner (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('banner_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div><label>Top Banner (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('banner_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
                 </div>
                 <div class="input-row">
+                    <div><label>Row 1: BREAKING (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
                     <div><label>Row 1: BREAKING (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
                     <div><label>Row 1: BREAKING (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('row1_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div><label>Row 1: BREAKING (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
                 </div>
                 <div class="input-row">
+                    <div><label>Row 2: NEWS (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker2_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
                     <div><label>Row 2: NEWS (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker2_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
                     <div><label>Row 2: NEWS (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_h" class="stepper-input" value="80"><button type="button" class="stepper-btn" onclick="adj('row2_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div><label>Row 2: NEWS (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row2_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
                 </div>
                 <div class="input-row">
+                    <div><label>Row 3: ADVT (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker3_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
                     <div><label>Row 3: ADVT (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker3_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
                     <div><label>Row 3: ADVT (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_h" class="stepper-input" value="60"><button type="button" class="stepper-btn" onclick="adj('row3_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                    <div><label>Row 3: ADVT (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row3_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
                 </div>
 
-                <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Labels & Scroll Speeds</h3>
+                <h3>Labels & Scroll Speeds</h3>
                 <div class="input-row">
-                    <div><label>Breaking Box Label</label><input type="text" id="lbl_break" value="BREAKING"></div>
-                    <div><label>News Box 1 (Red) Label</label><input type="text" id="lbl_news1" value="NEWS"></div>
+
+                    <div><label>Row 1 Left Box Label (Press Enter for new line)</label><textarea id="lbl_break" rows="2">BREAKING
+NEWS</textarea></div>
+                    <div><label>Row 2 Box Label</label><textarea id="lbl_news2" rows="2">NEWS</textarea></div>
                 </div>
                 <div class="input-row">
-                    <div><label>News Box 2 (Yellow) Label</label><input type="text" id="lbl_news2" value="NEWS"></div>
-                    <div><label>Advt Box Label</label><input type="text" id="lbl_advt" value="ADVT"></div>
+                    <div><label>Row 3 Box Label</label><textarea id="lbl_advt" rows="2">ADVT</textarea></div>
+                    <div style="flex:1; min-width:0;"></div>
                 </div>
                 <div class="input-row">
                     <div><label>News Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_main', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_main" class="stepper-input" value="10"><button type="button" class="stepper-btn" onclick="adj('scroll_main', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
                     <div><label>Advt Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_sub" class="stepper-input" value="5"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
                 </div>
 
-                <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Text Styles & Text Colors</h3>
+                <h3>Text Styles & Text Colors</h3>
                 <div class="input-row">
                     <div><label>Clock Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_size" class="stepper-input" value="38"><button type="button" class="stepper-btn" onclick="adj('clock_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
                     <div><label>Clock Text Color</label><input type="color" id="clock_color" value="#ffffff"></div>
@@ -234,31 +245,28 @@
                     <div><label>Advt Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
                 </div>
 
-                <h3 style="margin-top:30px; border-bottom: 1px solid #333; padding-bottom: 10px;">Background Colors (Gradients)</h3>
-                <p style="font-size:12px; color:#aaa; margin-top:-5px; margin-bottom:15px;">Set both colors the same for a solid background, or pick two different colors to create a gradient.</p>
+                <h3>Background Colors (Gradients)</h3>
+                <p style="font-size:11px; color:#aaa; margin-top:-5px; margin-bottom:10px;">Set both colors the same for a solid background.</p>
                 
-                <label>Clock Box Background (Left / Right Color)</label>
+                <label>Clock Box (Left / Right Color)</label>
                 <div class="dual-color"><input type="color" id="bg_clock1" value="#9400D3"><input type="color" id="bg_clock2" value="#9400D3"></div>
                 
-                <label>Row 1: Breaking Marquee Background</label>
+                <label>Row 1: Breaking Marquee</label>
                 <div class="dual-color"><input type="color" id="bg_tick1_1" value="#cc0000"><input type="color" id="bg_tick1_2" value="#cc0000"></div>
                 
-                <label>Row 1: Box "BREAKING" Background</label>
+                <label>Row 1: Left Box Background</label>
                 <div class="dual-color"><input type="color" id="bg_brk_1" value="#cc0000"><input type="color" id="bg_brk_2" value="#cc0000"></div>
-                
-                <label>Row 1: Box "NEWS" Background</label>
-                <div class="dual-color"><input type="color" id="bg_nws_1" value="#ffffff"><input type="color" id="bg_nws_2" value="#ffffff"></div>
 
-                <label>Row 2: News Marquee Background</label>
+                <label>Row 2: News Marquee</label>
                 <div class="dual-color"><input type="color" id="bg_tick2_1" value="#1313e8"><input type="color" id="bg_tick2_2" value="#1313e8"></div>
                 
-                <label>Row 2: "NEWS" Box Background</label>
+                <label>Row 2: Left Box Background</label>
                 <div class="dual-color"><input type="color" id="bg_apts_1" value="#ffff00"><input type="color" id="bg_apts_2" value="#ffff00"></div>
 
-                <label>Row 3: Advt Marquee Background</label>
+                <label>Row 3: Advt Marquee</label>
                 <div class="dual-color"><input type="color" id="bg_tick3_1" value="#e6e6e6"><input type="color" id="bg_tick3_2" value="#e6e6e6"></div>
                 
-                <label>Row 3: "ADVT" Box Background</label>
+                <label>Row 3: Left Box Background</label>
                 <div class="dual-color"><input type="color" id="bg_advt_box_1" value="#cc0000"><input type="color" id="bg_advt_box_2" value="#cc0000"></div>
 
             </div>
@@ -290,7 +298,6 @@
             const getCol = id => document.getElementById(id).value;
             const getTxt = id => document.getElementById(id).value;
             
-
             const l1 = document.getElementById('prev-logo1');
             l1.style.transform = `translate(${getVal('pos_logo1_x')}px, ${getVal('pos_logo1_y')}px)`;
             l1.style.width = getVal('logo1_w') + 'px'; l1.style.height = getVal('logo1_h') + 'px';
@@ -300,33 +307,33 @@
             l2.style.width = getVal('logo_w') + 'px'; l2.style.height = getVal('logo_h') + 'px';
 
             const tBan = document.getElementById('prev-top-banner');
-            tBan.style.transform = `translateY(${getVal('pos_slider_y')}px)`;
+            tBan.style.transform = `translate(${getVal('pos_slider_x')}px, ${getVal('pos_slider_y')}px)`;
             tBan.style.height = getVal('banner_h') + 'px';
-
+            tBan.style.width = getVal('banner_w') + 'px';
 
             const r1 = document.getElementById('prev-row-breaking');
-            r1.style.transform = `translateY(${getVal('pos_ticker1_y')}px)`;
+            r1.style.transform = `translate(${getVal('pos_ticker1_x')}px, ${getVal('pos_ticker1_y')}px)`;
             r1.style.height = getVal('row1_h') + 'px';
+            r1.style.width = getVal('row1_w') + 'px';
             
             const t1 = document.getElementById('prev-ticker1-container');
             t1.style.background = getBg('bg_tick1_1', 'bg_tick1_2');
             t1.style.color = getCol('ticker1_color');
             t1.style.fontSize = getVal('ticker1_size') + 'px';
 
-            document.getElementById('prev-breaking-lbl1').style.background = getBg('bg_brk_1', 'bg_brk_2');
-            document.getElementById('prev-breaking-lbl1').innerText = getTxt('lbl_break');
-            document.getElementById('prev-breaking-lbl2').style.background = getBg('bg_nws_1', 'bg_nws_2');
-            document.getElementById('prev-breaking-lbl2').innerText = getTxt('lbl_news1');
+            const brkBox = document.getElementById('prev-breaking-box');
+            brkBox.style.background = getBg('bg_brk_1', 'bg_brk_2');
+            brkBox.innerText = getTxt('lbl_break'); // Renders multi-line text perfectly
 
             const clk = document.getElementById('prev-clock-container');
             clk.style.background = getBg('bg_clock1', 'bg_clock2');
             clk.style.color = getCol('clock_color');
             clk.style.fontSize = getVal('clock_size') + 'px';
 
-
             const r2 = document.getElementById('prev-row-apts');
-            r2.style.transform = `translateY(${getVal('pos_ticker2_y')}px)`;
+            r2.style.transform = `translate(${getVal('pos_ticker2_x')}px, ${getVal('pos_ticker2_y')}px)`;
             r2.style.height = getVal('row2_h') + 'px';
+            r2.style.width = getVal('row2_w') + 'px';
 
             const t2 = document.getElementById('prev-ticker2-container');
             t2.style.background = getBg('bg_tick2_1', 'bg_tick2_2');
@@ -337,10 +344,10 @@
             aptsBox.style.background = getBg('bg_apts_1', 'bg_apts_2');
             aptsBox.innerText = getTxt('lbl_news2');
 
-
             const r3 = document.getElementById('prev-row-advt');
-            r3.style.transform = `translateY(${getVal('pos_ticker3_y')}px)`;
+            r3.style.transform = `translate(${getVal('pos_ticker3_x')}px, ${getVal('pos_ticker3_y')}px)`;
             r3.style.height = getVal('row3_h') + 'px';
+            r3.style.width = getVal('row3_w') + 'px';
 
             const t3 = document.getElementById('prev-ticker3-container');
             t3.style.background = getBg('bg_tick3_1', 'bg_tick3_2');
@@ -352,7 +359,7 @@
             advtBox.innerText = getTxt('lbl_advt');
         }
 
-        document.querySelectorAll('.stepper-input, input[type="color"], input[type="text"]').forEach(input => {
+        document.querySelectorAll('.stepper-input, input[type="color"], textarea, input[type="text"]').forEach(input => {
             input.addEventListener('input', updatePreview); input.addEventListener('change', updatePreview);
         });
 
@@ -385,7 +392,13 @@
 
         inputUrl.addEventListener('input', () => {
             const url = inputUrl.value;
-            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
+            if (url.includes('/live/') || url.includes('live_stream')) {
+                inputDuration.value = "00:00:00"; 
+                inputDuration.dispatchEvent(new Event('input'));
+                return;
+            }
+
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
             if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fetchYoutubeDuration(ytMatch[1]); }
         });
 
@@ -393,11 +406,19 @@
             inputDuration.value = "Fetching...";
             const container = document.createElement('div'); container.id = 'temp-yt-player'; container.style.display = 'none'; document.body.appendChild(container);
 
+            let fallbackTimer = setTimeout(() => {
+                if(inputDuration.value === "Fetching...") {
+                    inputDuration.value = "00:00:00";
+                    inputDuration.dispatchEvent(new Event('input'));
+                    try { player.destroy(); container.remove(); } catch(e){}
+                }
+            }, 4000);
+
             let player = new YT.Player('temp-yt-player', {
                 height: '1', width: '1', videoId: videoId, playerVars: { 'autoplay': 1},
                 events: {
-                    'onReady': function(event) { setTimeout(() => { let d = event.target.getDuration(); if(d > 0) applyDuration(d, player, container); }, 500); },
-                    'onStateChange': function(event) { let d = event.target.getDuration(); if(d > 0) applyDuration(d, player, container); }
+                    'onReady': function(event) { setTimeout(() => { let d = event.target.getDuration(); if(d > 0) { clearTimeout(fallbackTimer); applyDuration(d, player, container); } }, 500); },
+                    'onStateChange': function(event) { let d = event.target.getDuration(); if(d > 0) { clearTimeout(fallbackTimer); applyDuration(d, player, container); } }
                 }
             });
         }
@@ -462,10 +483,18 @@
                     document.getElementById('logo_w').value = data.logo_w || 250; document.getElementById('logo_h').value = data.logo_h || 180;
                     document.getElementById('logo1_w').value = data.logo1_w || 250; document.getElementById('logo1_h').value = data.logo1_h || 160;
 
+                    document.getElementById('pos_slider_x').value = data.slider_x || 0;
+                    document.getElementById('pos_ticker1_x').value = data.ticker1_x || 0;
+                    document.getElementById('pos_ticker2_x').value = data.ticker2_x || 0;
+                    document.getElementById('pos_ticker3_x').value = data.ticker3_x || 0;
+
                     document.getElementById('banner_h').value = data.banner_h || 160; document.getElementById('row1_h').value = data.row1_h || 110;
                     document.getElementById('row2_h').value = data.row2_h || 80; document.getElementById('row3_h').value = data.row3_h || 60;
+                    
+                    document.getElementById('banner_w').value = data.banner_w || 1920; document.getElementById('row1_w').value = data.row1_w || 1920;
+                    document.getElementById('row2_w').value = data.row2_w || 1920; document.getElementById('row3_w').value = data.row3_w || 1920;
 
-                    document.getElementById('lbl_break').value = data.lbl_break || 'BREAKING'; document.getElementById('lbl_news1').value = data.lbl_news1 || 'NEWS';
+                    document.getElementById('lbl_break').value = data.lbl_break || 'BREAKING\nNEWS'; 
                     document.getElementById('lbl_news2').value = data.lbl_news2 || 'NEWS'; document.getElementById('lbl_advt').value = data.lbl_advt || 'ADVT';
 
                     document.getElementById('scroll_main').value = data.scroll_main || 10; document.getElementById('scroll_sub').value = data.scroll_sub || 5;
@@ -481,7 +510,6 @@
                     document.getElementById('bg_clock1').value = data.bg_clock1 || '#9400D3'; document.getElementById('bg_clock2').value = data.bg_clock2 || '#9400D3';
                     document.getElementById('bg_tick1_1').value = data.bg_tick1_1 || '#cc0000'; document.getElementById('bg_tick1_2').value = data.bg_tick1_2 || '#cc0000';
                     document.getElementById('bg_brk_1').value = data.bg_brk_1 || '#cc0000'; document.getElementById('bg_brk_2').value = data.bg_brk_2 || '#cc0000';
-                    document.getElementById('bg_nws_1').value = data.bg_nws_1 || '#ffffff'; document.getElementById('bg_nws_2').value = data.bg_nws_2 || '#ffffff';
                     document.getElementById('bg_tick2_1').value = data.bg_tick2_1 || '#1313e8'; document.getElementById('bg_tick2_2').value = data.bg_tick2_2 || '#1313e8';
                     document.getElementById('bg_apts_1').value = data.bg_apts_1 || '#ffff00'; document.getElementById('bg_apts_2').value = data.bg_apts_2 || '#ffff00';
                     document.getElementById('bg_tick3_1').value = data.bg_tick3_1 || '#e6e6e6'; document.getElementById('bg_tick3_2').value = data.bg_tick3_2 || '#e6e6e6';
@@ -519,9 +547,13 @@
                     logo1_w: parseInt(document.getElementById('logo1_w').value) || 250, logo1_h: parseInt(document.getElementById('logo1_h').value) || 160,
                     banner_h: parseInt(document.getElementById('banner_h').value) || 160, row1_h: parseInt(document.getElementById('row1_h').value) || 110,
                     row2_h: parseInt(document.getElementById('row2_h').value) || 80, row3_h: parseInt(document.getElementById('row3_h').value) || 60,
-                    lbl_break: document.getElementById('lbl_break').value, lbl_news1: document.getElementById('lbl_news1').value,
+                    banner_w: parseInt(document.getElementById('banner_w').value) || 1920, row1_w: parseInt(document.getElementById('row1_w').value) || 1920,
+                    row2_w: parseInt(document.getElementById('row2_w').value) || 1920, row3_w: parseInt(document.getElementById('row3_w').value) || 1920,
+                    lbl_break: document.getElementById('lbl_break').value, 
                     lbl_news2: document.getElementById('lbl_news2').value, lbl_advt: document.getElementById('lbl_advt').value,
                     scroll_main: parseInt(document.getElementById('scroll_main').value) || 10, scroll_sub: parseInt(document.getElementById('scroll_sub').value) || 5,
+                    slider_x: parseInt(document.getElementById('pos_slider_x').value) || 0, ticker1_x: parseInt(document.getElementById('pos_ticker1_x').value) || 0,
+                    ticker2_x: parseInt(document.getElementById('pos_ticker2_x').value) || 0, ticker3_x: parseInt(document.getElementById('pos_ticker3_x').value) || 0,
                     slider_y: parseInt(document.getElementById('pos_slider_y').value) || 0, ticker1_y: parseInt(document.getElementById('pos_ticker1_y').value) || 0,
                     ticker2_y: parseInt(document.getElementById('pos_ticker2_y').value) || 0, ticker3_y: parseInt(document.getElementById('pos_ticker3_y').value) || 0,
                     clock_size: parseInt(document.getElementById('clock_size').value) || 38, clock_color: document.getElementById('clock_color').value,
@@ -531,7 +563,6 @@
                     bg_clock1: document.getElementById('bg_clock1').value, bg_clock2: document.getElementById('bg_clock2').value,
                     bg_tick1_1: document.getElementById('bg_tick1_1').value, bg_tick1_2: document.getElementById('bg_tick1_2').value,
                     bg_brk_1: document.getElementById('bg_brk_1').value, bg_brk_2: document.getElementById('bg_brk_2').value,
-                    bg_nws_1: document.getElementById('bg_nws_1').value, bg_nws_2: document.getElementById('bg_nws_2').value,
                     bg_tick2_1: document.getElementById('bg_tick2_1').value, bg_tick2_2: document.getElementById('bg_tick2_2').value,
                     bg_apts_1: document.getElementById('bg_apts_1').value, bg_apts_2: document.getElementById('bg_apts_2').value,
                     bg_tick3_1: document.getElementById('bg_tick3_1').value, bg_tick3_2: document.getElementById('bg_tick3_2').value,
