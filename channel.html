@@ -243,8 +243,8 @@
                 while(remainingStr.length > MAX_LEN) {
                     let splitIndex = remainingStr.lastIndexOf(' ', MAX_LEN);
                     if (splitIndex === -1) splitIndex = MAX_LEN;
-                    chunks.push(remainingStr.substring(0, splitIndex) + "...");
-                    remainingStr = "..." + remainingStr.substring(splitIndex).trim();
+                    chunks.push(remainingStr.substring(0, splitIndex) + "");
+                    remainingStr = "" + remainingStr.substring(splitIndex).trim();
                 }
                 chunks.push(remainingStr);
             } else {
