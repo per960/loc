@@ -4,52 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operator Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <style>
         :root { --bg-black: #000000; --bg-dark-gray: #121212; --bg-card: #1c1c1e; --accent-red: #ff0000; --text-main: #ffffff; --text-muted: #a1a1a6; --border-color: #2c2c2e; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-black); color: var(--text-main); margin: 0; padding: 15px; display: flex; justify-content: center; }
+        
+        body, html { margin: 0; padding: 0; background-color: var(--bg-black); color: var(--text-main); font-family: 'Inter', sans-serif; box-sizing: border-box; min-height: 100vh; }
+        
+        .container { display: flex; flex-direction: column; width: 100%; max-width: 1000px; margin: 0 auto; background-color: var(--bg-dark-gray); padding: 12px; box-sizing: border-box; min-height: 100vh; }
+        
         .login-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f0f0f; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { background-color: #1a1b1c; border-radius: 12px; padding: 40px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .login-title { color: #28a745; font-size: 22px; font-weight: 600; margin-bottom: 5px; }
         .login-subtitle { color: #aaa; font-size: 14px; margin-bottom: 20px; }
         .login-input { background: #111; border: 1px solid #333; border-radius: 6px; color: #fff; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 16px; text-align: center; letter-spacing: 2px; box-sizing: border-box; outline: none; text-transform: uppercase; }
         .login-btn { background: #28a745; color: #fff; border: none; border-radius: 6px; width: 100%; padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; }
-        .container { width: 100%; max-width: 1000px; background-color: var(--bg-dark-gray); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); display: none; }
-        h1 { font-weight: 800; font-size: 24px; margin-bottom: 20px; } h1 span { color: var(--accent-red); }
         
-        .tabs-container { display: flex; overflow-x: auto; gap: 4px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; scrollbar-width: none; }
+        h1 { font-weight: 800; font-size: 18px; margin-top: 0; margin-bottom: 10px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; } 
+        h1 span { color: var(--accent-red); }
+        .header-title-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .tabs-container { display: flex; overflow-x: auto; gap: 6px; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; flex-shrink: 0; scrollbar-width: none; }
         .tabs-container::-webkit-scrollbar { display: none; }
-        .tab-btn { padding: 10px 18px; background-color: transparent; border: none; color: var(--text-muted); cursor: pointer; font-weight: 600; font-size: 13px; border-radius: 8px 8px 0 0; white-space: nowrap; transition: 0.2s;}
+        .tab-btn { padding: 12px 16px; background-color: transparent; border: none; color: var(--text-muted); cursor: pointer; font-weight: 800; font-size: 15px; border-radius: 8px 8px 0 0; white-space: nowrap; transition: 0.2s;}
         .tab-btn.active { background-color: var(--accent-red); color: #ffffff; }
         
-        .admin-card { background-color: var(--bg-card); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+        .admin-card { background-color: var(--bg-card); border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        
+        .form-group { display: none; flex-direction: column; }
+        .form-group.active { display: flex; }
+        
+        .preview-fixed-header { width: 100%; padding-bottom: 10px; border-bottom: 1px solid #333; margin-bottom: 15px; display: flex; flex-direction: column; }
+        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border-radius: 6px; border: 1px solid #555; }
+        #preview-canvas { width: 1920px; height: 1080px; position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: auto; }
+        
+        .prev-item { position: absolute; display: flex; flex-direction: row; gap: 15px; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease, color 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; cursor: pointer; pointer-events: auto; }
+        
+        .edit-icon { position: relative; background: #0a84ff; color: white; border-radius: 50%; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; z-index: 100; font-size: 22px; opacity: 1; transition: 0.2s; pointer-events: none; border: 3px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.6); flex-shrink: 0; }
+        .prev-item:hover .edit-icon { background: var(--accent-red); transform: scale(1.15); }
+        .prev-item.active-edit { outline: 6px solid var(--accent-red) !important; z-index: 99 !important; }
+
+        .editor-scrollable-controls { width: 100%; padding-bottom: 40px; }
+
+        .element-edit-group { display: none; animation: fadeIn 0.3s; background: #151517; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .element-edit-group.active { display: block; }
+        .element-edit-group h3 { color: var(--accent-red); margin-top: 0; padding-bottom: 8px; border-bottom: 1px solid #333; margin-bottom: 12px; font-size: 15px; }
+        .element-edit-group h4 { color: #a1a1a6; margin-top: 15px; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #282828; padding-bottom: 4px; }
+
+        #master-save-wrapper { width: 100%; margin-top: 12px; margin-bottom: 5px; }
+
         label { display: block; font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; margin-left: 2px; }
         
-        input[type="text"], textarea { width: 100%; padding: 10px 14px; margin-bottom: 15px; background-color: var(--bg-black); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 14px; outline: none; box-sizing: border-box; font-family: 'Inter', sans-serif;}
-        textarea { resize: vertical; }
-        
-        .action-btn { width: 100%; padding: 14px; background-color: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size:15px; cursor: pointer; margin-bottom: 10px; transition: background-color 0.3s ease; }
+        input[type="text"], textarea { width: 100%; padding: 10px 12px; margin-bottom: 12px; background-color: var(--bg-black); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 14px; outline: none; box-sizing: border-box; font-family: inherit;}
+        textarea { resize: none; overflow-y: hidden; word-break: break-all; min-height: 44px; }
+
+        .action-btn { width: 100%; padding: 14px; background-color: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size:15px; cursor: pointer; transition: background-color 0.3s ease; }
         .test-btn { background-color: #2c2c2e; margin-bottom: 15px; } .test-btn:hover { background-color: #3a3a3c; }
-        .table-wrapper { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); } th { color: var(--text-muted); font-weight: 600; font-size: 11px; }
-        .url-text { color: var(--accent-red); font-family: monospace; font-size: 11px; }
+        
+        .table-wrapper { width: 100%; } 
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); } th { color: var(--text-muted); font-weight: 600; font-size: 11px; }
+        .name-text { color: var(--accent-red); font-weight: 700; font-size: 12px; text-decoration: none; word-break: break-word;}
+        .name-text:hover { text-decoration: underline; }
         .btn-sm { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; }
         .edit-btn { background-color: #0a84ff; color: white; margin-right: 5px; } .delete-btn { background-color: #ff453a; color: white; }
-        .form-group { display: none; } .form-group.active { display: block; }
-        .status-badge { text-align: center; font-weight: 600; font-size: 13px; padding: 10px; border-radius: 8px; margin-bottom: 20px; display: none; }
-        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; font-size: 13px; font-weight: 600; }
+        
+        .status-badge { text-align: center; font-weight: 600; font-size: 13px; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: none; }
+        .checkbox-group { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 12px; font-weight: 600; }
         .checkbox-group input { width: 16px; height: 16px; accent-color: var(--accent-red); cursor: pointer; }
-        #test-player-container { border-radius: 12px; overflow: hidden; margin-bottom: 20px; border: 2px solid var(--border-color); }
-
-        h3 { font-size: 15px; margin-top: 0px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px; color: #fff;}
-        .input-row { display: flex; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; } 
+        .toggle-badge { background: #222; border: 1px solid #444; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .toggle-badge span { font-size: 13px; font-weight: 700; color: #fff; }
+        
+        #test-player-container { border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 2px solid var(--border-color); }
+        h3 { font-size: 15px; margin-top: 0px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px; color: #fff;}
+        .input-row { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; } 
         .input-row > div { flex: 1; min-width: 110px; }
-        .stepper-control { display: flex; align-items: center; background: #111; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
-        .stepper-btn { flex: 1; background: #2c2c2e; color: #fff; border: none; padding: 8px 0; cursor: pointer; font-size: 14px; transition: 0.2s;}
+        .stepper-control { display: flex; align-items: center; background: #111; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 8px; }
+        .stepper-btn { flex: 1; background: #2c2c2e; color: #fff; border: none; padding: 8px 0; cursor: pointer; font-size: 13px; transition: 0.2s;}
         .stepper-btn:hover { background: var(--accent-red); }
         .stepper-btn:active { background: #aa0000; }
         .stepper-input { flex: 1; background: #000; border: none; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); color: #fff; text-align: center; font-size: 14px; font-weight: bold; outline: none; margin: 0 !important; padding: 8px 0 !important; width: 40px; }
@@ -57,28 +91,10 @@
         .stepper-input::-webkit-outer-spin-button, .stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .stepper-input[type=number] { -moz-appearance: textfield; }
 
-        input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: #111; padding: 2px; margin-bottom: 10px; }
+        input[type="color"] { width: 100%; height: 36px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: #111; padding: 2px; margin-bottom: 8px; }
         .dual-color { display: flex; gap: 5px; }
 
-        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border: 2px solid #555; border-radius: 8px; margin-bottom: 15px; }
-        #preview-canvas { width: 1920px; height: 1080px; position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
-        .prev-item { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease, color 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; }
-
-        .sub-tabs-container { display: flex; overflow-x: auto; gap: 8px; padding-bottom: 12px; margin-bottom: 15px; border-bottom: 1px solid #333; scrollbar-width: none; }
-        .sub-tabs-container::-webkit-scrollbar { display: none; }
-        .sub-tab-btn { background: #2c2c2e; color: var(--text-muted); border: 1px solid transparent; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .sub-tab-btn.active { background: rgba(255,0,0,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-        
-        .sub-form-group { display: none; animation: fadeIn 0.2s ease-in-out; }
-        .sub-form-group.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .nested-tabs-container { display: flex; overflow-x: auto; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; scrollbar-width: none; }
-        .nested-tabs-container::-webkit-scrollbar { display: none; }
-        .nested-tab-btn { background: #1c1c1e; color: var(--text-muted); border: 1px solid #444; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .nested-tab-btn.active { background: rgba(255,0,0,0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
-        .nested-form-group { display: none; animation: fadeIn 0.2s; }
-        .nested-form-group.active { display: block; }
     </style>
 </head>
 <body>
@@ -93,10 +109,10 @@
         </div>
     </div>
 
-    <div id="dashboard" class="container">
-        <h1 style="display:flex; justify-content:space-between; align-items:center;">
-            <div>CHANNEL <span>MANAGER</span></div>
-            <div style="font-size:11px; color:#aaa; border:1px solid #333; padding:4px 8px; border-radius:20px;">Code: <span id="display-code" style="color:#fff;"></span></div>
+    <div id="dashboard" class="container" style="display:none;">
+        <h1>
+            <div class="header-title-text">CHANNEL <span>MANAGER</span></div>
+            <div style="font-size:11px; color:#aaa; border:1px solid #333; padding:4px 10px; border-radius:20px; font-weight:normal;">Code: <span id="display-code" style="color:#fff; font-weight:bold;"></span></div>
         </h1>
 
         <div id="status-badge" class="status-badge"></div>
@@ -106,337 +122,351 @@
             <button class="tab-btn" onclick="switchTab('apts_text', this, 'text')"><i class="fa-solid fa-bolt"></i> News</button>
             <button class="tab-btn" onclick="switchTab('slider_text', this, 'text')"><i class="fa-solid fa-message"></i> Breaking Alert</button>
             <button class="tab-btn" onclick="switchTab('advt_text', this, 'text')"><i class="fa-solid fa-ad"></i> Ads Scroll</button>
-            <button class="tab-btn" onclick="switchTab('slider_playlist', this, 'image')"><i class="fa-solid fa-image"></i> Top Ads</button>
-            <button class="tab-btn" onclick="switchTab('overlay_settings', this, 'settings')"><i class="fa-solid fa-sliders"></i> Overlays</button>
-            <button class="tab-btn" onclick="switchTab('overlay_settings', this, 'controls')"><i class="fa-solid fa-gamepad"></i> Controls</button>
+            <button class="tab-btn" onclick="switchTab('slider_playlist', this, 'promo')"><i class="fa-solid fa-images"></i> Top Promo</button>
+            <button class="tab-btn" onclick="switchTab('overlay_settings', this, 'controls')"><i class="fa-solid fa-gamepad"></i> Layout Editor</button>
         </div>
 
         <div class="admin-card">
+            
             <div id="form-video" class="form-group active">
                 <div id="test-player-container" style="display:none;">
                     <iframe id="test-player" width="100%" height="250" src="" frameborder="0" allowfullscreen></iframe>
                 </div>
                 <button class="action-btn test-btn" onclick="testCurrentURL()"><i class="fa-solid fa-magnifying-glass"></i> Test Player</button>
                 <label>Source URL (YouTube or MP4)</label>
-                <input type="text" id="input-url" placeholder="Paste link here...">
+                <textarea id="input-url" placeholder="Paste link here..." rows="2"></textarea>
                 
                 <div class="checkbox-group" style="display:none;"><input type="checkbox" id="auto-start-checkbox" checked><span>Auto-chain end time to next start time</span></div>
                 
                 <div class="input-row">
                     <div><label>Start Time (HH:MM:SS)</label><input type="text" id="input-start" value="00:00:00"></div>
                     <div><label>Duration (HH:MM:SS)</label><input type="text" id="input-duration" value="00:00:00"></div>
-                    <div><label>End (Result)</label><input type="text" id="input-end" value="00:00:00" readonly style="opacity:0.6; background-color:#1a1a1a;"></div>
+                    <div style="display:none;"><label>End (Result)</label><input type="text" id="input-end" value="00:00:00" readonly style="opacity:0.6; background-color:#1a1a1a;"></div>
+                </div>
+                
+                <div style="margin-bottom: 8px;">
+                    <label>Name (Movie / Song / Event)</label>
+                    <textarea id="input-name" placeholder="Enter title..." rows="1"></textarea>
+                </div>
+
+                <!-- Default position for the Save Button Wrapper so it shows on load -->
+                <div id="master-save-wrapper">
+                    <button id="add-btn" class="action-btn" style="margin-bottom:0;"><i class="fa-solid fa-save"></i> Save Changes</button>
+                    <button id="cancel-edit-btn" class="action-btn" style="background:#2c2c2e; display:none; margin-top:10px;">Cancel Edit</button>
                 </div>
             </div>
-
 
             <div id="form-text" class="form-group">
-                <div id="cat-input-container" style="display:none; margin-bottom:15px;">
+                <div id="cat-input-container" style="display:none; margin-bottom:10px;">
                     <label>Category (e.g. Local News, State News)</label>
-                    <input type="text" id="input-category" placeholder="Leave empty to use default box label...">
+                    <textarea id="input-category" placeholder="Leave empty to use default box label..." rows="1"></textarea>
                 </div>
                 <label>Headline Text</label>
-                <input type="text" id="input-text" placeholder="Type news update here...">
+                <textarea id="input-text" placeholder="Type news update here..." rows="3"></textarea>
             </div>
-            
-            <div id="form-image" class="form-group"><label>Promotion Image URL</label><input type="text" id="input-image" placeholder="https://image-link.jpg"></div>
-            
-            <div id="form-settings" class="form-group">
-                <h3>Graphics Toggles</h3>
-                <div class="checkbox-group"><input type="checkbox" id="chk-logo-news"> <span>Top Left Logo (Ads)</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-logo-channel"> <span>Top Right Logo (Channel)</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-clock"> <span>Time Box (Inside Breaking Strip)</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-promo"> <span>Promo Slider</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-breaking"> <span>Row 1: BREAKING</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-apts"> <span>Row 2: NEWS</span></div>
-                <div class="checkbox-group"><input type="checkbox" id="chk-advt"> <span>Row 3: ADVT</span></div>
-                
-                <h3 style="margin-top:20px;">Custom Logo URLs</h3>
-                <label>Top Left Logo (News) URL</label><input type="text" id="input-logo-news" placeholder="e.g., https://.../news.png">
-                <label>Top Right Logo (Channel) URL</label><input type="text" id="input-logo-channel" placeholder="e.g., https://.../logo.png">
+
+            <div id="form-promo" class="form-group">
+                <label>Promo Image / Video URL</label>
+                <textarea id="new-promo-url" placeholder="Paste Image/MP4 link here..." rows="2"></textarea>
             </div>
 
             <div id="form-controls" class="form-group">
-                
-                <h3>Channel Layout (16:9 Preview)</h3>
-                <div class="preview-wrapper" id="preview-wrapper">
-                    <div id="preview-canvas">
-                        <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:100%; background:rgba(255,255,255,0.9); font-size:60px; font-weight:900; color:#000;">TOP PROMO</div>
-                        <div id="prev-logo1" class="prev-item" style="top:190px; left:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px;">ADS LOGO</div>
-                        <div id="prev-logo" class="prev-item" style="top:190px; right:40px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px;">CH LOGO</div>
-                        
-                        <div id="prev-row-breaking" class="prev-item" style="bottom:140px; left:0; width:100%; height:110px; z-index:1;">
-                            <div id="prev-ticker1-container" style="width:100%; height:100%; background:#cc0000; color:#ffffff; font-size:40px; display:flex; align-items:center; justify-content:center; overflow:hidden; white-space:nowrap;">BREAKING STRIP</div>
-                        </div>
-                        
-                        <div id="prev-breaking-box" class="prev-item" style="bottom:140px; left:0; width:280px; height:110px; background:#cc0000; color:#fff; font-size:32px; z-index:2;">BREAKING</div>
-                        
-                        <div id="prev-clock-container" class="prev-item" style="bottom:140px; right:0; left:auto; width:260px; height:110px; background:transparent; color:#ffffff; font-size:38px; z-index:2;">12:00 PM</div>
-
-                        <div id="prev-row-apts" style="position:absolute; bottom:60px; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease, width 0.1s ease;">
-                            <div id="prev-apts-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#ffff00; color:#000; font-size:32px;">NEWS</div>
-                            <div id="prev-ticker2-container" class="prev-item" style="position:relative; flex-grow:1; background:#1313e8; color:#ffffff; font-size:34px; overflow:hidden; white-space:nowrap;">NEWS STRIP</div>
-                        </div>
-
-                        <div id="prev-row-advt" style="position:absolute; bottom:0; left:0; width:100%; display:flex; transition: transform 0.1s ease, height 0.1s ease, width 0.1s ease;">
-                            <div id="prev-advt-box" class="prev-item" style="position:relative; width:280px; flex-shrink:0; background:#cc0000; color:#fff; font-size:36px;">ADVT</div>
-                            <div id="prev-ticker3-container" class="prev-item" style="position:relative; flex-grow:1; background:#e6e6e6; color:#ffffff; font-size:36px; overflow:hidden; white-space:nowrap;">ADVT STRIP</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sub-tabs-container">
-                    <button type="button" class="sub-tab-btn active" onclick="switchSubTab('sub-logos', this)">Logo Controls</button>
-                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-strips', this)">Strip Controls</button>
-                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-labels', this)">Labels & Media</button>
-                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-scroll', this)">Scroll Speeds</button>
-                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-text', this)">Fonts & Colours</button>
-                    <button type="button" class="sub-tab-btn" onclick="switchSubTab('sub-bg', this)">Backgrounds</button>
-                </div>
-
-
-                <div id="sub-logos" class="sub-form-group active">
-                    <div class="nested-tabs-container">
-                        <button type="button" class="nested-tab-btn active" onclick="switchNestedTab('logo-ch', this, 'sub-logos')">Channel Logo</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('logo-ad', this, 'sub-logos')">Ads Logo</button>
-                    </div>
-                    <div id="logo-ch" class="nested-form-group active">
-                        <div class="input-row">
-                            <div><label>Channel Logo (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Channel Logo (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Channel Logo (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Channel Logo (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_h" class="stepper-input" value="180"><button type="button" class="stepper-btn" onclick="adj('logo_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                    </div>
-                    <div id="logo-ad" class="nested-form-group">
-                        <div class="input-row">
-                            <div><label>Ads Logo (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Ads Logo (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Ads Logo (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Ads Logo (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('logo1_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                <div class="preview-fixed-header">
+                    <div class="preview-wrapper" id="preview-wrapper">
+                        <div id="preview-canvas">
+                            <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:1920px; height:160px; background:rgba(255,255,255,0.9); font-size:60px; font-weight:900; color:#000; z-index:5;" onclick="openEdit('top-banner')">
+                                <span>TOP PROMO</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                            </div>
+                            <div id="prev-logo1" class="prev-item" style="top:190px; left:40px; width:250px; height:160px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px; z-index:10;" onclick="openEdit('logo-ad')">
+                                <span>ADS LOGO</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                            </div>
+                            <div id="prev-logo" class="prev-item" style="top:190px; right:40px; width:250px; height:180px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px; z-index:10;" onclick="openEdit('logo-ch')">
+                                <span>CH LOGO</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                            </div>
+                            
+                            <div id="prev-row-breaking" class="prev-item" style="bottom:140px; left:0; width:1920px; height:110px; z-index:1;" onclick="openEdit('row-breaking')">
+                                <div id="prev-ticker1-container" style="width:100%; height:100%; background:#cc0000; color:#ffffff; font-size:40px; display:flex; align-items:center; justify-content:center; overflow:hidden; white-space:nowrap;"><span>BREAKING STRIP</span></div>
+                                <div class="edit-icon" style="position: absolute; right: 40px;"><i class="fa-solid fa-pen"></i></div>
+                            </div>
+                            
+                            <div id="prev-breaking-box" class="prev-item" style="bottom:140px; left:0; width:280px; height:110px; background:#cc0000; color:#fff; font-size:32px; z-index:2;" onclick="openEdit('breaking-box')">
+                                <span>BREAKING<br>NEWS</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                            </div>
+                            
+                            <div id="prev-clock-container" class="prev-item" style="bottom:140px; right:0; left:auto; width:260px; height:110px; background:transparent; color:#ffffff; font-size:38px; z-index:2;" onclick="openEdit('clock')">
+                                <span>12:00 PM</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                            </div>
+                            
+                            <div id="prev-row-apts" style="position:absolute; bottom:60px; left:0; width:1920px; height:80px; display:flex;">
+                                <div id="prev-apts-box" class="prev-item" style="position:relative; width:280px; height:80px; flex-shrink:0; background:#ffff00; color:#000; font-size:32px;" onclick="openEdit('apts-box')">
+                                    <span>NEWS</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                                </div>
+                                <div id="prev-ticker2-container" class="prev-item" style="position:relative; flex-grow:1; height:80px; background:#1313e8; color:#ffffff; font-size:34px; overflow:hidden; white-space:nowrap;" onclick="openEdit('row-apts')">
+                                    <span>NEWS STRIP</span> <div class="edit-icon" style="position: absolute; right: 40px;"><i class="fa-solid fa-pen"></i></div>
+                                </div>
+                            </div>
+                            
+                            <div id="prev-row-advt" style="position:absolute; bottom:0; left:0; width:1920px; height:60px; display:flex;">
+                                <div id="prev-advt-box" class="prev-item" style="position:relative; width:280px; height:60px; flex-shrink:0; background:#cc0000; color:#fff; font-size:36px;" onclick="openEdit('advt-box')">
+                                    <span>ADVT</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                                </div>
+                                <div id="prev-ticker3-container" class="prev-item" style="position:relative; flex-grow:1; height:60px; background:#e6e6e6; color:#ffffff; font-size:36px; overflow:hidden; white-space:nowrap;" onclick="openEdit('row-advt')">
+                                    <span>ADVT STRIP</span> <div class="edit-icon" style="position: absolute; right: 40px;"><i class="fa-solid fa-pen"></i></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-
-                <div id="sub-strips" class="sub-form-group">
-                    <div class="nested-tabs-container">
-                        <button type="button" class="nested-tab-btn active" onclick="switchNestedTab('strip-top', this, 'sub-strips')">Top Banner</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-r1', this, 'sub-strips')">Row 1 Marquee</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-r1-left', this, 'sub-strips')">Row 1 Left Box</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-clk', this, 'sub-strips')">Clock Box</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-r2', this, 'sub-strips')">Row 2</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('strip-r3', this, 'sub-strips')">Row 3</button>
-                    </div>
+                <div class="editor-scrollable-controls">
                     
-                    <div id="strip-top" class="nested-form-group active">
-                        <div class="input-row">
-                            <div><label>Top Banner (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_slider_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Top Banner (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_slider_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Top Banner (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('banner_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Top Banner (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('banner_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
+                    <div id="edit-prompt" style="text-align:center; padding: 15px 10px; color: #aaa; background: #1a1a1c; border-radius: 8px; border: 1px dashed #444; margin-bottom: 10px; font-size:12px;">
+                        <i class="fa-solid fa-hand-pointer" style="font-size: 18px; margin-bottom: 6px; color:var(--accent-red);"></i><br>
+                        Click any <i class="fa-solid fa-pen" style="color:var(--accent-red);"></i> pen icon in the preview above to edit that layer.
                     </div>
-                    
-                    <div id="strip-r1" class="nested-form-group">
-                        <div class="input-row">
-                            <div><label>Row 1 Marquee (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Row 1 Marquee (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+
+                    <div id="edit-group-top-banner" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Top Promo Banner</h3>
+                        <div class="toggle-badge">
+                            <span>Show Top Promo</span>
+                            <input type="checkbox" id="chk-promo" checked>
                         </div>
                         <div class="input-row">
-                            <div><label>Row 1 Marquee (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 1 Marquee (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('row1_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_slider_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_slider_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_slider_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('banner_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('banner_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="banner_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('banner_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
                         </div>
                     </div>
 
-                    <div id="strip-r1-left" class="nested-form-group">
-                        <div class="input-row">
-                            <div><label>Left Box (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="brk_box_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('brk_box_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Left Box (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="brk_box_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('brk_box_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                    <div id="edit-group-logo-ad" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Ads Logo (Top Left)</h3>
+                        <div class="toggle-badge">
+                            <span>Show Ads Logo</span>
+                            <input type="checkbox" id="chk-logo-news" checked>
                         </div>
                         <div class="input-row">
-                            <div><label>Left Box (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="brk_box_w" class="stepper-input" value="280"><button type="button" class="stepper-btn" onclick="adj('brk_box_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Left Box (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="brk_box_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('brk_box_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                    </div>
-
-                    <div id="strip-clk" class="nested-form-group">
-                        <div class="input-row">
-                            <div><label>Clock Box (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="clock_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('clock_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Clock Box (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="clock_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('clock_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                            <div>
+                                <label>Ads Logo URL</label>
+                                <textarea id="input-logo-news" placeholder="e.g., https://.../news.png" rows="2"></textarea>
+                            </div>
                         </div>
                         <div class="input-row">
-                            <div><label>Clock Box (Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_w" class="stepper-input" value="260"><button type="button" class="stepper-btn" onclick="adj('clock_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Clock Box (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('clock_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                    </div>
-                    
-                    <div id="strip-r2" class="nested-form-group">
-                        <div class="input-row">
-                            <div><label>Row 2 (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker2_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Row 2 (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker2_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
                         </div>
                         <div class="input-row">
-                            <div><label>Row 2 (Total Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row2_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 2 (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_h" class="stepper-input" value="80"><button type="button" class="stepper-btn" onclick="adj('row2_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Left Box Width (News)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('apts_box_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="apts_box_w" class="stepper-input" value="280"><button type="button" class="stepper-btn" onclick="adj('apts_box_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div style="flex:1;"></div>
-                        </div>
-                    </div>
-                    
-                    <div id="strip-r3" class="nested-form-group">
-                        <div class="input-row">
-                            <div><label>Row 3 (Left/Right)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker3_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Row 3 (Up/Down)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker3_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Row 3 (Total Width)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row3_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 3 (Height)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_h" class="stepper-input" value="60"><button type="button" class="stepper-btn" onclick="adj('row3_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Left Box Width (Advt)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('advt_box_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="advt_box_w" class="stepper-input" value="280"><button type="button" class="stepper-btn" onclick="adj('advt_box_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div style="flex:1;"></div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div id="sub-labels" class="sub-form-group">
-                    <div class="input-row">
-                        <div><label>Row 1 Marquee Background (Image or MP4 link)</label>
-                        <input type="text" id="ticker1_media" placeholder="Leave empty for solid background..."></div>
-                    </div>
-                    <div class="input-row">
-                        <div><label>Row 1 Left Box Media (Image or MP4 link)</label>
-                        <input type="text" id="brk_box_media" placeholder="Leave empty for Text..."></div>
-                    </div>
-                    <div class="input-row">
-                        <div><label>Animated Intro Text</label><input type="text" id="lbl_intro" value="&#128680; FLASH NEWS &#128680;"></div>
-                    </div>
-                    <div class="input-row">
-                        <div><label>Row 1 Box Label</label><textarea id="lbl_break" rows="2">BREAKING
-NEWS</textarea></div>
-                        <div><label>Row 2 Box Default Label</label><textarea id="lbl_news2" rows="2">NEWS</textarea></div>
-                    </div>
-                    <div class="input-row">
-                        <div><label>Row 3 Box Label</label><textarea id="lbl_advt" rows="2">ADVT</textarea></div>
-                        <div style="flex:1; min-width:0;"></div>
-                    </div>
-                </div>
-
-
-                <div id="sub-scroll" class="sub-form-group">
-                    <div class="input-row">
-                        <div><label>News Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_main', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_main" class="stepper-input" value="10"><button type="button" class="stepper-btn" onclick="adj('scroll_main', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        <div><label>Advt Marquee Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_sub" class="stepper-input" value="5"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
-                    </div>
-                </div>
-
-    
-                <div id="sub-text" class="sub-form-group">
-                    <div class="nested-tabs-container">
-                        <button type="button" class="nested-tab-btn active" onclick="switchNestedTab('font-boxes', this, 'sub-text')">Box & Intro Sizes</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('font-marquees', this, 'sub-text')">Marquee Texts</button>
-                    </div>
-
-                    <div id="font-boxes" class="nested-form-group active">
-                        <div class="input-row">
-                            <div><label>Animated Intro Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('intro_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="intro_size" class="stepper-input" value="44"><button type="button" class="stepper-btn" onclick="adj('intro_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Intro Text Color</label><input type="color" id="intro_color" value="#ffffff"></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Row 1 Box Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="brk_box_size" class="stepper-input" value="32"><button type="button" class="stepper-btn" onclick="adj('brk_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 1 Box Text Color</label><input type="color" id="brk_box_color" value="#ffffff"></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Row 2 Box Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('apts_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="apts_box_size" class="stepper-input" value="32"><button type="button" class="stepper-btn" onclick="adj('apts_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 2 Box Text Color</label><input type="color" id="apts_box_color" value="#000000"></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Row 3 Box Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="advt_box_size" class="stepper-input" value="26"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 3 Box Text Color</label><input type="color" id="advt_box_color" value="#ffffff"></div>
+                            <div><label>Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo1_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo1_h" class="stepper-input" value="160"><button type="button" class="stepper-btn" onclick="adj('logo1_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
                         </div>
                     </div>
 
-                    <div id="font-marquees" class="nested-form-group">
-                        <div class="input-row">
-                            <div><label>Clock Font Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_size" class="stepper-input" value="38"><button type="button" class="stepper-btn" onclick="adj('clock_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Clock Text Color</label><input type="color" id="clock_color" value="#ffffff"></div>
+                    <div id="edit-group-logo-ch" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Channel Logo (Top Right)</h3>
+                        <div class="toggle-badge">
+                            <span>Show Channel Logo</span>
+                            <input type="checkbox" id="chk-logo-channel" checked>
                         </div>
                         <div class="input-row">
-                            <div><label>Row 1 Marquee Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker1_size" class="stepper-input" value="40"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 1 Text Color</label><input type="color" id="ticker1_color" value="#ffffff"></div>
+                            <div>
+                                <label>Channel Logo URL</label>
+                                <textarea id="input-logo-channel" placeholder="e.g., https://.../logo.png" rows="2"></textarea>
+                            </div>
                         </div>
                         <div class="input-row">
-                            <div><label>Row 2 Marquee Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker2_size" class="stepper-input" value="34"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 2 Text Color</label><input type="color" id="ticker2_color" value="#ffffff"></div>
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_logo_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_logo_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_logo_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
                         </div>
                         <div class="input-row">
-                            <div><label>Row 3 Marquee Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker3_size" class="stepper-input" value="36"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Row 3 Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
+                            <div><label>Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_w" class="stepper-input" value="250"><button type="button" class="stepper-btn" onclick="adj('logo_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('logo_h', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="logo_h" class="stepper-input" value="180"><button type="button" class="stepper-btn" onclick="adj('logo_h', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
                         </div>
                     </div>
-                </div>
 
-
-                <div id="sub-bg" class="sub-form-group">
-                    <p style="font-size:11px; color:#aaa; margin-top:0px; margin-bottom:15px;">Check "Transparent Background" or select colors.</p>
-                    <div class="nested-tabs-container">
-                        <button type="button" class="nested-tab-btn active" onclick="switchNestedTab('bg-clk', this, 'sub-bg')">Clock Box</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('bg-r1', this, 'sub-bg')">Row 1 Background</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('bg-r2', this, 'sub-bg')">Row 2 Background</button>
-                        <button type="button" class="nested-tab-btn" onclick="switchNestedTab('bg-r3', this, 'sub-bg')">Row 3 Background</button>
-                    </div>
-                    
-                    <div id="bg-clk" class="nested-form-group active">
-                        <div class="checkbox-group" style="margin-bottom: 15px;"><input type="checkbox" id="bg_clock_transparent" checked> <span>Transparent Background</span></div>
+                    <div id="edit-group-clock" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Clock Controls</h3>
+                        <div class="toggle-badge">
+                            <span>Show Clock</span>
+                            <input type="checkbox" id="chk-clock" checked>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="clock_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('clock_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="clock_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('clock_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_w" class="stepper-input" value="260"><button type="button" class="stepper-btn" onclick="adj('clock_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('clock_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('clock_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="clock_size" class="stepper-input" value="38"><button type="button" class="stepper-btn" onclick="adj('clock_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Text Color</label><input type="color" id="clock_color" value="#ffffff"></div>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_clock_transparent" checked> <span>Transparent Background</span></div>
                         <label>Clock Box (Left / Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_clock1" value="#9400D3"><input type="color" id="bg_clock2" value="#9400D3"></div>
                     </div>
 
-                    <div id="bg-r1" class="nested-form-group">
-                        <div class="checkbox-group" style="margin-bottom: 15px;"><input type="checkbox" id="bg_tick1_transparent" checked> <span>Transparent Marquee</span></div>
-                        <label>Row 1: Marquee Background</label>
+                    <div id="edit-group-row-breaking" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Row 1 (Marquee Strip)</h3>
+                        <div class="toggle-badge">
+                            <span>Show Row 1 & Box</span>
+                            <input type="checkbox" id="chk-breaking" checked>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker1_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker1_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker1_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Total Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row1_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row1_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row1_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('row1_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div>
+                                <label>Background Media (URL)</label>
+                                <textarea id="ticker1_media" placeholder="Leave empty for solid color..." rows="1"></textarea>
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker1_size" class="stepper-input" value="40"><button type="button" class="stepper-btn" onclick="adj('ticker1_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Text Color</label><input type="color" id="ticker1_color" value="#ffffff"></div>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_tick1_transparent" checked> <span>Transparent Marquee</span></div>
+                        <label>Marquee Background (Left/Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_tick1_1" value="#cc0000"><input type="color" id="bg_tick1_2" value="#cc0000"></div>
-                        
-                        <div class="checkbox-group" style="margin-bottom: 15px; margin-top:15px;"><input type="checkbox" id="bg_brk_transparent" checked> <span>Transparent Left Box</span></div>
-                        <label>Row 1: Left Box Background</label>
+
+                        <h4>Flash Intro Animation</h4>
+                        <div class="input-row">
+                            <div><label>Animated Intro Text</label><input type="text" id="lbl_intro" value="&#128680; FLASH NEWS &#128680;"></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Intro Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('intro_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="intro_size" class="stepper-input" value="44"><button type="button" class="stepper-btn" onclick="adj('intro_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Intro Color</label><input type="color" id="intro_color" value="#ffffff"></div>
+                        </div>
+                    </div>
+
+                    <div id="edit-group-breaking-box" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Breaking Box (Left Box)</h3>
+                        <div class="input-row">
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="brk_box_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('brk_box_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="brk_box_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('brk_box_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Box Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="brk_box_w" class="stepper-input" value="280"><button type="button" class="stepper-btn" onclick="adj('brk_box_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Box Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="brk_box_h" class="stepper-input" value="110"><button type="button" class="stepper-btn" onclick="adj('brk_box_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div>
+                                <label>Box Media (URL)</label>
+                                <textarea id="brk_box_media" placeholder="Leave empty for Text..." rows="1"></textarea>
+                            </div>
+                        </div>
+                        <div class="input-row" style="flex-direction: column;">
+                            <label>Box Text Label</label>
+                            <textarea id="lbl_break" rows="2">BREAKING
+NEWS</textarea>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Box Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('brk_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="brk_box_size" class="stepper-input" value="32"><button type="button" class="stepper-btn" onclick="adj('brk_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Box Text Color</label><input type="color" id="brk_box_color" value="#ffffff"></div>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_brk_transparent" checked> <span>Transparent Left Box</span></div>
+                        <label>Left Box Background (Left/Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_brk_1" value="#cc0000"><input type="color" id="bg_brk_2" value="#cc0000"></div>
                     </div>
-                    
-                    <div id="bg-r2" class="nested-form-group">
-                        <div class="checkbox-group" style="margin-bottom: 15px;"><input type="checkbox" id="bg_tick2_transparent" checked> <span>Transparent Marquee</span></div>
-                        <label>Row 2: Marquee Background</label>
+
+                    <div id="edit-group-row-apts" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Row 2 (News Strip)</h3>
+                        <div class="toggle-badge">
+                            <span>Show Row 2 (News)</span>
+                            <input type="checkbox" id="chk-apts" checked>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker2_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker2_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker2_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Total Row Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row2_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Total Row Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row2_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row2_h" class="stepper-input" value="80"><button type="button" class="stepper-btn" onclick="adj('row2_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Scroll Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_main', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_main" class="stepper-input" value="10"><button type="button" class="stepper-btn" onclick="adj('scroll_main', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker2_size" class="stepper-input" value="34"><button type="button" class="stepper-btn" onclick="adj('ticker2_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Text Color</label><input type="color" id="ticker2_color" value="#ffffff"></div>
+                            <div style="flex:1;"></div>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_tick2_transparent" checked> <span>Transparent Marquee</span></div>
+                        <label>Marquee Background (Left/Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_tick2_1" value="#1313e8"><input type="color" id="bg_tick2_2" value="#1313e8"></div>
-                        
-                        <div class="checkbox-group" style="margin-bottom: 15px; margin-top:15px;"><input type="checkbox" id="bg_apts_transparent" checked> <span>Transparent Left Box</span></div>
-                        <label>Row 2: Left Box Background</label>
+                    </div>
+
+                    <div id="edit-group-apts-box" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> News Box (Left Box)</h3>
+                        <div class="input-row">
+                            <div><label>Box Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('apts_box_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="apts_box_w" class="stepper-input" value="280"><button type="button" class="stepper-btn" onclick="adj('apts_box_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row" style="flex-direction: column;">
+                            <label>Default Box Text</label>
+                            <textarea id="lbl_news2" rows="2">NEWS</textarea>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Box Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('apts_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="apts_box_size" class="stepper-input" value="32"><button type="button" class="stepper-btn" onclick="adj('apts_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Box Text Color</label><input type="color" id="apts_box_color" value="#000000"></div>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_apts_transparent" checked> <span>Transparent Left Box</span></div>
+                        <label>Left Box Background (Left/Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_apts_1" value="#ffff00"><input type="color" id="bg_apts_2" value="#ffff00"></div>
                     </div>
-                    
-                    <div id="bg-r3" class="nested-form-group">
-                        <div class="checkbox-group" style="margin-bottom: 15px;"><input type="checkbox" id="bg_tick3_transparent" checked> <span>Transparent Marquee</span></div>
-                        <label>Row 3: Marquee Background</label>
+
+                    <div id="edit-group-row-advt" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Row 3 (Advt Strip)</h3>
+                        <div class="toggle-badge">
+                            <span>Show Row 3 (Advt)</span>
+                            <input type="checkbox" id="chk-advt" checked>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker3_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
+                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker3_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Total Row Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row3_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Total Row Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_h" class="stepper-input" value="60"><button type="button" class="stepper-btn" onclick="adj('row3_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Scroll Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_sub" class="stepper-input" value="5"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker3_size" class="stepper-input" value="36"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
+                            <div style="flex:1;"></div>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_tick3_transparent" checked> <span>Transparent Marquee</span></div>
+                        <label>Marquee Background (Left/Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_tick3_1" value="#e6e6e6"><input type="color" id="bg_tick3_2" value="#e6e6e6"></div>
-                        
-                        <div class="checkbox-group" style="margin-bottom: 15px; margin-top:15px;"><input type="checkbox" id="bg_advt_transparent" checked> <span>Transparent Left Box</span></div>
-                        <label>Row 3: Left Box Background</label>
+                    </div>
+
+                    <div id="edit-group-advt-box" class="element-edit-group">
+                        <h3><i class="fa-solid fa-pen"></i> Advt Box (Left Box)</h3>
+                        <div class="input-row">
+                            <div><label>Box Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('advt_box_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="advt_box_w" class="stepper-input" value="280"><button type="button" class="stepper-btn" onclick="adj('advt_box_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
+                        </div>
+                        <div class="input-row" style="flex-direction: column;">
+                            <label>Box Label</label>
+                            <textarea id="lbl_advt" rows="2">ADVT</textarea>
+                        </div>
+                        <div class="input-row">
+                            <div><label>Box Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="advt_box_size" class="stepper-input" value="26"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
+                            <div><label>Box Text Color</label><input type="color" id="advt_box_color" value="#ffffff"></div>
+                        </div>
+                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_advt_transparent" checked> <span>Transparent Left Box</span></div>
+                        <label>Left Box Background (Left/Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_advt_box_1" value="#cc0000"><input type="color" id="bg_advt_box_2" value="#cc0000"></div>
                     </div>
                 </div>
-
             </div>
-
-            <button id="add-btn" class="action-btn"><i class="fa-solid fa-save"></i> Save Changes</button>
-            <button id="cancel-edit-btn" class="action-btn" style="background:#2c2c2e; display:none;">Cancel Edit</button>
         </div>
 
         <div class="table-wrapper" id="table-wrapper"><div id="data-list"><p style="text-align:center; color: var(--text-muted);">Syncing...</p></div></div>
@@ -452,137 +482,177 @@ NEWS</textarea></div>
         let editId = null;
 
         function getBg(id1, id2, chkId) {
-            if (document.getElementById(chkId) && document.getElementById(chkId).checked) return 'transparent';
-            const c1 = document.getElementById(id1).value; const c2 = document.getElementById(id2).value;
+            const chk = document.getElementById(chkId);
+            if (chk && chk.checked) return 'transparent';
+            const c1 = document.getElementById(id1) ? document.getElementById(id1).value : '#000';
+            const c2 = document.getElementById(id2) ? document.getElementById(id2).value : '#000';
             return c1 === c2 ? c1 : `linear-gradient(90deg, ${c1}, ${c2})`;
         }
 
-        window.switchSubTab = function(subId, btn) {
-            document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.sub-form-group').forEach(f => f.classList.remove('active'));
-            document.getElementById(subId).classList.add('active');
-        }
+        window.openEdit = function(id) {
+            document.getElementById('edit-prompt').style.display = 'none';
+            document.querySelectorAll('.element-edit-group').forEach(el => el.classList.remove('active'));
+            
+            const targetGroup = document.getElementById('edit-group-' + id);
+            if(targetGroup) targetGroup.classList.add('active');
 
-        window.switchNestedTab = function(targetId, btn, parentId) {
-            const parent = document.getElementById(parentId);
-            parent.querySelectorAll('.nested-tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            parent.querySelectorAll('.nested-form-group').forEach(f => f.classList.remove('active'));
-            document.getElementById(targetId).classList.add('active');
-        }
+            document.querySelectorAll('.prev-item').forEach(el => el.classList.remove('active-edit'));
+            
+            const extraActiveMap = {
+                'row-breaking': ['prev-row-breaking', 'prev-ticker1-container'],
+                'breaking-box': ['prev-breaking-box'],
+                'row-apts': ['prev-row-apts', 'prev-ticker2-container'],
+                'apts-box': ['prev-row-apts', 'prev-apts-box'],
+                'row-advt': ['prev-row-advt', 'prev-ticker3-container'],
+                'advt-box': ['prev-row-advt', 'prev-advt-box']
+            };
+
+            if (extraActiveMap[id]) {
+                extraActiveMap[id].forEach(elId => document.getElementById(elId)?.classList.add('active-edit'));
+            } else {
+                document.getElementById('prev-' + id)?.classList.add('active-edit');
+            }
+            
+            setTimeout(() => {
+                document.querySelectorAll('.form-group.active textarea').forEach(el => autoResizeTextarea(el));
+            }, 10);
+        };
 
         function updatePreview() {
-            const getVal = id => parseInt(document.getElementById(id).value) || 0;
-            const getCol = id => document.getElementById(id).value;
-            const getTxt = id => document.getElementById(id).value;
+            const getVal = (id, def = 0) => {
+                const el = document.getElementById(id);
+                return el && el.value !== '' ? parseInt(el.value) || 0 : def;
+            };
+            const getCol = (id, def = '#ffffff') => {
+                const el = document.getElementById(id);
+                return el ? el.value : def;
+            };
+            const getTxt = (id, def = '') => {
+                const el = document.getElementById(id);
+                return el ? el.value : def;
+            };
             
             const l1 = document.getElementById('prev-logo1');
             if (l1) {
                 l1.style.transform = `translate(${getVal('pos_logo1_x')}px, ${getVal('pos_logo1_y')}px)`;
-                l1.style.width = getVal('logo1_w') + 'px'; l1.style.height = getVal('logo1_h') + 'px';
+                l1.style.width = getVal('logo1_w', 250) + 'px';
+                l1.style.height = getVal('logo1_h', 160) + 'px';
             }
 
             const l2 = document.getElementById('prev-logo');
             if (l2) {
                 l2.style.transform = `translate(${getVal('pos_logo_x')}px, ${getVal('pos_logo_y')}px)`;
-                l2.style.width = getVal('logo_w') + 'px'; l2.style.height = getVal('logo_h') + 'px';
+                l2.style.width = getVal('logo_w', 250) + 'px';
+                l2.style.height = getVal('logo_h', 180) + 'px';
             }
 
             const tBan = document.getElementById('prev-top-banner');
             if (tBan) {
                 tBan.style.transform = `translate(${getVal('pos_slider_x')}px, ${getVal('pos_slider_y')}px)`;
-                tBan.style.height = getVal('banner_h') + 'px';
-                tBan.style.width = getVal('banner_w') + 'px';
+                tBan.style.height = getVal('banner_h', 160) + 'px';
+                tBan.style.width = getVal('banner_w', 1920) + 'px';
             }
 
-            // ROW 1
             const r1 = document.getElementById('prev-row-breaking');
             if (r1) {
                 r1.style.transform = `translate(${getVal('pos_ticker1_x')}px, ${getVal('pos_ticker1_y')}px)`;
-                r1.style.height = getVal('row1_h') + 'px';
-                r1.style.width = getVal('row1_w') + 'px';
+                r1.style.height = getVal('row1_h', 110) + 'px';
+                r1.style.width = getVal('row1_w', 1920) + 'px';
             }
             
             const t1 = document.getElementById('prev-ticker1-container');
             if (t1) {
                 t1.style.background = getBg('bg_tick1_1', 'bg_tick1_2', 'bg_tick1_transparent');
                 t1.style.color = getCol('ticker1_color');
-                t1.style.fontSize = getVal('ticker1_size') + 'px';
+                t1.style.fontSize = getVal('ticker1_size', 40) + 'px';
             }
 
             const brkBox = document.getElementById('prev-breaking-box');
             if (brkBox) {
                 brkBox.style.transform = `translate(${getVal('brk_box_x')}px, ${getVal('brk_box_y')}px)`;
-                brkBox.style.width = getVal('brk_box_w') + 'px';
-                brkBox.style.height = getVal('brk_box_h') + 'px';
-                brkBox.style.fontSize = getVal('brk_box_size') + 'px';
+                brkBox.style.width = getVal('brk_box_w', 280) + 'px';
+                brkBox.style.height = getVal('brk_box_h', 110) + 'px';
+                brkBox.style.fontSize = getVal('brk_box_size', 32) + 'px';
                 brkBox.style.color = getCol('brk_box_color');
                 brkBox.style.background = getBg('bg_brk_1', 'bg_brk_2', 'bg_brk_transparent');
-                brkBox.innerHTML = getTxt('lbl_break'); 
+                brkBox.innerHTML = `<span>${(getTxt('lbl_break') || 'BREAKING\nNEWS').replace(/\n/g, '<br>')}</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>`; 
             }
 
             const clk = document.getElementById('prev-clock-container');
             if (clk) {
                 clk.style.transform = `translate(${getVal('clock_x')}px, ${getVal('clock_y')}px)`;
-                clk.style.width = getVal('clock_w') + 'px';
-                clk.style.height = getVal('clock_h') + 'px';
+                clk.style.width = getVal('clock_w', 260) + 'px';
+                clk.style.height = getVal('clock_h', 110) + 'px';
                 clk.style.background = getBg('bg_clock1', 'bg_clock2', 'bg_clock_transparent');
                 clk.style.color = getCol('clock_color');
-                clk.style.fontSize = getVal('clock_size') + 'px';
+                clk.style.fontSize = getVal('clock_size', 38) + 'px';
             }
 
-            // ROW 2
             const r2 = document.getElementById('prev-row-apts');
             if (r2) {
                 r2.style.transform = `translate(${getVal('pos_ticker2_x')}px, ${getVal('pos_ticker2_y')}px)`;
-                r2.style.height = getVal('row2_h') + 'px';
-                r2.style.width = getVal('row2_w') + 'px';
+                r2.style.height = getVal('row2_h', 80) + 'px';
+                r2.style.width = getVal('row2_w', 1920) + 'px';
             }
 
             const t2 = document.getElementById('prev-ticker2-container');
             if (t2) {
+                t2.style.height = getVal('row2_h', 80) + 'px';
                 t2.style.background = getBg('bg_tick2_1', 'bg_tick2_2', 'bg_tick2_transparent');
                 t2.style.color = getCol('ticker2_color');
-                t2.style.fontSize = getVal('ticker2_size') + 'px';
+                t2.style.fontSize = getVal('ticker2_size', 34) + 'px';
             }
 
             const aptsBox = document.getElementById('prev-apts-box');
             if (aptsBox) {
-                aptsBox.style.width = getVal('apts_box_w') + 'px';
-                aptsBox.style.fontSize = getVal('apts_box_size') + 'px';
-                aptsBox.style.color = getCol('apts_box_color');
+                aptsBox.style.width = getVal('apts_box_w', 280) + 'px';
+                aptsBox.style.height = getVal('row2_h', 80) + 'px';
+                aptsBox.style.fontSize = getVal('apts_box_size', 32) + 'px';
+                aptsBox.style.color = getCol('apts_box_color', '#000000');
                 aptsBox.style.background = getBg('bg_apts_1', 'bg_apts_2', 'bg_apts_transparent');
-                aptsBox.innerHTML = getTxt('lbl_news2');
+                aptsBox.innerHTML = `<span>${(getTxt('lbl_news2') || 'NEWS').replace(/\n/g, '<br>')}</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>`;
             }
 
-            // ROW 3
             const r3 = document.getElementById('prev-row-advt');
             if (r3) {
                 r3.style.transform = `translate(${getVal('pos_ticker3_x')}px, ${getVal('pos_ticker3_y')}px)`;
-                r3.style.height = getVal('row3_h') + 'px';
-                r3.style.width = getVal('row3_w') + 'px';
+                r3.style.height = getVal('row3_h', 60) + 'px';
+                r3.style.width = getVal('row3_w', 1920) + 'px';
             }
 
             const t3 = document.getElementById('prev-ticker3-container');
             if (t3) {
+                t3.style.height = getVal('row3_h', 60) + 'px';
                 t3.style.background = getBg('bg_tick3_1', 'bg_tick3_2', 'bg_tick3_transparent');
                 t3.style.color = getCol('ticker3_color');
-                t3.style.fontSize = getVal('ticker3_size') + 'px';
+                t3.style.fontSize = getVal('ticker3_size', 36) + 'px';
             }
 
             const advtBox = document.getElementById('prev-advt-box');
             if (advtBox) {
-                advtBox.style.width = getVal('advt_box_w') + 'px';
-                advtBox.style.fontSize = getVal('advt_box_size') + 'px';
+                advtBox.style.width = getVal('advt_box_w', 280) + 'px';
+                advtBox.style.height = getVal('row3_h', 60) + 'px';
+                advtBox.style.fontSize = getVal('advt_box_size', 26) + 'px';
                 advtBox.style.color = getCol('advt_box_color');
                 advtBox.style.background = getBg('bg_advt_box_1', 'bg_advt_box_2', 'bg_advt_transparent');
-                advtBox.innerHTML = getTxt('lbl_advt');
+                advtBox.innerHTML = `<span>${(getTxt('lbl_advt') || 'ADVT').replace(/\n/g, '<br>')}</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>`;
+            }
+        }
+
+        function autoResizeTextarea(el) {
+            if(!el || el.tagName !== 'TEXTAREA') return;
+            el.style.height = 'auto';
+            if (el.scrollHeight > 0) {
+                el.style.height = el.scrollHeight + 'px';
             }
         }
 
         document.querySelectorAll('.stepper-input, input[type="color"], textarea, input[type="text"], input[type="checkbox"]').forEach(input => {
-            input.addEventListener('input', updatePreview); input.addEventListener('change', updatePreview);
+            input.addEventListener('input', (e) => {
+                if(e.target.tagName === 'TEXTAREA') autoResizeTextarea(e.target);
+                updatePreview(); 
+            }); 
+            input.addEventListener('change', updatePreview);
         });
 
         function resizePreview() {
@@ -596,8 +666,13 @@ NEWS</textarea></div>
         window.addEventListener('resize', resizePreview);
 
         window.adj = function(id, delta) {
-            const el = document.getElementById(id); let val = parseInt(el.value) || 0; el.value = val + delta; updatePreview(); 
-        }
+            const el = document.getElementById(id); 
+            if(el) {
+                let val = parseInt(el.value) || 0; 
+                el.value = val + delta; 
+                updatePreview(); 
+            }
+        };
 
         const inputUrl = document.getElementById('input-url'); 
         const inputStart = document.getElementById('input-start'); 
@@ -605,11 +680,13 @@ NEWS</textarea></div>
         const inputEnd = document.getElementById('input-end'); 
         const autoSetNext = document.getElementById('auto-start-checkbox');
         
-        function timeToSec(t) { const [h, m, s] = t.split(':').map(Number); return (h * 3600) + (m * 60) + s; }
+        // Expose timeToSec globally so highlight feature can use it
+        window.timeToSec = function(t) { const [h, m, s] = (t || '00:00:00').split(':').map(Number); return (h * 3600) + (m * 60) + s; }
         function secToTime(s) { let h = Math.floor(s / 3600); let m = Math.floor((s % 3600) / 60); let sec = Math.floor(s % 60); return [h, m, sec].map(v => String(v).padStart(2, '0')).join(':'); }
         
-        inputStart.addEventListener('input', () => { try { inputEnd.value = secToTime((timeToSec(inputStart.value) + timeToSec(inputDuration.value)) % 86400); } catch(e){} });
-        inputDuration.addEventListener('input', () => { try { inputEnd.value = secToTime((timeToSec(inputStart.value) + timeToSec(inputDuration.value)) % 86400); } catch(e){} });
+        const calculateEnd = () => { try { inputEnd.value = secToTime((timeToSec(inputStart.value) + timeToSec(inputDuration.value)) % 86400); } catch(e){} };
+        inputStart.addEventListener('input', calculateEnd);
+        inputDuration.addEventListener('input', calculateEnd);
 
         inputUrl.addEventListener('input', () => {
             const url = inputUrl.value;
@@ -618,7 +695,6 @@ NEWS</textarea></div>
                 inputDuration.dispatchEvent(new Event('input'));
                 return;
             }
-
             const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
             if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fetchYoutubeDuration(ytMatch[1]); }
         });
@@ -654,128 +730,268 @@ NEWS</textarea></div>
             const url = inputUrl.value; if(!url) return;
             const container = document.getElementById('test-player-container'); const player = document.getElementById('test-player');
             let fullUrl = url;
-            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
+            const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/))([^&#?]+)/);
             if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fullUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`; } 
             else { const sep = url.includes('?') ? '&' : '?'; fullUrl += `${sep}autoplay=1`; }
-            
             player.src = fullUrl; container.style.display = 'block';
-        }
+        };
 
         async function loginOperator() {
             const code = document.getElementById('op-code-input').value.trim().toUpperCase();
             document.getElementById('login-error').style.display = 'none';
             const { data, error } = await db.from('operators').select('*').eq('code', code).single();
             if (error || !data || new Date(data.expires_at) < new Date()) { document.getElementById('login-error').style.display = 'block'; return; }
-            activeOperator = code; document.getElementById('login-screen').style.display = 'none'; document.getElementById('dashboard').style.display = 'block'; document.getElementById('display-code').textContent = code;
+            activeOperator = code; 
+            document.getElementById('login-screen').style.display = 'none'; 
+            document.getElementById('dashboard').style.display = 'flex'; 
+            document.getElementById('display-code').textContent = code;
             loadData();
         }
 
-        const dataList = document.getElementById('data-list'); const addBtn = document.getElementById('add-btn'); const cancelEditBtn = document.getElementById('cancel-edit-btn'); const statusBadge = document.getElementById('status-badge');
-        const chkLogoNews = document.getElementById('chk-logo-news'); const chkLogoChannel = document.getElementById('chk-logo-channel'); const chkClock = document.getElementById('chk-clock'); const chkPromo = document.getElementById('chk-promo'); const chkBreaking = document.getElementById('chk-breaking'); const chkApts = document.getElementById('chk-apts'); const chkAdvt = document.getElementById('chk-advt'); const inputLogoNews = document.getElementById('input-logo-news'); const inputLogoChannel = document.getElementById('input-logo-channel');
+        const dataList = document.getElementById('data-list'); 
+        const addBtn = document.getElementById('add-btn'); 
+        const cancelEditBtn = document.getElementById('cancel-edit-btn'); 
+        const statusBadge = document.getElementById('status-badge');
 
         window.switchTab = function(tbl, btn, type) {
-            currentTable = tbl; resetForm();
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+            currentTable = tbl; 
+            resetForm();
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active');
             document.querySelectorAll('.form-group').forEach(f => f.classList.remove('active'));
-            if(type==='video') { document.getElementById('form-video').classList.add('active'); } 
-            else if(type==='image') { document.getElementById('form-image').classList.add('active'); } 
-            else if(type==='settings') { document.getElementById('form-settings').classList.add('active'); } 
-            else if(type==='controls') { document.getElementById('form-controls').classList.add('active'); setTimeout(resizePreview, 50); } 
-            else { 
-                document.getElementById('form-text').classList.add('active'); 
-                // Show category input ONLY for APTS News
-                document.getElementById('cat-input-container').style.display = (tbl === 'apts_text') ? 'block' : 'none';
+            
+            const adminCard = document.querySelector('.admin-card');
+            const saveWrapper = document.getElementById('master-save-wrapper');
+
+            const formMap = { 'video': 'form-video', 'promo': 'form-promo', 'controls': 'form-controls', 'text': 'form-text' };
+            const targetForm = formMap[type] || 'form-text';
+            
+            document.getElementById(targetForm).classList.add('active'); 
+
+            if(type === 'controls') { 
+                document.querySelector('.preview-fixed-header').appendChild(saveWrapper);
+                adminCard.classList.add('full-height');
+                setTimeout(resizePreview, 60); 
+            } else { 
+                document.getElementById(targetForm).appendChild(saveWrapper);
+                adminCard.classList.remove('full-height');
+                if(type === 'text') {
+                    const catContainer = document.getElementById('cat-input-container');
+                    if(catContainer) catContainer.style.display = (tbl === 'apts_text') ? 'block' : 'none';
+                }
             }
-            document.getElementById('table-wrapper').style.display = (type === 'settings' || type === 'controls') ? 'none' : 'block';
-            loadData();
+            
+            document.getElementById('table-wrapper').style.display = (type === 'controls') ? 'none' : 'block';
+            
+            loadData().then(() => {
+                setTimeout(() => {
+                    document.querySelectorAll('.form-group.active textarea').forEach(el => autoResizeTextarea(el));
+                }, 50);
+            });
+        };
+
+        function startEditMode(id) {
+            editId = id;
+            addBtn.innerHTML = '<i class="fa-solid fa-check"></i> Update'; 
+            cancelEditBtn.style.display = 'block'; 
+            window.scrollTo(0,0); 
         }
+
+        window.editTextEntry = (id, safeText, safeCat) => {
+            const txtInput = document.getElementById('input-text');
+            if(txtInput) { txtInput.value = decodeURIComponent(atob(safeText)); autoResizeTextarea(txtInput); }
+            const catInput = document.getElementById('input-category');
+            if(catInput) { catInput.value = decodeURIComponent(atob(safeCat)); autoResizeTextarea(catInput); }
+            startEditMode(id);
+        };
+        
+        window.editPromo = (id, safeImage) => {
+            const promoInput = document.getElementById('new-promo-url');
+            if(promoInput) { promoInput.value = decodeURIComponent(atob(safeImage)); autoResizeTextarea(promoInput); }
+            startEditMode(id);
+        };
+
+        window.editVideo = (id, safeUrl, start, dur, end, safeName) => { 
+            const url = decodeURIComponent(atob(safeUrl));
+            const name = decodeURIComponent(atob(safeName));
+            inputUrl.value = url; autoResizeTextarea(inputUrl);
+            const inputName = document.getElementById('input-name');
+            if(inputName) { inputName.value = name; autoResizeTextarea(inputName); }
+            inputStart.value = start; 
+            inputDuration.value = dur; 
+            inputEnd.value = end; 
+            startEditMode(id);
+        };
+
+        function renderCard(id, previewHtml, editAction) {
+            const div = document.createElement('div'); 
+            div.className = 'admin-card'; 
+            div.style.padding = '15px'; 
+            div.style.marginBottom = '10px';
+            div.style.display = 'block';
+            div.innerHTML = `
+                <div style="margin-bottom: 15px; font-size: 14px; line-height: 1.5; word-break: break-all;">${previewHtml}</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-sm edit-btn" style="flex:1; padding:10px; font-size: 13px; margin:0;" onclick="${editAction}"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button class="btn-sm delete-btn" style="flex:1; padding:10px; font-size: 13px; margin:0;" onclick="deleteEntry(${id})"><i class="fa-solid fa-trash"></i> Delete</button>
+                </div>
+            `; 
+            return div;
+        }
+
+        // Live Row Highlighter Function
+        window.highlightCurrentVideo = function() {
+            if (currentTable !== 'url_playlist') return;
+            const now = new Date();
+            const currentSecs = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+
+            const rows = document.querySelectorAll('#data-list table tbody tr');
+            rows.forEach(row => {
+                if(!row.cells || row.cells.length < 2) return;
+                const startStr = row.cells[0].innerText;
+                const durStr = row.cells[1].innerText;
+                
+                const startSecs = window.timeToSec(startStr);
+                const durSecs = window.timeToSec(durStr);
+                const endSecs = startSecs + durSecs;
+
+                let isPlaying = false;
+                if (endSecs > 86400) {
+                    if (currentSecs >= startSecs || currentSecs < (endSecs % 86400)) isPlaying = true;
+                } else {
+                    if (currentSecs >= startSecs && currentSecs < endSecs) isPlaying = true;
+                }
+
+                if (isPlaying) {
+                    row.style.backgroundColor = 'rgba(255, 0, 0, 0.15)';
+                    row.cells[0].style.boxShadow = 'inset 4px 0 0 var(--accent-red)';
+                } else {
+                    row.style.backgroundColor = 'transparent';
+                    row.cells[0].style.boxShadow = 'none';
+                }
+            });
+        };
+        // Re-check highlight every 10 seconds
+        setInterval(highlightCurrentVideo, 10000);
 
         async function loadData() {
             if (!activeOperator) return;
 
             if (currentTable === 'overlay_settings') {
                 const { data } = await db.from('overlay_settings').select('*').eq('operator_code', activeOperator).maybeSingle();
-                if(data) {
-                    chkLogoNews.checked = data.show_logo_news; chkLogoChannel.checked = data.show_logo_channel;
-                    chkClock.checked = data.show_clock; chkPromo.checked = data.show_promo;
-                    chkBreaking.checked = data.show_breaking; chkApts.checked = data.show_apts; chkAdvt.checked = data.show_advt;
-                    inputLogoNews.value = data.logo_news_url || 'news.png'; inputLogoChannel.value = data.logo_channel_url || 'logo.png';
-                    
-                    document.getElementById('pos_logo_x').value = data.logo_x || 0; document.getElementById('pos_logo_y').value = data.logo_y || 0;
-                    document.getElementById('pos_logo1_x').value = data.logo1_x || 0; document.getElementById('pos_logo1_y').value = data.logo1_y || 0;
-                    
-                    document.getElementById('logo_w').value = data.logo_w || 250; document.getElementById('logo_h').value = data.logo_h || 180;
-                    document.getElementById('logo1_w').value = data.logo1_w || 250; document.getElementById('logo1_h').value = data.logo1_h || 160;
+                const s = data || {};
+                
+                document.getElementById('chk-promo').checked = s.show_promo !== false;
+                document.getElementById('chk-logo-news').checked = s.show_logo_news !== false;
+                document.getElementById('chk-logo-channel').checked = s.show_logo_channel !== false;
+                document.getElementById('chk-clock').checked = s.show_clock !== false;
+                document.getElementById('chk-breaking').checked = s.show_breaking !== false;
+                document.getElementById('chk-apts').checked = s.show_apts !== false;
+                document.getElementById('chk-advt').checked = s.show_advt !== false;
 
-                    document.getElementById('pos_slider_x').value = data.slider_x || 0;
-                    document.getElementById('pos_ticker1_x').value = data.ticker1_x || 0;
-                    document.getElementById('pos_ticker2_x').value = data.ticker2_x || 0;
-                    document.getElementById('pos_ticker3_x').value = data.ticker3_x || 0;
+                document.getElementById('input-logo-news').value = s.logo_news_url || 'news.png';
+                document.getElementById('input-logo-channel').value = s.logo_channel_url || 'logo.png';
+                
+                document.getElementById('pos_logo_x').value = s.logo_x || 0;
+                document.getElementById('pos_logo_y').value = s.logo_y || 0;
+                document.getElementById('pos_logo1_x').value = s.logo1_x || 0;
+                document.getElementById('pos_logo1_y').value = s.logo1_y || 0;
+                
+                document.getElementById('logo_w').value = s.logo_w || 250;
+                document.getElementById('logo_h').value = s.logo_h || 180;
+                document.getElementById('logo1_w').value = s.logo1_w || 250;
+                document.getElementById('logo1_h').value = s.logo1_h || 160;
 
-                    document.getElementById('banner_h').value = data.banner_h || 160; document.getElementById('row1_h').value = data.row1_h || 110;
-                    document.getElementById('row2_h').value = data.row2_h || 80; document.getElementById('row3_h').value = data.row3_h || 60;
-                    
-                    document.getElementById('banner_w').value = data.banner_w || 1920; document.getElementById('row1_w').value = data.row1_w || 1920;
-                    document.getElementById('row2_w').value = data.row2_w || 1920; document.getElementById('row3_w').value = data.row3_w || 1920;
+                document.getElementById('pos_slider_x').value = s.slider_x || 0;
+                document.getElementById('pos_slider_y').value = s.slider_y || 0;
+                document.getElementById('banner_w').value = s.banner_w || 1920;
+                document.getElementById('banner_h').value = s.banner_h || 160;
 
-                    document.getElementById('clock_x').value = data.clock_x || 0; document.getElementById('clock_y').value = data.clock_y || 0;
-                    document.getElementById('brk_box_x').value = data.brk_box_x || 0; document.getElementById('brk_box_y').value = data.brk_box_y || 0;
+                document.getElementById('pos_ticker1_x').value = s.ticker1_x || 0;
+                document.getElementById('pos_ticker1_y').value = s.ticker1_y || 0;
+                document.getElementById('row1_w').value = s.row1_w || 1920;
+                document.getElementById('row1_h').value = s.row1_h || 110;
 
-                    document.getElementById('clock_w').value = data.clock_w || 260; document.getElementById('brk_box_w').value = data.brk_box_w || 280;
-                    document.getElementById('apts_box_w').value = data.apts_box_w || 280; document.getElementById('advt_box_w').value = data.advt_box_w || 280;
+                document.getElementById('brk_box_x').value = s.brk_box_x || 0;
+                document.getElementById('brk_box_y').value = s.brk_box_y || 0;
+                document.getElementById('brk_box_w').value = s.brk_box_w || 280;
+                document.getElementById('brk_box_h').value = s.brk_box_h || 110;
 
-                    document.getElementById('clock_h').value = data.clock_h || 110; document.getElementById('brk_box_h').value = data.brk_box_h || 110;
+                document.getElementById('clock_x').value = s.clock_x || 0;
+                document.getElementById('clock_y').value = s.clock_y || 0;
+                document.getElementById('clock_w').value = s.clock_w || 260;
+                document.getElementById('clock_h').value = s.clock_h || 110;
 
-                    document.getElementById('ticker1_media').value = data.ticker1_media || '';
-                    document.getElementById('brk_box_media').value = data.brk_box_media || '';
+                document.getElementById('pos_ticker2_x').value = s.ticker2_x || 0;
+                document.getElementById('pos_ticker2_y').value = s.ticker2_y || 0;
+                document.getElementById('row2_w').value = s.row2_w || 1920;
+                document.getElementById('row2_h').value = s.row2_h || 80;
+                document.getElementById('apts_box_w').value = s.apts_box_w || 280;
 
-                    document.getElementById('intro_size').value = data.intro_size || 44; document.getElementById('brk_box_size').value = data.brk_box_size || 32;
-                    document.getElementById('apts_box_size').value = data.apts_box_size || 32; document.getElementById('advt_box_size').value = data.advt_box_size || 26;
+                document.getElementById('pos_ticker3_x').value = s.ticker3_x || 0;
+                document.getElementById('pos_ticker3_y').value = s.ticker3_y || 0;
+                document.getElementById('row3_w').value = s.row3_w || 1920;
+                document.getElementById('row3_h').value = s.row3_h || 60;
+                document.getElementById('advt_box_w').value = s.advt_box_w || 280;
 
-                    document.getElementById('lbl_intro').value = data.lbl_intro || '&#128680; FLASH NEWS &#128680;';
-                    document.getElementById('lbl_break').value = data.lbl_break || 'BREAKING\nNEWS'; 
-                    document.getElementById('lbl_news2').value = data.lbl_news2 || 'NEWS'; document.getElementById('lbl_advt').value = data.lbl_advt || 'ADVT';
+                document.getElementById('ticker1_media').value = s.ticker1_media || '';
+                document.getElementById('brk_box_media').value = s.brk_box_media || '';
 
-                    document.getElementById('scroll_main').value = data.scroll_main || 10; document.getElementById('scroll_sub').value = data.scroll_sub || 5;
+                document.getElementById('intro_size').value = s.intro_size || 44;
+                document.getElementById('brk_box_size').value = s.brk_box_size || 32;
+                document.getElementById('apts_box_size').value = s.apts_box_size || 32;
+                document.getElementById('advt_box_size').value = s.advt_box_size || 26;
 
-                    document.getElementById('pos_slider_y').value = data.slider_y || 0; document.getElementById('pos_ticker1_y').value = data.ticker1_y || 0;
-                    document.getElementById('pos_ticker2_y').value = data.ticker2_y || 0; document.getElementById('pos_ticker3_y').value = data.ticker3_y || 0;
+                document.getElementById('lbl_intro').value = s.lbl_intro || '&#128680; FLASH NEWS &#128680;';
+                document.getElementById('lbl_break').value = s.lbl_break || 'BREAKING\nNEWS'; 
+                document.getElementById('lbl_news2').value = s.lbl_news2 || 'NEWS'; 
+                document.getElementById('lbl_advt').value = s.lbl_advt || 'ADVT';
 
-                    document.getElementById('clock_size').value = data.clock_size || 38; document.getElementById('clock_color').value = data.clock_color || '#ffffff';
-                    document.getElementById('ticker1_size').value = data.ticker1_size || 40; document.getElementById('ticker1_color').value = data.ticker1_color || '#ffffff';
-                    document.getElementById('ticker2_size').value = data.ticker2_size || 34; document.getElementById('ticker2_color').value = data.ticker2_color || '#ffffff';
-                    document.getElementById('ticker3_size').value = data.ticker3_size || 36; document.getElementById('ticker3_color').value = data.ticker3_color || '#ffffff';
+                document.getElementById('scroll_main').value = s.scroll_main || 10;
+                document.getElementById('scroll_sub').value = s.scroll_sub || 5;
 
-                    document.getElementById('intro_color').value = data.intro_color || '#ffffff';
-                    document.getElementById('brk_box_color').value = data.brk_box_color || '#ffffff';
-                    document.getElementById('apts_box_color').value = data.apts_box_color || '#000000';
-                    document.getElementById('advt_box_color').value = data.advt_box_color || '#ffffff';
+                document.getElementById('clock_size').value = s.clock_size || 38;
+                document.getElementById('clock_color').value = s.clock_color || '#ffffff';
+                document.getElementById('ticker1_size').value = s.ticker1_size || 40;
+                document.getElementById('ticker1_color').value = s.ticker1_color || '#ffffff';
+                document.getElementById('ticker2_size').value = s.ticker2_size || 34;
+                document.getElementById('ticker2_color').value = s.ticker2_color || '#ffffff';
+                document.getElementById('ticker3_size').value = s.ticker3_size || 36;
+                document.getElementById('ticker3_color').value = s.ticker3_color || '#ffffff';
 
-                    document.getElementById('bg_clock_transparent').checked = (data.bg_clock1 === 'transparent' || !data.bg_clock1);
-                    document.getElementById('bg_tick1_transparent').checked = (data.bg_tick1_1 === 'transparent' || !data.bg_tick1_1);
-                    document.getElementById('bg_brk_transparent').checked = (data.bg_brk_1 === 'transparent' || !data.bg_brk_1);
-                    document.getElementById('bg_tick2_transparent').checked = (data.bg_tick2_1 === 'transparent' || !data.bg_tick2_1);
-                    document.getElementById('bg_apts_transparent').checked = (data.bg_apts_1 === 'transparent' || !data.bg_apts_1);
-                    document.getElementById('bg_tick3_transparent').checked = (data.bg_tick3_1 === 'transparent' || !data.bg_tick3_1);
-                    document.getElementById('bg_advt_transparent').checked = (data.bg_advt_box_1 === 'transparent' || !data.bg_advt_box_1);
+                document.getElementById('intro_color').value = s.intro_color || '#ffffff';
+                document.getElementById('brk_box_color').value = s.brk_box_color || '#ffffff';
+                document.getElementById('apts_box_color').value = s.apts_box_color || '#000000';
+                document.getElementById('advt_box_color').value = s.advt_box_color || '#ffffff';
 
-                    document.getElementById('bg_clock1').value = (data.bg_clock1 && data.bg_clock1 !== 'transparent') ? data.bg_clock1 : '#9400D3';
-                    document.getElementById('bg_clock2').value = (data.bg_clock2 && data.bg_clock2 !== 'transparent') ? data.bg_clock2 : '#9400D3';
-                    document.getElementById('bg_tick1_1').value = (data.bg_tick1_1 && data.bg_tick1_1 !== 'transparent') ? data.bg_tick1_1 : '#cc0000'; 
-                    document.getElementById('bg_tick1_2').value = (data.bg_tick1_2 && data.bg_tick1_2 !== 'transparent') ? data.bg_tick1_2 : '#cc0000';
-                    document.getElementById('bg_brk_1').value = (data.bg_brk_1 && data.bg_brk_1 !== 'transparent') ? data.bg_brk_1 : '#cc0000'; 
-                    document.getElementById('bg_brk_2').value = (data.bg_brk_2 && data.bg_brk_2 !== 'transparent') ? data.bg_brk_2 : '#cc0000';
-                    document.getElementById('bg_tick2_1').value = (data.bg_tick2_1 && data.bg_tick2_1 !== 'transparent') ? data.bg_tick2_1 : '#1313e8'; 
-                    document.getElementById('bg_tick2_2').value = (data.bg_tick2_2 && data.bg_tick2_2 !== 'transparent') ? data.bg_tick2_2 : '#1313e8';
-                    document.getElementById('bg_apts_1').value = (data.bg_apts_1 && data.bg_apts_1 !== 'transparent') ? data.bg_apts_1 : '#ffff00'; 
-                    document.getElementById('bg_apts_2').value = (data.bg_apts_2 && data.bg_apts_2 !== 'transparent') ? data.bg_apts_2 : '#ffff00';
-                    document.getElementById('bg_tick3_1').value = (data.bg_tick3_1 && data.bg_tick3_1 !== 'transparent') ? data.bg_tick3_1 : '#e6e6e6'; 
-                    document.getElementById('bg_tick3_2').value = (data.bg_tick3_2 && data.bg_tick3_2 !== 'transparent') ? data.bg_tick3_2 : '#e6e6e6';
-                    document.getElementById('bg_advt_box_1').value = (data.bg_advt_box_1 && data.bg_advt_box_1 !== 'transparent') ? data.bg_advt_box_1 : '#cc0000'; 
-                    document.getElementById('bg_advt_box_2').value = (data.bg_advt_box_2 && data.bg_advt_box_2 !== 'transparent') ? data.bg_advt_box_2 : '#cc0000';
+                document.getElementById('bg_clock_transparent').checked = (s.bg_clock1 === 'transparent' || !s.bg_clock1);
+                document.getElementById('bg_tick1_transparent').checked = (s.bg_tick1_1 === 'transparent' || !s.bg_tick1_1);
+                document.getElementById('bg_brk_transparent').checked = (s.bg_brk_1 === 'transparent' || !s.bg_brk_1);
+                document.getElementById('bg_tick2_transparent').checked = (s.bg_tick2_1 === 'transparent' || !s.bg_tick2_1);
+                document.getElementById('bg_apts_transparent').checked = (s.bg_apts_1 === 'transparent' || !s.bg_apts_1);
+                document.getElementById('bg_tick3_transparent').checked = (s.bg_tick3_1 === 'transparent' || !s.bg_tick3_1);
+                document.getElementById('bg_advt_transparent').checked = (s.bg_advt_box_1 === 'transparent' || !s.bg_advt_box_1);
 
-                    updatePreview(); 
-                }
+                document.getElementById('bg_clock1').value = (s.bg_clock1 && s.bg_clock1 !== 'transparent') ? s.bg_clock1 : '#9400D3';
+                document.getElementById('bg_clock2').value = (s.bg_clock2 && s.bg_clock2 !== 'transparent') ? s.bg_clock2 : '#9400D3';
+                document.getElementById('bg_tick1_1').value = (s.bg_tick1_1 && s.bg_tick1_1 !== 'transparent') ? s.bg_tick1_1 : '#cc0000'; 
+                document.getElementById('bg_tick1_2').value = (s.bg_tick1_2 && s.bg_tick1_2 !== 'transparent') ? s.bg_tick1_2 : '#cc0000';
+                document.getElementById('bg_brk_1').value = (s.bg_brk_1 && s.bg_brk_1 !== 'transparent') ? s.bg_brk_1 : '#cc0000'; 
+                document.getElementById('bg_brk_2').value = (s.bg_brk_2 && s.bg_brk_2 !== 'transparent') ? s.bg_brk_2 : '#cc0000';
+                document.getElementById('bg_tick2_1').value = (s.bg_tick2_1 && s.bg_tick2_1 !== 'transparent') ? s.bg_tick2_1 : '#1313e8'; 
+                document.getElementById('bg_tick2_2').value = (s.bg_tick2_2 && s.bg_tick2_2 !== 'transparent') ? s.bg_tick2_2 : '#1313e8';
+                document.getElementById('bg_apts_1').value = (s.bg_apts_1 && s.bg_apts_1 !== 'transparent') ? s.bg_apts_1 : '#ffff00'; 
+                document.getElementById('bg_apts_2').value = (s.bg_apts_2 && s.bg_apts_2 !== 'transparent') ? s.bg_apts_2 : '#ffff00';
+                document.getElementById('bg_tick3_1').value = (s.bg_tick3_1 && s.bg_tick3_1 !== 'transparent') ? s.bg_tick3_1 : '#e6e6e6'; 
+                document.getElementById('bg_tick3_2').value = (s.bg_tick3_2 && s.bg_tick3_2 !== 'transparent') ? s.bg_tick3_2 : '#e6e6e6';
+                document.getElementById('bg_advt_box_1').value = (s.bg_advt_box_1 && s.bg_advt_box_1 !== 'transparent') ? s.bg_advt_box_1 : '#cc0000'; 
+                document.getElementById('bg_advt_box_2').value = (s.bg_advt_box_2 && s.bg_advt_box_2 !== 'transparent') ? s.bg_advt_box_2 : '#cc0000';
+
+                setTimeout(() => {
+                    document.querySelectorAll('.form-group.active textarea').forEach(el => autoResizeTextarea(el));
+                }, 50);
+
+                updatePreview();
                 return;
             }
 
@@ -783,22 +999,37 @@ NEWS</textarea></div>
             const { data } = await db.from(currentTable).select('*').eq('operator_code', activeOperator).order('id', { ascending: true });
             
             if (currentTable === 'url_playlist') {
-                let html = '<table><thead><tr><th>Start</th><th>Duration</th><th>URL</th><th>Actions</th></tr></thead><tbody>';
-                data.forEach(item => { html += `<tr><td>${item.start}</td><td>${item.duration}</td><td><a class="url-text" href="${item.url}" target="_blank">View</a></td><td><button class="btn-sm edit-btn" onclick="editVideo(${item.id}, '${item.url}', '${item.start}', '${item.duration}', '${item.end}')"><i class="fa-solid fa-pen"></i></button><button class="btn-sm delete-btn" onclick="deleteEntry(${item.id})"><i class="fa-solid fa-trash"></i></button></td></tr>`; });
+                let html = '<table><thead><tr><th>Start</th><th>Duration</th><th>Name</th><th>Actions</th></tr></thead><tbody>';
+                (data || []).forEach(item => { 
+                    const safeUrl = btoa(encodeURIComponent(item.url || ''));
+                    const safeName = btoa(encodeURIComponent(item.name || ''));
+                    const displayName = item.name ? item.name : 'View';
+                    html += `<tr><td>${item.start}</td><td>${item.duration}</td><td><a class="name-text" href="${item.url}" target="_blank">${displayName}</a></td><td><button class="btn-sm edit-btn" onclick="editVideo(${item.id}, '${safeUrl}', '${item.start}', '${item.duration}', '${item.end}', '${safeName}')"><i class="fa-solid fa-pen"></i></button><button class="btn-sm delete-btn" onclick="deleteEntry(${item.id})"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                });
                 dataList.innerHTML = html + '</tbody></table>';
+                highlightCurrentVideo(); // check highlight after rendering table
             } else {
                 dataList.innerHTML = '';
-                data.forEach(item => {
-                    const div = document.createElement('div'); div.className = 'admin-card'; div.style.padding = '15px'; div.style.marginBottom = '10px'; div.style.display = 'flex'; div.style.justifyContent = 'space-between';
-                    
-                    let content = currentTable === 'slider_playlist' ? `<img src="${item.image}" style="height:40px; border-radius:4px;">` : item.text;
-                    
-                    // Display category badge if it exists for APTS News
-                    if(currentTable === 'apts_text' && item.category) {
-                        content = `<span style="background:var(--accent-red); padding:2px 6px; border-radius:4px; font-size:10px; margin-right:8px; display:inline-block;">${item.category}</span>` + content;
+                (data || []).forEach(item => {
+                    if (currentTable === 'slider_playlist') {
+                        const isVideo = item.image && item.image.match(/\.(mp4|webm|ogg)$/i);
+                        const mediaPreview = isVideo 
+                            ? `<span style="font-size:11px; color:#aaa; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; display:inline-block;"><i class="fa-solid fa-video"></i> ${item.image}</span>`
+                            : `<img src="${item.image}" style="width:100%; height:auto; border-radius:4px; display:block;">`;
+                        
+                        const safeImage = btoa(encodeURIComponent(item.image || ''));
+                        dataList.appendChild(renderCard(item.id, mediaPreview, `editPromo(${item.id}, '${safeImage}')`));
+                    } else {
+                        let content = item.text || '';
+                        let catHtml = '';
+                        if(currentTable === 'apts_text' && item.category) {
+                            catHtml = `<span style="background:var(--accent-red); padding:2px 6px; border-radius:4px; font-size:10px; margin-right:8px; margin-bottom:8px; display:inline-block;">${item.category}</span><br>`;
+                        }
+                        
+                        const safeText = btoa(encodeURIComponent(item.text || ''));
+                        const safeCat = btoa(encodeURIComponent(item.category || ''));
+                        dataList.appendChild(renderCard(item.id, catHtml + content, `editTextEntry(${item.id}, '${safeText}', '${safeCat}')`));
                     }
-
-                    div.innerHTML = `<div>${content}</div><button class="btn-sm delete-btn" onclick="deleteEntry(${item.id})">Delete</button>`; dataList.appendChild(div);
                 });
             }
         }
@@ -816,36 +1047,74 @@ NEWS</textarea></div>
         addBtn.addEventListener('click', async () => {
             if (currentTable === 'overlay_settings') {
                 const payload = { 
-                    operator_code: activeOperator, show_logo_news: chkLogoNews.checked, show_logo_channel: chkLogoChannel.checked, show_clock: chkClock.checked, show_promo: chkPromo.checked, show_breaking: chkBreaking.checked, show_apts: chkApts.checked, show_advt: chkAdvt.checked, logo_news_url: inputLogoNews.value || 'news.png', logo_channel_url: inputLogoChannel.value || 'logo.png',
-                    logo_x: parseInt(document.getElementById('pos_logo_x').value) || 0, logo_y: parseInt(document.getElementById('pos_logo_y').value) || 0,
-                    logo1_x: parseInt(document.getElementById('pos_logo1_x').value) || 0, logo1_y: parseInt(document.getElementById('pos_logo1_y').value) || 0,
-                    logo_w: parseInt(document.getElementById('logo_w').value) || 250, logo_h: parseInt(document.getElementById('logo_h').value) || 180,
-                    logo1_w: parseInt(document.getElementById('logo1_w').value) || 250, logo1_h: parseInt(document.getElementById('logo1_h').value) || 160,
-                    banner_h: parseInt(document.getElementById('banner_h').value) || 160, row1_h: parseInt(document.getElementById('row1_h').value) || 110,
-                    row2_h: parseInt(document.getElementById('row2_h').value) || 80, row3_h: parseInt(document.getElementById('row3_h').value) || 60,
-                    banner_w: parseInt(document.getElementById('banner_w').value) || 1920, row1_w: parseInt(document.getElementById('row1_w').value) || 1920,
-                    row2_w: parseInt(document.getElementById('row2_w').value) || 1920, row3_w: parseInt(document.getElementById('row3_w').value) || 1920,
-                    clock_x: parseInt(document.getElementById('clock_x').value) || 0, clock_y: parseInt(document.getElementById('clock_y').value) || 0, clock_h: parseInt(document.getElementById('clock_h').value) || 110,
-                    brk_box_x: parseInt(document.getElementById('brk_box_x').value) || 0, brk_box_y: parseInt(document.getElementById('brk_box_y').value) || 0, brk_box_h: parseInt(document.getElementById('brk_box_h').value) || 110,
-                    clock_w: parseInt(document.getElementById('clock_w').value) || 260, brk_box_w: parseInt(document.getElementById('brk_box_w').value) || 280,
-                    apts_box_w: parseInt(document.getElementById('apts_box_w').value) || 280, advt_box_w: parseInt(document.getElementById('advt_box_w').value) || 280,
-                    ticker1_media: document.getElementById('ticker1_media').value, brk_box_media: document.getElementById('brk_box_media').value,
-                    intro_size: parseInt(document.getElementById('intro_size').value) || 44, brk_box_size: parseInt(document.getElementById('brk_box_size').value) || 32,
-                    apts_box_size: parseInt(document.getElementById('apts_box_size').value) || 32, advt_box_size: parseInt(document.getElementById('advt_box_size').value) || 26,
+                    operator_code: activeOperator, 
+                    show_logo_news: document.getElementById('chk-logo-news').checked, 
+                    show_logo_channel: document.getElementById('chk-logo-channel').checked, 
+                    show_clock: document.getElementById('chk-clock').checked, 
+                    show_promo: document.getElementById('chk-promo').checked, 
+                    show_breaking: document.getElementById('chk-breaking').checked, 
+                    show_apts: document.getElementById('chk-apts').checked, 
+                    show_advt: document.getElementById('chk-advt').checked, 
+                    logo_news_url: document.getElementById('input-logo-news').value || 'news.png', 
+                    logo_channel_url: document.getElementById('input-logo-channel').value || 'logo.png',
+                    logo_x: parseInt(document.getElementById('pos_logo_x').value) || 0, 
+                    logo_y: parseInt(document.getElementById('pos_logo_y').value) || 0,
+                    logo1_x: parseInt(document.getElementById('pos_logo1_x').value) || 0, 
+                    logo1_y: parseInt(document.getElementById('pos_logo1_y').value) || 0,
+                    logo_w: parseInt(document.getElementById('logo_w').value) || 250, 
+                    logo_h: parseInt(document.getElementById('logo_h').value) || 180,
+                    logo1_w: parseInt(document.getElementById('logo1_w').value) || 250, 
+                    logo1_h: parseInt(document.getElementById('logo1_h').value) || 160,
+                    banner_h: parseInt(document.getElementById('banner_h').value) || 160, 
+                    row1_h: parseInt(document.getElementById('row1_h').value) || 110,
+                    row2_h: parseInt(document.getElementById('row2_h').value) || 80, 
+                    row3_h: parseInt(document.getElementById('row3_h').value) || 60,
+                    banner_w: parseInt(document.getElementById('banner_w').value) || 1920, 
+                    row1_w: parseInt(document.getElementById('row1_w').value) || 1920, 
+                    row2_w: parseInt(document.getElementById('row2_w').value) || 1920, 
+                    row3_w: parseInt(document.getElementById('row3_w').value) || 1920,
+                    clock_x: parseInt(document.getElementById('clock_x').value) || 0, 
+                    clock_y: parseInt(document.getElementById('clock_y').value) || 0, 
+                    clock_h: parseInt(document.getElementById('clock_h').value) || 110,
+                    brk_box_x: parseInt(document.getElementById('brk_box_x').value) || 0, 
+                    brk_box_y: parseInt(document.getElementById('brk_box_y').value) || 0, 
+                    brk_box_h: parseInt(document.getElementById('brk_box_h').value) || 110,
+                    clock_w: parseInt(document.getElementById('clock_w').value) || 260, 
+                    brk_box_w: parseInt(document.getElementById('brk_box_w').value) || 280,
+                    apts_box_w: parseInt(document.getElementById('apts_box_w').value) || 280, 
+                    advt_box_w: parseInt(document.getElementById('advt_box_w').value) || 280,
+                    ticker1_media: document.getElementById('ticker1_media').value, 
+                    brk_box_media: document.getElementById('brk_box_media').value,
+                    intro_size: parseInt(document.getElementById('intro_size').value) || 44, 
+                    brk_box_size: parseInt(document.getElementById('brk_box_size').value) || 32,
+                    apts_box_size: parseInt(document.getElementById('apts_box_size').value) || 32, 
+                    advt_box_size: parseInt(document.getElementById('advt_box_size').value) || 26,
                     lbl_intro: document.getElementById('lbl_intro').value,
                     lbl_break: document.getElementById('lbl_break').value, 
-                    lbl_news2: document.getElementById('lbl_news2').value, lbl_advt: document.getElementById('lbl_advt').value,
-                    scroll_main: parseInt(document.getElementById('scroll_main').value) || 10, scroll_sub: parseInt(document.getElementById('scroll_sub').value) || 5,
-                    slider_x: parseInt(document.getElementById('pos_slider_x').value) || 0, ticker1_x: parseInt(document.getElementById('pos_ticker1_x').value) || 0,
-                    ticker2_x: parseInt(document.getElementById('pos_ticker2_x').value) || 0, ticker3_x: parseInt(document.getElementById('pos_ticker3_x').value) || 0,
-                    slider_y: parseInt(document.getElementById('pos_slider_y').value) || 0, ticker1_y: parseInt(document.getElementById('pos_ticker1_y').value) || 0,
-                    ticker2_y: parseInt(document.getElementById('pos_ticker2_y').value) || 0, ticker3_y: parseInt(document.getElementById('pos_ticker3_y').value) || 0,
-                    clock_size: parseInt(document.getElementById('clock_size').value) || 38, clock_color: document.getElementById('clock_color').value,
-                    ticker1_size: parseInt(document.getElementById('ticker1_size').value) || 40, ticker1_color: document.getElementById('ticker1_color').value,
-                    ticker2_size: parseInt(document.getElementById('ticker2_size').value) || 34, ticker2_color: document.getElementById('ticker2_color').value,
-                    ticker3_size: parseInt(document.getElementById('ticker3_size').value) || 36, ticker3_color: document.getElementById('ticker3_color').value,
-                    intro_color: document.getElementById('intro_color').value, brk_box_color: document.getElementById('brk_box_color').value,
-                    apts_box_color: document.getElementById('apts_box_color').value, advt_box_color: document.getElementById('advt_box_color').value,
+                    lbl_news2: document.getElementById('lbl_news2').value, 
+                    lbl_advt: document.getElementById('lbl_advt').value,
+                    scroll_main: parseInt(document.getElementById('scroll_main').value) || 10, 
+                    scroll_sub: parseInt(document.getElementById('scroll_sub').value) || 5,
+                    slider_x: parseInt(document.getElementById('pos_slider_x').value) || 0, 
+                    ticker1_x: parseInt(document.getElementById('pos_ticker1_x').value) || 0,
+                    ticker2_x: parseInt(document.getElementById('pos_ticker2_x').value) || 0, 
+                    ticker3_x: parseInt(document.getElementById('pos_ticker3_x').value) || 0,
+                    slider_y: parseInt(document.getElementById('pos_slider_y').value) || 0, 
+                    ticker1_y: parseInt(document.getElementById('pos_ticker1_y').value) || 0,
+                    ticker2_y: parseInt(document.getElementById('pos_ticker2_y').value) || 0, 
+                    ticker3_y: parseInt(document.getElementById('pos_ticker3_y').value) || 0,
+                    clock_size: parseInt(document.getElementById('clock_size').value) || 38, 
+                    clock_color: document.getElementById('clock_color').value,
+                    ticker1_size: parseInt(document.getElementById('ticker1_size').value) || 40, 
+                    ticker1_color: document.getElementById('ticker1_color').value,
+                    ticker2_size: parseInt(document.getElementById('ticker2_size').value) || 34, 
+                    ticker2_color: document.getElementById('ticker2_color').value,
+                    ticker3_size: parseInt(document.getElementById('ticker3_size').value) || 36, 
+                    ticker3_color: document.getElementById('ticker3_color').value,
+                    intro_color: document.getElementById('intro_color').value, 
+                    brk_box_color: document.getElementById('brk_box_color').value,
+                    apts_box_color: document.getElementById('apts_box_color').value, 
+                    advt_box_color: document.getElementById('advt_box_color').value,
                     
                     bg_clock1: document.getElementById('bg_clock_transparent').checked ? 'transparent' : document.getElementById('bg_clock1').value, 
                     bg_clock2: document.getElementById('bg_clock_transparent').checked ? 'transparent' : document.getElementById('bg_clock2').value,
@@ -863,29 +1132,70 @@ NEWS</textarea></div>
                     bg_advt_box_2: document.getElementById('bg_advt_transparent').checked ? 'transparent' : document.getElementById('bg_advt_box_2').value
                 };
                 const { data } = await db.from('overlay_settings').select('id').eq('operator_code', activeOperator).maybeSingle();
-                if(data) await db.from('overlay_settings').update(payload).eq('operator_code', activeOperator); else await db.from('overlay_settings').insert([payload]);
-                triggerSaveSuccess(); return;
+                if(data) await db.from('overlay_settings').update(payload).eq('operator_code', activeOperator); 
+                else await db.from('overlay_settings').insert([payload]);
+                triggerSaveSuccess(); 
+                return;
             }
 
             let payload = { operator_code: activeOperator };
-            if (currentTable === 'url_playlist') { payload.url = inputUrl.value; payload.start = inputStart.value; payload.duration = inputDuration.value; payload.end = inputEnd.value; }
-            else if (currentTable === 'slider_playlist') { payload.image = document.getElementById('input-image').value; }
-            else { 
-                payload.text = document.getElementById('input-text').value; 
+            if (currentTable === 'url_playlist') { 
+                payload.url = inputUrl.value; 
+                payload.start = inputStart.value; 
+                payload.duration = inputDuration.value; 
+                payload.end = inputEnd.value; 
+                payload.name = document.getElementById('input-name').value;
+            } else if (currentTable === 'slider_playlist') {
+                payload.image = document.getElementById('new-promo-url').value;
+            } else { 
+                const inTxt = document.getElementById('input-text');
+                if (inTxt) payload.text = inTxt.value; 
                 if (currentTable === 'apts_text') {
-                    payload.category = document.getElementById('input-category').value;
+                    const inCat = document.getElementById('input-category');
+                    if (inCat) payload.category = inCat.value;
                 }
             }
 
             const { error } = editId ? await db.from(currentTable).update(payload).eq('id', editId) : await db.from(currentTable).insert([payload]);
-            if (!error) { triggerSaveSuccess(); const nextStart = inputEnd.value; resetForm(); if(autoSetNext.checked && currentTable === 'url_playlist') inputStart.value = nextStart; loadData(); }
+            if (!error) { 
+                triggerSaveSuccess(); 
+                const nextStart = inputEnd.value; 
+                resetForm(); 
+                if(autoSetNext && autoSetNext.checked && currentTable === 'url_playlist') inputStart.value = nextStart; 
+                loadData(); 
+            } else {
+                console.error(error);
+                alert("Database Error: " + error.message + "\n\n(Did you create the 'name' column in Supabase?)");
+            }
         });
-
-        window.editVideo = (id, url, start, dur, end) => { editId = id; inputUrl.value = url; inputStart.value = start; inputDuration.value = dur; inputEnd.value = end; addBtn.innerHTML = '<i class="fa-solid fa-check"></i> Update'; cancelEditBtn.style.display = 'block'; window.scrollTo(0,0); }
-        window.deleteEntry = async (id) => { if(confirm("Confirm deletion?")) { await db.from(currentTable).delete().eq('id', id); loadData(); } }
         
-        function resetForm() { editId = null; addBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes'; cancelEditBtn.style.display = 'none'; inputUrl.value = ''; inputStart.value = '00:00:00'; inputDuration.value = '00:00:00'; inputEnd.value = '00:00:00'; document.getElementById('input-text').value = ''; document.getElementById('input-image').value = ''; document.getElementById('input-category').value = ''; document.getElementById('test-player-container').style.display = 'none'; document.getElementById('test-player').src = ''; }
-        function showStatus(msg) { statusBadge.textContent = msg; statusBadge.style.display = 'block'; statusBadge.style.backgroundColor = '#34c759'; setTimeout(() => statusBadge.style.display = 'none', 3000); }
+        window.deleteEntry = async (id) => { 
+            if(confirm("Confirm deletion?")) { 
+                await db.from(currentTable).delete().eq('id', id); 
+                loadData(); 
+            } 
+        };
+        
+        function resetForm() { 
+            editId = null; 
+            if(addBtn) addBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes'; 
+            if(cancelEditBtn) cancelEditBtn.style.display = 'none'; 
+            
+            const clearInput = (id, defaultVal = '') => { const el = document.getElementById(id); if(el) { el.value = defaultVal; autoResizeTextarea(el); } };
+
+            clearInput('input-url');
+            clearInput('input-start', '00:00:00');
+            clearInput('input-duration', '00:00:00');
+            clearInput('input-end', '00:00:00');
+            clearInput('input-name');
+            clearInput('input-text');
+            clearInput('input-category');
+            clearInput('new-promo-url');
+
+            const tpContainer = document.getElementById('test-player-container'); if(tpContainer) tpContainer.style.display = 'none'; 
+            const tPlayer = document.getElementById('test-player'); if(tPlayer) tPlayer.src = ''; 
+        }
+        
         cancelEditBtn.onclick = resetForm;
     </script>
 </body>
