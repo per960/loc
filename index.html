@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operator Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Channel Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <style>
-        :root { --bg-black: #000000; --bg-dark-gray: #121212; --bg-card: #1c1c1e; --accent-red: #ff0000; --text-main: #ffffff; --text-muted: #a1a1a6; --border-color: #2c2c2e; }
+        :root { --bg-black: #121212; --bg-dark-gray: #1a1a1a; --bg-card: #222222; --accent-red: #ff0000; --text-main: #ffffff; --text-muted: #a1a1a6; --border-color: #333333; }
         
         body, html { margin: 0; padding: 0; background-color: var(--bg-black); color: var(--text-main); font-family: 'Inter', sans-serif; box-sizing: border-box; min-height: 100vh; }
-        
         .container { display: flex; flex-direction: column; width: 100%; max-width: 1000px; margin: 0 auto; background-color: var(--bg-dark-gray); padding: 12px; box-sizing: border-box; min-height: 100vh; }
         
         .login-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f0f0f; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { background-color: #1a1b1c; border-radius: 12px; padding: 40px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .login-title { color: #28a745; font-size: 22px; font-weight: 600; margin-bottom: 5px; }
         .login-subtitle { color: #aaa; font-size: 14px; margin-bottom: 20px; }
-        .login-input { background: #111; border: 1px solid #333; border-radius: 6px; color: #fff; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 16px; text-align: center; letter-spacing: 2px; box-sizing: border-box; outline: none; text-transform: uppercase; }
+        .login-input { background: #111; border: 1px solid #333; border-radius: 6px; color: #fff; width: 100%; padding: 15px; margin-bottom: 20px; font-size: 16px; text-align: center; letter-spacing: 2px; box-sizing: border-box; outline: none; }
         .login-btn { background: #28a745; color: #fff; border: none; border-radius: 6px; width: 100%; padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .loading-text { color: #aaa; font-size: 14px; margin-top: 15px; font-weight: bold; display: none; }
         
-        h1 { font-weight: 800; font-size: 18px; margin-top: 0; margin-bottom: 10px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; } 
+        h1 { font-weight: 900; font-size: 26px; margin-top: 0; margin-bottom: 15px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; letter-spacing: 1px; } 
         h1 span { color: var(--accent-red); }
-        .header-title-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .header-title-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
         
         .tabs-container { display: flex; overflow-x: auto; gap: 6px; border-bottom: 1px solid var(--border-color); margin-bottom: 15px; flex-shrink: 0; scrollbar-width: none; }
         .tabs-container::-webkit-scrollbar { display: none; }
@@ -33,36 +33,34 @@
         .tab-btn.active { background-color: var(--accent-red); color: #ffffff; }
         
         .admin-card { background-color: var(--bg-card); border-radius: 12px; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+        .full-height { max-height: none !important; overflow-y: visible !important; }
         
         .form-group { display: none; flex-direction: column; }
         .form-group.active { display: flex; }
         
-        .preview-fixed-header { width: 100%; padding-bottom: 10px; border-bottom: 1px solid #333; margin-bottom: 15px; display: flex; flex-direction: column; }
-        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border-radius: 6px; border: 1px solid #555; }
+        .preview-fixed-header { width: 100%; padding-bottom: 10px; margin-bottom: 15px; display: flex; flex-direction: column; }
+        .preview-wrapper { width: 100%; aspect-ratio: 16 / 9; background-color: #222; background-image: linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333), linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%, #333); background-size: 20px 20px; background-position: 0 0, 10px 10px; position: relative; overflow: hidden; border-radius: 6px; border: 1px solid #555; margin-bottom: 15px; }
         #preview-canvas { width: 1920px; height: 1080px; position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: auto; }
         
         .prev-item { position: absolute; display: flex; flex-direction: row; gap: 15px; align-items: center; justify-content: center; font-weight: 900; border-radius: 0px; transition: transform 0.1s ease, width 0.1s ease, height 0.1s ease, color 0.1s ease; white-space: pre-wrap; line-height: 1.1; text-align: center; cursor: pointer; pointer-events: auto; }
-        
-        .edit-icon { position: relative; background: #0a84ff; color: white; border-radius: 50%; width: 48px; height: 48px; display: flex; justify-content: center; align-items: center; z-index: 100; font-size: 22px; opacity: 1; transition: 0.2s; pointer-events: none; border: 3px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.6); flex-shrink: 0; }
-        .prev-item:hover .edit-icon { background: var(--accent-red); transform: scale(1.15); }
+        .edit-icon { position: absolute; top: 5px; right: 5px; background: #0a84ff; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; justify-content: center; align-items: center; z-index: 100; font-size: 14px; opacity: 1; pointer-events: none; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.6); }
         .prev-item.active-edit { outline: 6px solid var(--accent-red) !important; z-index: 99 !important; }
 
-        .editor-scrollable-controls { width: 100%; padding-bottom: 40px; }
-
+        .editor-scrollable-controls { width: 100%; padding-bottom: 20px; margin-top: 15px; border-top: 1px dashed #444; padding-top: 15px; }
         .element-edit-group { display: none; animation: fadeIn 0.3s; background: #151517; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         .element-edit-group.active { display: block; }
         .element-edit-group h3 { color: var(--accent-red); margin-top: 0; padding-bottom: 8px; border-bottom: 1px solid #333; margin-bottom: 12px; font-size: 15px; }
         .element-edit-group h4 { color: #a1a1a6; margin-top: 15px; margin-bottom: 8px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #282828; padding-bottom: 4px; }
 
-        #master-save-wrapper { width: 100%; margin-top: 12px; margin-bottom: 5px; }
-
+        #master-save-wrapper { width: 100%; margin-top: 5px; margin-bottom: 5px; }
         label { display: block; font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; margin-left: 2px; }
         
-        input[type="text"], textarea { width: 100%; padding: 10px 12px; margin-bottom: 12px; background-color: var(--bg-black); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 14px; outline: none; box-sizing: border-box; font-family: inherit;}
+        input[type="text"], input[type="password"], textarea, select { width: 100%; padding: 10px 12px; margin-bottom: 12px; background-color: var(--bg-black); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 14px; outline: none; box-sizing: border-box; font-family: inherit;}
         textarea { resize: none; overflow-y: hidden; word-break: break-all; min-height: 44px; }
 
         .action-btn { width: 100%; padding: 14px; background-color: var(--accent-red); color: white; border: none; border-radius: 8px; font-weight: 700; font-size:15px; cursor: pointer; transition: background-color 0.3s ease; }
-        .test-btn { background-color: #2c2c2e; margin-bottom: 15px; } .test-btn:hover { background-color: #3a3a3c; }
+        .test-btn { background-color: #2c2c2e; margin-bottom: 10px; } .test-btn:hover { background-color: #3a3a3c; }
+        .browse-btn { background-color: #0a84ff; margin-bottom: 15px; } .browse-btn:hover { background-color: #0070e0; }
         
         .table-wrapper { width: 100%; } 
         table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
@@ -78,7 +76,7 @@
         .toggle-badge { background: #222; border: 1px solid #444; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
         .toggle-badge span { font-size: 13px; font-weight: 700; color: #fff; }
         
-        #test-player-container { border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 2px solid var(--border-color); }
+        #test-player-container { border-radius: 12px; overflow: hidden; margin-bottom: 15px; border: 2px solid var(--border-color); background: #000; }
         h3 { font-size: 15px; margin-top: 0px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px; color: #fff;}
         .input-row { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; } 
         .input-row > div { flex: 1; min-width: 110px; }
@@ -103,27 +101,27 @@
         <div class="login-box">
             <div class="login-title">Operator Login</div>
             <div class="login-subtitle">Enter Code.</div>
-            <input type="text" id="op-code-input" class="login-input" placeholder="XXXXXXXX">
-            <button onclick="loginOperator()" class="login-btn">Login</button>
-            <div id="login-error" style="color:#ff4444; margin-top:15px; font-size:14px; display:none;">Invalid or Expired Code</div>
+            <input type="password" id="op-code-input" class="login-input" placeholder="XXXXXXXX">
+            <button type="button" onclick="loginOperator()" class="login-btn">Login</button>
+            <div id="login-loading" class="loading-text">Verifying Device...</div>
+            <div id="login-error" style="color:#ff4444; margin-top:15px; font-size:14px; display:none;"></div>
         </div>
     </div>
 
     <div id="dashboard" class="container" style="display:none;">
         <h1>
-            <div class="header-title-text">CHANNEL <span>MANAGER</span></div>
-            <div style="font-size:11px; color:#aaa; border:1px solid #333; padding:4px 10px; border-radius:20px; font-weight:normal;">Code: <span id="display-code" style="color:#fff; font-weight:bold;"></span></div>
+            <div class="header-title-text">MY TV <span>PLAYOUT</span></div>
+            <div style="display:none; font-size:11px; color:#aaa; border:1px solid #333; padding:4px 10px; border-radius:20px; font-weight:normal;">Code: <span id="display-code" style="color:#fff; font-weight:bold;"></span></div>
         </h1>
 
         <div id="status-badge" class="status-badge"></div>
 
         <div class="tabs-container">
-            <button class="tab-btn active" onclick="switchTab('url_playlist', this, 'video')"><i class="fa-solid fa-play"></i> Video Schedule</button>
-            <button class="tab-btn" onclick="switchTab('apts_text', this, 'text')"><i class="fa-solid fa-bolt"></i> News</button>
-            <button class="tab-btn" onclick="switchTab('slider_text', this, 'text')"><i class="fa-solid fa-message"></i> Breaking Alert</button>
-            <button class="tab-btn" onclick="switchTab('advt_text', this, 'text')"><i class="fa-solid fa-ad"></i> Ads Scroll</button>
-            <button class="tab-btn" onclick="switchTab('slider_playlist', this, 'promo')"><i class="fa-solid fa-images"></i> Top Promo</button>
-            <button class="tab-btn" onclick="switchTab('overlay_settings', this, 'controls')"><i class="fa-solid fa-gamepad"></i> Layout Editor</button>
+            <button type="button" class="tab-btn active" onclick="switchTab('url_playlist', this, 'video')"><i class="fa-solid fa-play"></i> Video Schedule</button>
+            <button type="button" class="tab-btn" onclick="switchTab('apts_text', this, 'text')"><i class="fa-solid fa-bolt"></i> News</button>
+            <button type="button" class="tab-btn" onclick="switchTab('slider_text', this, 'text')"><i class="fa-solid fa-message"></i> Breaking Alert</button>
+            <button type="button" class="tab-btn" onclick="switchTab('slider_playlist', this, 'promo')"><i class="fa-solid fa-images"></i> Top Promo</button>
+            <button type="button" class="tab-btn" onclick="switchTab('overlay_settings', this, 'controls')"><i class="fa-solid fa-gamepad"></i> Layout Editor</button>
         </div>
 
         <div class="admin-card">
@@ -131,10 +129,14 @@
             <div id="form-video" class="form-group active">
                 <div id="test-player-container" style="display:none;">
                     <iframe id="test-player" width="100%" height="250" src="" frameborder="0" allowfullscreen></iframe>
+                    <video id="test-video-player" width="100%" height="250" controls style="display:none; background:#000; object-fit: contain;"></video>
                 </div>
-                <button class="action-btn test-btn" onclick="testCurrentURL()"><i class="fa-solid fa-magnifying-glass"></i> Test Player</button>
+                <button type="button" class="action-btn test-btn" onclick="testCurrentURL()"><i class="fa-solid fa-magnifying-glass"></i> Test Player</button>
+                
                 <label>Source URL (YouTube or MP4)</label>
                 <textarea id="input-url" placeholder="Paste link here..." rows="2"></textarea>
+
+                <button type="button" class="action-btn browse-btn" onclick="browseLocalFile()"><i class="fa-solid fa-folder-open"></i> Browse Local File (USB / Storage)</button>
                 
                 <div class="checkbox-group" style="display:none;"><input type="checkbox" id="auto-start-checkbox" checked><span>Auto-chain end time to next start time</span></div>
                 
@@ -149,10 +151,9 @@
                     <textarea id="input-name" placeholder="Enter title..." rows="1"></textarea>
                 </div>
 
-                <!-- Default position for the Save Button Wrapper so it shows on load -->
-                <div id="master-save-wrapper">
-                    <button id="add-btn" class="action-btn" style="margin-bottom:0;"><i class="fa-solid fa-save"></i> Save Changes</button>
-                    <button id="cancel-edit-btn" class="action-btn" style="background:#2c2c2e; display:none; margin-top:10px;">Cancel Edit</button>
+                <div id="master-save-wrapper-video">
+                    <button type="button" id="add-btn" class="action-btn" style="margin-bottom:0;"><i class="fa-solid fa-save"></i> Save Changes</button>
+                    <button type="button" id="cancel-edit-btn" class="action-btn" style="background:#2c2c2e; display:none; margin-top:10px;">Cancel Edit</button>
                 </div>
             </div>
 
@@ -166,8 +167,8 @@
             </div>
 
             <div id="form-promo" class="form-group">
-                <label>Promo Image / Video URL</label>
-                <textarea id="new-promo-url" placeholder="Paste Image/MP4 link here..." rows="2"></textarea>
+                <label>Promo Image URL</label>
+                <textarea id="new-promo-url" placeholder="Paste Image link here..." rows="2"></textarea>
             </div>
 
             <div id="form-controls" class="form-group">
@@ -177,27 +178,29 @@
                             <div id="prev-top-banner" class="prev-item" style="top:0; left:0; width:1920px; height:160px; background:rgba(255,255,255,0.9); font-size:60px; font-weight:900; color:#000; z-index:5;" onclick="openEdit('top-banner')">
                                 <span>TOP PROMO</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
                             </div>
+                            
                             <div id="prev-logo1" class="prev-item" style="top:190px; left:40px; width:250px; height:160px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px; z-index:10;" onclick="openEdit('logo-ad')">
                                 <span>ADS LOGO</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
                             </div>
+                            
                             <div id="prev-logo" class="prev-item" style="top:190px; right:40px; width:250px; height:180px; background:rgba(255,255,255,0.9); color:#000; border:2px dashed #000; font-size:50px; z-index:10;" onclick="openEdit('logo-ch')">
                                 <span>CH LOGO</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
                             </div>
                             
-                            <div id="prev-row-breaking" class="prev-item" style="bottom:140px; left:0; width:1920px; height:110px; z-index:1;" onclick="openEdit('row-breaking')">
+                            <div id="prev-clock-container" class="prev-item" style="bottom:80px; right:0; left:auto; width:260px; height:110px; background:transparent; color:#ffffff; font-size:38px; z-index:2;" onclick="openEdit('clock')">
+                                <span>12:00 PM</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
+                            </div>
+                            
+                            <div id="prev-row-breaking" class="prev-item" style="bottom:80px; left:0; width:1920px; height:110px; z-index:1;" onclick="openEdit('row-breaking')">
                                 <div id="prev-ticker1-container" style="width:100%; height:100%; background:#cc0000; color:#ffffff; font-size:40px; display:flex; align-items:center; justify-content:center; overflow:hidden; white-space:nowrap;"><span>BREAKING STRIP</span></div>
                                 <div class="edit-icon" style="position: absolute; right: 40px;"><i class="fa-solid fa-pen"></i></div>
                             </div>
                             
-                            <div id="prev-breaking-box" class="prev-item" style="bottom:140px; left:0; width:280px; height:110px; background:#cc0000; color:#fff; font-size:32px; z-index:2;" onclick="openEdit('breaking-box')">
+                            <div id="prev-breaking-box" class="prev-item" style="bottom:80px; left:0; width:280px; height:110px; background:#cc0000; color:#fff; font-size:32px; z-index:2;" onclick="openEdit('breaking-box')">
                                 <span>BREAKING<br>NEWS</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
                             </div>
                             
-                            <div id="prev-clock-container" class="prev-item" style="bottom:140px; right:0; left:auto; width:260px; height:110px; background:transparent; color:#ffffff; font-size:38px; z-index:2;" onclick="openEdit('clock')">
-                                <span>12:00 PM</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
-                            </div>
-                            
-                            <div id="prev-row-apts" style="position:absolute; bottom:60px; left:0; width:1920px; height:80px; display:flex;">
+                            <div id="prev-row-apts" style="position:absolute; bottom:0px; left:0; width:1920px; height:80px; display:flex;">
                                 <div id="prev-apts-box" class="prev-item" style="position:relative; width:280px; height:80px; flex-shrink:0; background:#ffff00; color:#000; font-size:32px;" onclick="openEdit('apts-box')">
                                     <span>NEWS</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
                                 </div>
@@ -205,16 +208,11 @@
                                     <span>NEWS STRIP</span> <div class="edit-icon" style="position: absolute; right: 40px;"><i class="fa-solid fa-pen"></i></div>
                                 </div>
                             </div>
-                            
-                            <div id="prev-row-advt" style="position:absolute; bottom:0; left:0; width:1920px; height:60px; display:flex;">
-                                <div id="prev-advt-box" class="prev-item" style="position:relative; width:280px; height:60px; flex-shrink:0; background:#cc0000; color:#fff; font-size:36px;" onclick="openEdit('advt-box')">
-                                    <span>ADVT</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>
-                                </div>
-                                <div id="prev-ticker3-container" class="prev-item" style="position:relative; flex-grow:1; height:60px; background:#e6e6e6; color:#ffffff; font-size:36px; overflow:hidden; white-space:nowrap;" onclick="openEdit('row-advt')">
-                                    <span>ADVT STRIP</span> <div class="edit-icon" style="position: absolute; right: 40px;"><i class="fa-solid fa-pen"></i></div>
-                                </div>
-                            </div>
                         </div>
+                    </div>
+                    
+                    <div id="master-save-wrapper-controls">
+                        <button type="button" id="save-controls-btn" class="action-btn" style="margin-bottom:0;"><i class="fa-solid fa-save"></i> Save Changes</button>
                     </div>
                 </div>
 
@@ -242,14 +240,14 @@
                     </div>
 
                     <div id="edit-group-logo-ad" class="element-edit-group">
-                        <h3><i class="fa-solid fa-pen"></i> Ads Logo (Top Left)</h3>
+                        <h3><i class="fa-solid fa-pen"></i> Ads Logo (Bottom Right)</h3>
                         <div class="toggle-badge">
                             <span>Show Ads Logo</span>
                             <input type="checkbox" id="chk-logo-news" checked>
                         </div>
                         <div class="input-row">
                             <div>
-                                <label>Ads Logo URL</label>
+                                <label>Ads Logo URL (Image)</label>
                                 <textarea id="input-logo-news" placeholder="e.g., https://.../news.png" rows="2"></textarea>
                             </div>
                         </div>
@@ -271,7 +269,7 @@
                         </div>
                         <div class="input-row">
                             <div>
-                                <label>Channel Logo URL</label>
+                                <label>Channel Logo URL (Image)</label>
                                 <textarea id="input-logo-channel" placeholder="e.g., https://.../logo.png" rows="2"></textarea>
                             </div>
                         </div>
@@ -309,7 +307,7 @@
                     </div>
 
                     <div id="edit-group-row-breaking" class="element-edit-group">
-                        <h3><i class="fa-solid fa-pen"></i> Row 1 (Marquee Strip)</h3>
+                        <h3><i class="fa-solid fa-pen"></i> Row 1 (Breaking Strip)</h3>
                         <div class="toggle-badge">
                             <span>Show Row 1 & Box</span>
                             <input type="checkbox" id="chk-breaking" checked>
@@ -324,7 +322,7 @@
                         </div>
                         <div class="input-row">
                             <div>
-                                <label>Background Media (URL)</label>
+                                <label>Background Image (URL)</label>
                                 <textarea id="ticker1_media" placeholder="Leave empty for solid color..." rows="1"></textarea>
                             </div>
                         </div>
@@ -358,7 +356,7 @@
                         </div>
                         <div class="input-row">
                             <div>
-                                <label>Box Media (URL)</label>
+                                <label>Box Image (URL)</label>
                                 <textarea id="brk_box_media" placeholder="Leave empty for Text..." rows="1"></textarea>
                             </div>
                         </div>
@@ -420,51 +418,6 @@ NEWS</textarea>
                         <label>Left Box Background (Left/Right Color)</label>
                         <div class="dual-color"><input type="color" id="bg_apts_1" value="#ffff00"><input type="color" id="bg_apts_2" value="#ffff00"></div>
                     </div>
-
-                    <div id="edit-group-row-advt" class="element-edit-group">
-                        <h3><i class="fa-solid fa-pen"></i> Row 3 (Advt Strip)</h3>
-                        <div class="toggle-badge">
-                            <span>Show Row 3 (Advt)</span>
-                            <input type="checkbox" id="chk-advt" checked>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Left/Right (X)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', -10)"><i class="fa-solid fa-arrow-left"></i></button><input type="number" id="pos_ticker3_x" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_x', 10)"><i class="fa-solid fa-arrow-right"></i></button></div></div>
-                            <div><label>Up/Down (Y)</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', -10)"><i class="fa-solid fa-arrow-up"></i></button><input type="number" id="pos_ticker3_y" class="stepper-input" value="0"><button type="button" class="stepper-btn" onclick="adj('pos_ticker3_y', 10)"><i class="fa-solid fa-arrow-down"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Total Row Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_w', -10)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_w" class="stepper-input" value="1920"><button type="button" class="stepper-btn" onclick="adj('row3_w', 10)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Total Row Height</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('row3_h', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="row3_h" class="stepper-input" value="60"><button type="button" class="stepper-btn" onclick="adj('row3_h', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Scroll Speed</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', -1)"><i class="fa-solid fa-minus"></i></button><input type="number" id="scroll_sub" class="stepper-input" value="5"><button type="button" class="stepper-btn" onclick="adj('scroll_sub', 1)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="ticker3_size" class="stepper-input" value="36"><button type="button" class="stepper-btn" onclick="adj('ticker3_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Text Color</label><input type="color" id="ticker3_color" value="#ffffff"></div>
-                            <div style="flex:1;"></div>
-                        </div>
-                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_tick3_transparent" checked> <span>Transparent Marquee</span></div>
-                        <label>Marquee Background (Left/Right Color)</label>
-                        <div class="dual-color"><input type="color" id="bg_tick3_1" value="#e6e6e6"><input type="color" id="bg_tick3_2" value="#e6e6e6"></div>
-                    </div>
-
-                    <div id="edit-group-advt-box" class="element-edit-group">
-                        <h3><i class="fa-solid fa-pen"></i> Advt Box (Left Box)</h3>
-                        <div class="input-row">
-                            <div><label>Box Width</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('advt_box_w', -5)"><i class="fa-solid fa-minus"></i></button><input type="number" id="advt_box_w" class="stepper-input" value="280"><button type="button" class="stepper-btn" onclick="adj('advt_box_w', 5)"><i class="fa-solid fa-plus"></i></button></div></div>
-                        </div>
-                        <div class="input-row" style="flex-direction: column;">
-                            <label>Box Label</label>
-                            <textarea id="lbl_advt" rows="2">ADVT</textarea>
-                        </div>
-                        <div class="input-row">
-                            <div><label>Box Text Size</label><div class="stepper-control"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', -2)"><i class="fa-solid fa-minus"></i></button><input type="number" id="advt_box_size" class="stepper-input" value="26"><button type="button" class="stepper-btn" onclick="adj('advt_box_size', 2)"><i class="fa-solid fa-plus"></i></button></div></div>
-                            <div><label>Box Text Color</label><input type="color" id="advt_box_color" value="#ffffff"></div>
-                        </div>
-                        <div class="checkbox-group" style="margin-bottom: 10px;"><input type="checkbox" id="bg_advt_transparent" checked> <span>Transparent Left Box</span></div>
-                        <label>Left Box Background (Left/Right Color)</label>
-                        <div class="dual-color"><input type="color" id="bg_advt_box_1" value="#cc0000"><input type="color" id="bg_advt_box_2" value="#cc0000"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -480,6 +433,12 @@ NEWS</textarea>
         let activeOperator = null;
         let currentTable = 'url_playlist'; 
         let editId = null;
+        let localDeviceId = localStorage.getItem('mytv_device_id');
+
+        if (!localDeviceId) {
+            localDeviceId = 'DEV-' + Math.random().toString(36).substr(2, 10) + Date.now().toString(36);
+            localStorage.setItem('mytv_device_id', localDeviceId);
+        }
 
         function getBg(id1, id2, chkId) {
             const chk = document.getElementById(chkId);
@@ -502,9 +461,7 @@ NEWS</textarea>
                 'row-breaking': ['prev-row-breaking', 'prev-ticker1-container'],
                 'breaking-box': ['prev-breaking-box'],
                 'row-apts': ['prev-row-apts', 'prev-ticker2-container'],
-                'apts-box': ['prev-row-apts', 'prev-apts-box'],
-                'row-advt': ['prev-row-advt', 'prev-ticker3-container'],
-                'advt-box': ['prev-row-advt', 'prev-advt-box']
+                'apts-box': ['prev-row-apts', 'prev-apts-box']
             };
 
             if (extraActiveMap[id]) {
@@ -612,31 +569,6 @@ NEWS</textarea>
                 aptsBox.style.background = getBg('bg_apts_1', 'bg_apts_2', 'bg_apts_transparent');
                 aptsBox.innerHTML = `<span>${(getTxt('lbl_news2') || 'NEWS').replace(/\n/g, '<br>')}</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>`;
             }
-
-            const r3 = document.getElementById('prev-row-advt');
-            if (r3) {
-                r3.style.transform = `translate(${getVal('pos_ticker3_x')}px, ${getVal('pos_ticker3_y')}px)`;
-                r3.style.height = getVal('row3_h', 60) + 'px';
-                r3.style.width = getVal('row3_w', 1920) + 'px';
-            }
-
-            const t3 = document.getElementById('prev-ticker3-container');
-            if (t3) {
-                t3.style.height = getVal('row3_h', 60) + 'px';
-                t3.style.background = getBg('bg_tick3_1', 'bg_tick3_2', 'bg_tick3_transparent');
-                t3.style.color = getCol('ticker3_color');
-                t3.style.fontSize = getVal('ticker3_size', 36) + 'px';
-            }
-
-            const advtBox = document.getElementById('prev-advt-box');
-            if (advtBox) {
-                advtBox.style.width = getVal('advt_box_w', 280) + 'px';
-                advtBox.style.height = getVal('row3_h', 60) + 'px';
-                advtBox.style.fontSize = getVal('advt_box_size', 26) + 'px';
-                advtBox.style.color = getCol('advt_box_color');
-                advtBox.style.background = getBg('bg_advt_box_1', 'bg_advt_box_2', 'bg_advt_transparent');
-                advtBox.innerHTML = `<span>${(getTxt('lbl_advt') || 'ADVT').replace(/\n/g, '<br>')}</span> <div class="edit-icon"><i class="fa-solid fa-pen"></i></div>`;
-            }
         }
 
         function autoResizeTextarea(el) {
@@ -674,13 +606,30 @@ NEWS</textarea>
             }
         };
 
+        window.browseLocalFile = function() {
+            if (window.AndroidBridge && window.AndroidBridge.pickLocalMedia) {
+                window.AndroidBridge.pickLocalMedia();
+            } else {
+                alert("Local file browser available inside the Android TV app.");
+            }
+        };
+
+        window.onLocalFileSelected = function(fileUri, fileName) {
+            const inputUrl = document.getElementById('input-url');
+            if (inputUrl) {
+                inputUrl.value = fileUri;
+                inputUrl.dispatchEvent(new Event('input')); 
+                const inputName = document.getElementById('input-name');
+                if (inputName && !inputName.value) inputName.value = fileName || "Local Video";
+            }
+        };
+
         const inputUrl = document.getElementById('input-url'); 
         const inputStart = document.getElementById('input-start'); 
         const inputDuration = document.getElementById('input-duration'); 
         const inputEnd = document.getElementById('input-end'); 
         const autoSetNext = document.getElementById('auto-start-checkbox');
         
-        // Expose timeToSec globally so highlight feature can use it
         window.timeToSec = function(t) { const [h, m, s] = (t || '00:00:00').split(':').map(Number); return (h * 3600) + (m * 60) + s; }
         function secToTime(s) { let h = Math.floor(s / 3600); let m = Math.floor((s % 3600) / 60); let sec = Math.floor(s % 60); return [h, m, sec].map(v => String(v).padStart(2, '0')).join(':'); }
         
@@ -689,15 +638,57 @@ NEWS</textarea>
         inputDuration.addEventListener('input', calculateEnd);
 
         inputUrl.addEventListener('input', () => {
-            const url = inputUrl.value;
+            const url = inputUrl.value.trim();
+            if (!url) return;
+            
             if (url.includes('/live/') || url.includes('live_stream')) {
                 inputDuration.value = "00:00:00"; 
                 inputDuration.dispatchEvent(new Event('input'));
                 return;
             }
+            
             const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|shorts\/|watch\?v=|watch\?.+&v=))([^&#?]+)/);
-            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fetchYoutubeDuration(ytMatch[1]); }
+            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { 
+                fetchYoutubeDuration(ytMatch[1]); 
+            } else {
+                fetchHTML5VideoDuration(url);
+            }
         });
+
+        function fetchHTML5VideoDuration(url) {
+            inputDuration.value = "Fetching...";
+            const tempVid = document.createElement('video');
+            tempVid.style.display = 'none';
+
+            let fallbackTimer = setTimeout(() => {
+                if(inputDuration.value === "Fetching...") {
+                    inputDuration.value = "00:00:00";
+                    inputDuration.dispatchEvent(new Event('input'));
+                }
+                tempVid.remove();
+            }, 5000);
+
+            tempVid.addEventListener('loadedmetadata', function() {
+                clearTimeout(fallbackTimer);
+                let d = tempVid.duration;
+                if(!isNaN(d) && d > 0 && inputDuration.value === "Fetching...") {
+                    inputDuration.value = secToTime(d);
+                    inputDuration.dispatchEvent(new Event('input'));
+                }
+                tempVid.remove();
+            });
+            
+            tempVid.addEventListener('error', function() {
+                clearTimeout(fallbackTimer);
+                if(inputDuration.value === "Fetching...") {
+                    inputDuration.value = "00:00:00";
+                    inputDuration.dispatchEvent(new Event('input'));
+                }
+                tempVid.remove();
+            });
+
+            tempVid.src = url;
+        }
 
         function fetchYoutubeDuration(videoId) {
             inputDuration.value = "Fetching...";
@@ -727,25 +718,89 @@ NEWS</textarea>
         }
 
         window.testCurrentURL = () => {
-            const url = inputUrl.value; if(!url) return;
-            const container = document.getElementById('test-player-container'); const player = document.getElementById('test-player');
-            let fullUrl = url;
+            const url = inputUrl.value.trim(); if(!url) return;
+            const container = document.getElementById('test-player-container'); 
+            const iframePlayer = document.getElementById('test-player');
+            const videoPlayer = document.getElementById('test-video-player');
+            
+            container.style.display = 'block';
+            
             const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|shorts\/))([^&#?]+)/);
-            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { fullUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`; } 
-            else { const sep = url.includes('?') ? '&' : '?'; fullUrl += `${sep}autoplay=1`; }
-            player.src = fullUrl; container.style.display = 'block';
+            
+            if (ytMatch && ytMatch[1] && ytMatch[1].length === 11) { 
+                videoPlayer.style.display = 'none';
+                videoPlayer.pause();
+                videoPlayer.src = '';
+                
+                iframePlayer.style.display = 'block';
+                iframePlayer.src = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`; 
+            } else { 
+                iframePlayer.style.display = 'none';
+                iframePlayer.src = '';
+                
+                videoPlayer.style.display = 'block';
+                videoPlayer.src = url;
+                videoPlayer.play().catch(e => console.log('Auto-play blocked or error in test player', e));
+            }
         };
 
         async function loginOperator() {
             const code = document.getElementById('op-code-input').value.trim().toUpperCase();
-            document.getElementById('login-error').style.display = 'none';
-            const { data, error } = await db.from('operators').select('*').eq('code', code).single();
-            if (error || !data || new Date(data.expires_at) < new Date()) { document.getElementById('login-error').style.display = 'block'; return; }
+            const errDiv = document.getElementById('login-error');
+            const loadDiv = document.getElementById('login-loading');
+            
+            errDiv.style.display = 'none';
+            loadDiv.style.display = 'block';
+
+            const { data: opData, error: opErr } = await db.from('operators').select('*').eq('code', code).single();
+            if (opErr || !opData || new Date(opData.expires_at) < new Date()) { 
+                loadDiv.style.display = 'none';
+                errDiv.innerText = "Invalid or Expired Code";
+                errDiv.style.display = 'block'; 
+                return; 
+            }
+
+            const maxDevices = (opData.max_devices !== null && opData.max_devices !== undefined) ? opData.max_devices : 1;
+            if (maxDevices <= 0) {
+                loadDiv.style.display = 'none';
+                errDiv.innerText = "Contact Admin.";
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            const { data: devData, error: devErr } = await db.from('operator_devices').select('*').eq('operator_code', code);
+            if (devErr) {
+                loadDiv.style.display = 'none'; errDiv.innerText = "Database Error"; errDiv.style.display = 'block'; return; 
+            }
+
+            const isAlreadyRegistered = devData.find(d => d.device_id === localDeviceId);
+
+            if (!isAlreadyRegistered) {
+                if (devData.length >= maxDevices) {
+                    loadDiv.style.display = 'none';
+                    errDiv.innerText = `Contact Admin.`;
+                    errDiv.style.display = 'block';
+                    return;
+                }
+                
+                let ua = navigator.userAgent;
+                let dName = ua.includes('Android') ? 'Android Box' : (ua.includes('Windows') ? 'Windows Web' : 'Web Browser');
+                await db.from('operator_devices').insert([{ 
+                    operator_code: code, 
+                    device_id: localDeviceId, 
+                    device_name: dName 
+                }]);
+            }
+
+            localStorage.setItem('mytv_saved_operator_code', code);
             activeOperator = code; 
+            
+            loadDiv.style.display = 'none';
             document.getElementById('login-screen').style.display = 'none'; 
             document.getElementById('dashboard').style.display = 'flex'; 
             document.getElementById('display-code').textContent = code;
-            loadData();
+            
+            await loadData();
         }
 
         const dataList = document.getElementById('data-list'); 
@@ -761,7 +816,8 @@ NEWS</textarea>
             document.querySelectorAll('.form-group').forEach(f => f.classList.remove('active'));
             
             const adminCard = document.querySelector('.admin-card');
-            const saveWrapper = document.getElementById('master-save-wrapper');
+            const saveWrapperVideo = document.getElementById('master-save-wrapper-video');
+            const saveWrapperControls = document.getElementById('master-save-wrapper-controls');
 
             const formMap = { 'video': 'form-video', 'promo': 'form-promo', 'controls': 'form-controls', 'text': 'form-text' };
             const targetForm = formMap[type] || 'form-text';
@@ -769,11 +825,14 @@ NEWS</textarea>
             document.getElementById(targetForm).classList.add('active'); 
 
             if(type === 'controls') { 
-                document.querySelector('.preview-fixed-header').appendChild(saveWrapper);
+                saveWrapperVideo.style.display = 'none';
+                saveWrapperControls.style.display = 'block';
                 adminCard.classList.add('full-height');
                 setTimeout(resizePreview, 60); 
             } else { 
-                document.getElementById(targetForm).appendChild(saveWrapper);
+                document.getElementById(targetForm).appendChild(saveWrapperVideo);
+                saveWrapperVideo.style.display = 'block';
+                saveWrapperControls.style.display = 'none';
                 adminCard.classList.remove('full-height');
                 if(type === 'text') {
                     const catContainer = document.getElementById('cat-input-container');
@@ -832,14 +891,13 @@ NEWS</textarea>
             div.innerHTML = `
                 <div style="margin-bottom: 15px; font-size: 14px; line-height: 1.5; word-break: break-all;">${previewHtml}</div>
                 <div style="display: flex; gap: 10px;">
-                    <button class="btn-sm edit-btn" style="flex:1; padding:10px; font-size: 13px; margin:0;" onclick="${editAction}"><i class="fa-solid fa-pen"></i> Edit</button>
-                    <button class="btn-sm delete-btn" style="flex:1; padding:10px; font-size: 13px; margin:0;" onclick="deleteEntry(${id})"><i class="fa-solid fa-trash"></i> Delete</button>
+                    <button type="button" class="btn-sm edit-btn" style="flex:1; padding:10px; font-size: 13px; margin:0;" onclick="${editAction}"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button type="button" class="btn-sm delete-btn" style="flex:1; padding:10px; font-size: 13px; margin:0;" onclick="deleteEntry(${id})"><i class="fa-solid fa-trash"></i> Delete</button>
                 </div>
             `; 
             return div;
         }
 
-        // Live Row Highlighter Function
         window.highlightCurrentVideo = function() {
             if (currentTable !== 'url_playlist') return;
             const now = new Date();
@@ -871,7 +929,6 @@ NEWS</textarea>
                 }
             });
         };
-        // Re-check highlight every 10 seconds
         setInterval(highlightCurrentVideo, 10000);
 
         async function loadData() {
@@ -887,7 +944,6 @@ NEWS</textarea>
                 document.getElementById('chk-clock').checked = s.show_clock !== false;
                 document.getElementById('chk-breaking').checked = s.show_breaking !== false;
                 document.getElementById('chk-apts').checked = s.show_apts !== false;
-                document.getElementById('chk-advt').checked = s.show_advt !== false;
 
                 document.getElementById('input-logo-news').value = s.logo_news_url || 'news.png';
                 document.getElementById('input-logo-channel').value = s.logo_channel_url || 'logo.png';
@@ -928,27 +984,18 @@ NEWS</textarea>
                 document.getElementById('row2_h').value = s.row2_h || 80;
                 document.getElementById('apts_box_w').value = s.apts_box_w || 280;
 
-                document.getElementById('pos_ticker3_x').value = s.ticker3_x || 0;
-                document.getElementById('pos_ticker3_y').value = s.ticker3_y || 0;
-                document.getElementById('row3_w').value = s.row3_w || 1920;
-                document.getElementById('row3_h').value = s.row3_h || 60;
-                document.getElementById('advt_box_w').value = s.advt_box_w || 280;
-
                 document.getElementById('ticker1_media').value = s.ticker1_media || '';
                 document.getElementById('brk_box_media').value = s.brk_box_media || '';
 
                 document.getElementById('intro_size').value = s.intro_size || 44;
                 document.getElementById('brk_box_size').value = s.brk_box_size || 32;
                 document.getElementById('apts_box_size').value = s.apts_box_size || 32;
-                document.getElementById('advt_box_size').value = s.advt_box_size || 26;
 
                 document.getElementById('lbl_intro').value = s.lbl_intro || '&#128680; FLASH NEWS &#128680;';
                 document.getElementById('lbl_break').value = s.lbl_break || 'BREAKING\nNEWS'; 
                 document.getElementById('lbl_news2').value = s.lbl_news2 || 'NEWS'; 
-                document.getElementById('lbl_advt').value = s.lbl_advt || 'ADVT';
 
                 document.getElementById('scroll_main').value = s.scroll_main || 10;
-                document.getElementById('scroll_sub').value = s.scroll_sub || 5;
 
                 document.getElementById('clock_size').value = s.clock_size || 38;
                 document.getElementById('clock_color').value = s.clock_color || '#ffffff';
@@ -956,21 +1003,16 @@ NEWS</textarea>
                 document.getElementById('ticker1_color').value = s.ticker1_color || '#ffffff';
                 document.getElementById('ticker2_size').value = s.ticker2_size || 34;
                 document.getElementById('ticker2_color').value = s.ticker2_color || '#ffffff';
-                document.getElementById('ticker3_size').value = s.ticker3_size || 36;
-                document.getElementById('ticker3_color').value = s.ticker3_color || '#ffffff';
 
                 document.getElementById('intro_color').value = s.intro_color || '#ffffff';
                 document.getElementById('brk_box_color').value = s.brk_box_color || '#ffffff';
                 document.getElementById('apts_box_color').value = s.apts_box_color || '#000000';
-                document.getElementById('advt_box_color').value = s.advt_box_color || '#ffffff';
 
                 document.getElementById('bg_clock_transparent').checked = (s.bg_clock1 === 'transparent' || !s.bg_clock1);
                 document.getElementById('bg_tick1_transparent').checked = (s.bg_tick1_1 === 'transparent' || !s.bg_tick1_1);
                 document.getElementById('bg_brk_transparent').checked = (s.bg_brk_1 === 'transparent' || !s.bg_brk_1);
                 document.getElementById('bg_tick2_transparent').checked = (s.bg_tick2_1 === 'transparent' || !s.bg_tick2_1);
                 document.getElementById('bg_apts_transparent').checked = (s.bg_apts_1 === 'transparent' || !s.bg_apts_1);
-                document.getElementById('bg_tick3_transparent').checked = (s.bg_tick3_1 === 'transparent' || !s.bg_tick3_1);
-                document.getElementById('bg_advt_transparent').checked = (s.bg_advt_box_1 === 'transparent' || !s.bg_advt_box_1);
 
                 document.getElementById('bg_clock1').value = (s.bg_clock1 && s.bg_clock1 !== 'transparent') ? s.bg_clock1 : '#9400D3';
                 document.getElementById('bg_clock2').value = (s.bg_clock2 && s.bg_clock2 !== 'transparent') ? s.bg_clock2 : '#9400D3';
@@ -982,10 +1024,6 @@ NEWS</textarea>
                 document.getElementById('bg_tick2_2').value = (s.bg_tick2_2 && s.bg_tick2_2 !== 'transparent') ? s.bg_tick2_2 : '#1313e8';
                 document.getElementById('bg_apts_1').value = (s.bg_apts_1 && s.bg_apts_1 !== 'transparent') ? s.bg_apts_1 : '#ffff00'; 
                 document.getElementById('bg_apts_2').value = (s.bg_apts_2 && s.bg_apts_2 !== 'transparent') ? s.bg_apts_2 : '#ffff00';
-                document.getElementById('bg_tick3_1').value = (s.bg_tick3_1 && s.bg_tick3_1 !== 'transparent') ? s.bg_tick3_1 : '#e6e6e6'; 
-                document.getElementById('bg_tick3_2').value = (s.bg_tick3_2 && s.bg_tick3_2 !== 'transparent') ? s.bg_tick3_2 : '#e6e6e6';
-                document.getElementById('bg_advt_box_1').value = (s.bg_advt_box_1 && s.bg_advt_box_1 !== 'transparent') ? s.bg_advt_box_1 : '#cc0000'; 
-                document.getElementById('bg_advt_box_2').value = (s.bg_advt_box_2 && s.bg_advt_box_2 !== 'transparent') ? s.bg_advt_box_2 : '#cc0000';
 
                 setTimeout(() => {
                     document.querySelectorAll('.form-group.active textarea').forEach(el => autoResizeTextarea(el));
@@ -1004,19 +1042,15 @@ NEWS</textarea>
                     const safeUrl = btoa(encodeURIComponent(item.url || ''));
                     const safeName = btoa(encodeURIComponent(item.name || ''));
                     const displayName = item.name ? item.name : 'View';
-                    html += `<tr><td>${item.start}</td><td>${item.duration}</td><td><a class="name-text" href="${item.url}" target="_blank">${displayName}</a></td><td><button class="btn-sm edit-btn" onclick="editVideo(${item.id}, '${safeUrl}', '${item.start}', '${item.duration}', '${item.end}', '${safeName}')"><i class="fa-solid fa-pen"></i></button><button class="btn-sm delete-btn" onclick="deleteEntry(${item.id})"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
+                    html += `<tr><td>${item.start}</td><td>${item.duration}</td><td><a class="name-text" href="${item.url}" target="_blank">${displayName}</a></td><td><button type="button" class="btn-sm edit-btn" onclick="editVideo(${item.id}, '${safeUrl}', '${item.start}', '${item.duration}', '${item.end}', '${safeName}')"><i class="fa-solid fa-pen"></i></button><button type="button" class="btn-sm delete-btn" onclick="deleteEntry(${item.id})"><i class="fa-solid fa-trash"></i></button></td></tr>`; 
                 });
                 dataList.innerHTML = html + '</tbody></table>';
-                highlightCurrentVideo(); // check highlight after rendering table
+                highlightCurrentVideo();
             } else {
                 dataList.innerHTML = '';
                 (data || []).forEach(item => {
                     if (currentTable === 'slider_playlist') {
-                        const isVideo = item.image && item.image.match(/\.(mp4|webm|ogg)$/i);
-                        const mediaPreview = isVideo 
-                            ? `<span style="font-size:11px; color:#aaa; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; display:inline-block;"><i class="fa-solid fa-video"></i> ${item.image}</span>`
-                            : `<img src="${item.image}" style="width:100%; height:auto; border-radius:4px; display:block;">`;
-                        
+                        const mediaPreview = `<img src="${item.image}" style="width:100%; height:auto; border-radius:4px; display:block;">`;
                         const safeImage = btoa(encodeURIComponent(item.image || ''));
                         dataList.appendChild(renderCard(item.id, mediaPreview, `editPromo(${item.id}, '${safeImage}')`));
                     } else {
@@ -1034,17 +1068,18 @@ NEWS</textarea>
             }
         }
 
-        function triggerSaveSuccess() {
+        function triggerSaveSuccess(btnEl) {
+            if (!btnEl) return;
             const originalText = editId ? '<i class="fa-solid fa-check"></i> Update' : '<i class="fa-solid fa-save"></i> Save Changes';
-            addBtn.style.backgroundColor = '#28a745'; 
-            addBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saved Successfully!';
+            btnEl.style.backgroundColor = '#28a745'; 
+            btnEl.innerHTML = '<i class="fa-solid fa-check"></i> Saved Successfully!';
             setTimeout(() => {
-                addBtn.style.backgroundColor = ''; 
-                addBtn.innerHTML = originalText;
+                btnEl.style.backgroundColor = ''; 
+                btnEl.innerHTML = originalText;
             }, 2000);
         }
 
-        addBtn.addEventListener('click', async () => {
+        async function saveSettings(btnEl) {
             if (currentTable === 'overlay_settings') {
                 const payload = { 
                     operator_code: activeOperator, 
@@ -1054,7 +1089,6 @@ NEWS</textarea>
                     show_promo: document.getElementById('chk-promo').checked, 
                     show_breaking: document.getElementById('chk-breaking').checked, 
                     show_apts: document.getElementById('chk-apts').checked, 
-                    show_advt: document.getElementById('chk-advt').checked, 
                     logo_news_url: document.getElementById('input-logo-news').value || 'news.png', 
                     logo_channel_url: document.getElementById('input-logo-channel').value || 'logo.png',
                     logo_x: parseInt(document.getElementById('pos_logo_x').value) || 0, 
@@ -1068,11 +1102,9 @@ NEWS</textarea>
                     banner_h: parseInt(document.getElementById('banner_h').value) || 160, 
                     row1_h: parseInt(document.getElementById('row1_h').value) || 110,
                     row2_h: parseInt(document.getElementById('row2_h').value) || 80, 
-                    row3_h: parseInt(document.getElementById('row3_h').value) || 60,
                     banner_w: parseInt(document.getElementById('banner_w').value) || 1920, 
                     row1_w: parseInt(document.getElementById('row1_w').value) || 1920, 
                     row2_w: parseInt(document.getElementById('row2_w').value) || 1920, 
-                    row3_w: parseInt(document.getElementById('row3_w').value) || 1920,
                     clock_x: parseInt(document.getElementById('clock_x').value) || 0, 
                     clock_y: parseInt(document.getElementById('clock_y').value) || 0, 
                     clock_h: parseInt(document.getElementById('clock_h').value) || 110,
@@ -1082,39 +1114,30 @@ NEWS</textarea>
                     clock_w: parseInt(document.getElementById('clock_w').value) || 260, 
                     brk_box_w: parseInt(document.getElementById('brk_box_w').value) || 280,
                     apts_box_w: parseInt(document.getElementById('apts_box_w').value) || 280, 
-                    advt_box_w: parseInt(document.getElementById('advt_box_w').value) || 280,
                     ticker1_media: document.getElementById('ticker1_media').value, 
                     brk_box_media: document.getElementById('brk_box_media').value,
                     intro_size: parseInt(document.getElementById('intro_size').value) || 44, 
                     brk_box_size: parseInt(document.getElementById('brk_box_size').value) || 32,
                     apts_box_size: parseInt(document.getElementById('apts_box_size').value) || 32, 
-                    advt_box_size: parseInt(document.getElementById('advt_box_size').value) || 26,
                     lbl_intro: document.getElementById('lbl_intro').value,
                     lbl_break: document.getElementById('lbl_break').value, 
                     lbl_news2: document.getElementById('lbl_news2').value, 
-                    lbl_advt: document.getElementById('lbl_advt').value,
                     scroll_main: parseInt(document.getElementById('scroll_main').value) || 10, 
-                    scroll_sub: parseInt(document.getElementById('scroll_sub').value) || 5,
                     slider_x: parseInt(document.getElementById('pos_slider_x').value) || 0, 
                     ticker1_x: parseInt(document.getElementById('pos_ticker1_x').value) || 0,
                     ticker2_x: parseInt(document.getElementById('pos_ticker2_x').value) || 0, 
-                    ticker3_x: parseInt(document.getElementById('pos_ticker3_x').value) || 0,
                     slider_y: parseInt(document.getElementById('pos_slider_y').value) || 0, 
                     ticker1_y: parseInt(document.getElementById('pos_ticker1_y').value) || 0,
                     ticker2_y: parseInt(document.getElementById('pos_ticker2_y').value) || 0, 
-                    ticker3_y: parseInt(document.getElementById('pos_ticker3_y').value) || 0,
                     clock_size: parseInt(document.getElementById('clock_size').value) || 38, 
                     clock_color: document.getElementById('clock_color').value,
                     ticker1_size: parseInt(document.getElementById('ticker1_size').value) || 40, 
                     ticker1_color: document.getElementById('ticker1_color').value,
                     ticker2_size: parseInt(document.getElementById('ticker2_size').value) || 34, 
                     ticker2_color: document.getElementById('ticker2_color').value,
-                    ticker3_size: parseInt(document.getElementById('ticker3_size').value) || 36, 
-                    ticker3_color: document.getElementById('ticker3_color').value,
                     intro_color: document.getElementById('intro_color').value, 
                     brk_box_color: document.getElementById('brk_box_color').value,
                     apts_box_color: document.getElementById('apts_box_color').value, 
-                    advt_box_color: document.getElementById('advt_box_color').value,
                     
                     bg_clock1: document.getElementById('bg_clock_transparent').checked ? 'transparent' : document.getElementById('bg_clock1').value, 
                     bg_clock2: document.getElementById('bg_clock_transparent').checked ? 'transparent' : document.getElementById('bg_clock2').value,
@@ -1125,16 +1148,12 @@ NEWS</textarea>
                     bg_tick2_1: document.getElementById('bg_tick2_transparent').checked ? 'transparent' : document.getElementById('bg_tick2_1').value, 
                     bg_tick2_2: document.getElementById('bg_tick2_transparent').checked ? 'transparent' : document.getElementById('bg_tick2_2').value,
                     bg_apts_1: document.getElementById('bg_apts_transparent').checked ? 'transparent' : document.getElementById('bg_apts_1').value, 
-                    bg_apts_2: document.getElementById('bg_apts_transparent').checked ? 'transparent' : document.getElementById('bg_apts_2').value,
-                    bg_tick3_1: document.getElementById('bg_tick3_transparent').checked ? 'transparent' : document.getElementById('bg_tick3_1').value, 
-                    bg_tick3_2: document.getElementById('bg_tick3_transparent').checked ? 'transparent' : document.getElementById('bg_tick3_2').value,
-                    bg_advt_box_1: document.getElementById('bg_advt_transparent').checked ? 'transparent' : document.getElementById('bg_advt_box_1').value, 
-                    bg_advt_box_2: document.getElementById('bg_advt_transparent').checked ? 'transparent' : document.getElementById('bg_advt_box_2').value
+                    bg_apts_2: document.getElementById('bg_apts_transparent').checked ? 'transparent' : document.getElementById('bg_apts_2').value
                 };
                 const { data } = await db.from('overlay_settings').select('id').eq('operator_code', activeOperator).maybeSingle();
                 if(data) await db.from('overlay_settings').update(payload).eq('operator_code', activeOperator); 
                 else await db.from('overlay_settings').insert([payload]);
-                triggerSaveSuccess(); 
+                triggerSaveSuccess(btnEl); 
                 return;
             }
 
@@ -1158,16 +1177,19 @@ NEWS</textarea>
 
             const { error } = editId ? await db.from(currentTable).update(payload).eq('id', editId) : await db.from(currentTable).insert([payload]);
             if (!error) { 
-                triggerSaveSuccess(); 
+                triggerSaveSuccess(btnEl); 
                 const nextStart = inputEnd.value; 
                 resetForm(); 
                 if(autoSetNext && autoSetNext.checked && currentTable === 'url_playlist') inputStart.value = nextStart; 
                 loadData(); 
             } else {
                 console.error(error);
-                alert("Database Error: " + error.message + "\n\n(Did you create the 'name' column in Supabase?)");
+                alert("Database Error: " + error.message);
             }
-        });
+        }
+
+        document.getElementById('add-btn').addEventListener('click', function() { saveSettings(this); });
+        document.getElementById('save-controls-btn').addEventListener('click', function() { saveSettings(this); });
         
         window.deleteEntry = async (id) => { 
             if(confirm("Confirm deletion?")) { 
@@ -1178,7 +1200,10 @@ NEWS</textarea>
         
         function resetForm() { 
             editId = null; 
-            if(addBtn) addBtn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes'; 
+            const addBtn1 = document.getElementById('add-btn');
+            const addBtn2 = document.getElementById('save-controls-btn');
+            if(addBtn1) addBtn1.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes'; 
+            if(addBtn2) addBtn2.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes'; 
             if(cancelEditBtn) cancelEditBtn.style.display = 'none'; 
             
             const clearInput = (id, defaultVal = '') => { const el = document.getElementById(id); if(el) { el.value = defaultVal; autoResizeTextarea(el); } };
@@ -1194,9 +1219,19 @@ NEWS</textarea>
 
             const tpContainer = document.getElementById('test-player-container'); if(tpContainer) tpContainer.style.display = 'none'; 
             const tPlayer = document.getElementById('test-player'); if(tPlayer) tPlayer.src = ''; 
+            const vPlayer = document.getElementById('test-video-player'); if(vPlayer) { vPlayer.pause(); vPlayer.src = ''; }
         }
         
         cancelEditBtn.onclick = resetForm;
+        
+        setTimeout(() => {
+            const savedCode = localStorage.getItem('mytv_saved_operator_code');
+            if(savedCode) {
+                const opInputEl = document.getElementById('op-code-input');
+                if (opInputEl) opInputEl.value = savedCode;
+                loginOperator();
+            }
+        }, 100);
     </script>
 </body>
 </html>
